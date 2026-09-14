@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <style>
+    path { fill: #0f2440; }
+    @media (prefers-color-scheme: dark) { path { fill: #e2e8f0; } }
+  </style>
+  <path transform="rotate(45 12 12)" d="M12 1c1.3 0 2.2 1.5 2.2 3.4v4.8l7.3 5.4v2.6l-7.3-2.6v3.8l2.6 2.3v1.9L12 21.3l-4.8 1.3v-1.9l2.6-2.3v-3.8l-7.3 2.6v-2.6l7.3-5.4V4.4C9.8 2.5 10.7 1 12 1z"/>
+</svg>
