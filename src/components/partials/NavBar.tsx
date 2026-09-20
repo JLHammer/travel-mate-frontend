@@ -1,6 +1,9 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { ROUTES } from "../../data/routes";
+import { BurgerMenu } from "../ui/BurgerMenu";
 
 const NavBarStyled = styled.nav`
   display: flex;
@@ -9,11 +12,19 @@ const NavBarStyled = styled.nav`
   width: 100%;
 `;
 
-const NavUl = styled.ul`
+const NavStripe = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: ${({ theme }) => theme.sizes.navItemHeight};
+`;
+
+const NavUl = styled(motion.ul)`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 `;
 
 const NavLi = styled.li`
@@ -26,9 +37,11 @@ const NavLi = styled.li`
 `;
 
 const NavBarLink = styled(NavLink)`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: ${({ theme }) => theme.sizes.navItemHeight};
   text-decoration: none;
-  padding: ${({ theme }) => theme.spacing.xs} 0;
   width: 100%;
   transition: all 0.05s ease;
 
@@ -55,16 +68,35 @@ const navLinks = [
   { to: about, label: "About" },
 ];
 
-export const NavBar = () => (
-  <NavBarStyled>
-    <NavUl>
-      {navLinks.map(({ to, label }) => (
-        <NavLi key={to}>
-          <NavBarLink to={to} end={to === home}>
-            {label}
-          </NavBarLink>
-        </NavLi>
-      ))}
-    </NavUl>
-  </NavBarStyled>
-);
+export const NavBar = () => {
+  const { pathname } = useLocation();
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const open = openedAt === pathname;
+  const toggle = () => setOpenedAt(open ? null : pathname);
+
+  return (
+    <NavBarStyled>
+      <NavStripe>
+        <BurgerMenu open={open} onToggle={toggle} />
+      </NavStripe>
+      <AnimatePresence initial={false}>
+        {open && (
+          <NavUl
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            {navLinks.map(({ to, label }) => (
+              <NavLi key={to}>
+                <NavBarLink to={to} end={to === home}>
+                  {label}
+                </NavBarLink>
+              </NavLi>
+            ))}
+          </NavUl>
+        )}
+      </AnimatePresence>
+    </NavBarStyled>
+  );
+};
