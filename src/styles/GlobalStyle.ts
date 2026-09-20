@@ -34,7 +34,27 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: ${({ theme }) => theme.fonts.heading};
+    color: ${({ theme }) => theme.colors.text.heading};
     text-wrap: balance;
+  }
+
+  h1 {
+    font-size: ${({ theme }) => theme.fontSizes.xxl};
+    font-weight: ${({ theme }) => theme.fontWeights.bold};
+    line-height: ${({ theme }) => theme.lineHeights.tight};
+  }
+
+  h2 {
+    font-size: ${({ theme }) => theme.fontSizes.m};
+    font-weight: ${({ theme }) => theme.fontWeights.bold};
+    line-height: ${({ theme }) => theme.lineHeights.snug};
+  }
+
+  h3 {
+    font-size: ${({ theme }) => theme.fontSizes.s};
+    font-weight: ${({ theme }) => theme.fontWeights.semibold};
+    line-height: ${({ theme }) => theme.lineHeights.snug};
   }
 
   p {

@@ -9,6 +9,7 @@ export interface ThemeColors {
   primarySoft: string;
   contrast: string;
   contrastHover: string;
+  accent: string;
 
   background: string;
   surface: string;
@@ -28,6 +29,7 @@ export interface ThemeColors {
   badge: Record<BadgeCategory, { background: string; text: string }>;
 
   overlay: string;
+  overlaySoft: string;
 }
 
 export interface ThemeShadows {
@@ -43,6 +45,7 @@ const lightColors: ThemeColors = {
   primarySoft: "#e6f0fd",
   contrast: "#152f4c",
   contrastHover: "#0e2238",
+  accent: "#fbbf24",
 
   background: "#f8fafc",
   surface: "#ffffff",
@@ -68,6 +71,7 @@ const lightColors: ThemeColors = {
   },
 
   overlay: "rgba(255, 255, 255, 0.85)",
+  overlaySoft: "rgba(255, 255, 255, 0.6)",
 };
 
 const darkColors: ThemeColors = {
@@ -76,6 +80,7 @@ const darkColors: ThemeColors = {
   primarySoft: "#172b4d",
   contrast: "#e2e8f0",
   contrastHover: "#f8fafc",
+  accent: "#f59e0b",
 
   background: "#0b1220",
   surface: "#111a2b",
@@ -101,20 +106,21 @@ const darkColors: ThemeColors = {
   },
 
   overlay: "rgba(15, 23, 42, 0.75)",
+  overlaySoft: "rgba(15, 23, 42, 0.5)",
 };
 
 const lightShadows: ThemeShadows = {
-  header: "0 1px 3px rgba(15, 36, 64, 0.08)",
-  card: "0 1px 3px rgba(15, 36, 64, 0.06)",
-  cardHover: "0 8px 20px rgba(15, 36, 64, 0.12)",
-  search: "0 8px 24px rgba(15, 36, 64, 0.14)",
+  header: "0 0.0625rem 0.1875rem rgba(15, 36, 64, 0.08)",
+  card: "0 0.0625rem 0.1875rem rgba(15, 36, 64, 0.06)",
+  cardHover: "0 0.5rem 1.25rem rgba(15, 36, 64, 0.12)",
+  search: "0 0.5rem 1.5rem rgba(15, 36, 64, 0.14)",
 };
 
 const darkShadows: ThemeShadows = {
-  header: "0 1px 3px rgba(0, 0, 0, 0.4)",
-  card: "0 1px 3px rgba(0, 0, 0, 0.35)",
-  cardHover: "0 8px 20px rgba(0, 0, 0, 0.5)",
-  search: "0 8px 24px rgba(0, 0, 0, 0.55)",
+  header: "0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.4)",
+  card: "0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.35)",
+  cardHover: "0 0.5rem 1.25rem rgba(0, 0, 0, 0.5)",
+  search: "0 0.5rem 1.5rem rgba(0, 0, 0, 0.55)",
 };
 
 const base = {
@@ -143,9 +149,11 @@ const base = {
     m: "1.25rem",
     l: "1.5rem",
     xl: "1.875rem",
+    xxl: "2.625rem",
   },
 
   spacing: {
+    xxs: "0.25rem",
     xs: "0.5rem",
     s: "0.75rem",
     m: "1rem",
@@ -154,29 +162,31 @@ const base = {
   },
 
   sizes: {
-    headerHeight: "60px",
-    heroHeight: "270px",
-    searchBarHeight: "48px",
-    buttonHeight: "40px",
-    iconButtonSize: "32px",
-    cardImageHeight: "100px",
-    cardImageHeightLarge: "160px",
-    detailImageHeight: "340px",
-    mapHeight: "350px",
-    flagWidth: "28px",
-    flagWidthLarge: "56px",
+    headerHeight: "3.75rem",
+    heroHeight: "16.875rem",
+    searchBarHeight: "3rem",
+    buttonHeight: "2.5rem",
+    navItemHeight: "2.5rem",
+    iconButtonSize: "2rem",
+    pillHeight: "2.25rem",
+    cardImageHeight: "6.25rem",
+    cardImageHeightLarge: "10rem",
+    detailImageHeight: "21.25rem",
+    mapHeight: "21.875rem",
+    flagWidth: "1.75rem",
+    flagWidthLarge: "3.5rem",
   },
 
   maxWidths: {
-    content: "1250px",
-    heroText: "380px",
+    content: "78.125rem",
+    heroText: "23.75rem",
   },
 
   radii: {
-    s: "6px",
-    m: "10px",
-    l: "14px",
-    pill: "9999px",
+    s: "0.375rem",
+    m: "0.625rem",
+    l: "0.875rem",
+    pill: "9999rem",
     round: "50%",
   },
 
@@ -186,9 +196,9 @@ const base = {
   },
 
   breakpoints: {
-    mobile: "480px",
-    tablet: "768px",
-    desktop: "1024px",
+    mobile: "30rem",
+    tablet: "48rem",
+    desktop: "64rem",
   },
 };
 

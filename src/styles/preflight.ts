@@ -34,7 +34,7 @@ export const preflight = css`
   hr {
     height: 0;
     color: inherit;
-    border-top-width: 1px;
+    border-top-width: 0.0625rem;
   }
 
   abbr:where([title]) {
@@ -139,7 +139,7 @@ export const preflight = css`
   [type="search"] {
     appearance: textfield;
     -webkit-appearance: textfield;
-    outline-offset: -2px;
+    outline-offset: -0.125rem;
   }
 
   ::-webkit-search-decoration {
