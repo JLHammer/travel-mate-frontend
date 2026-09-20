@@ -11,7 +11,7 @@ const HeroSectionStyled = styled.section`
 
 const HeroImageWrapper = styled.div`
   width: 100%;
-  height: 40vh;
+  height: 50vh;
   overflow: hidden;
 `;
 
@@ -22,9 +22,17 @@ const HeroImage = styled.img`
   object-position: 85% center;
 `;
 
+const HeroTextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.m};
+  border-radius: ${({ theme }) => theme.radii.l};
+  background-color: ${({ theme }) => theme.colors.overlaySoft};
+`;
+
 const HeroTitle = styled.h1`
   color: ${({ theme }) => theme.colors.contrast};
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
 `;
 
 const HeroText = styled.p`
@@ -37,6 +45,7 @@ const HeroContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
+  gap: ${({ theme }) => theme.spacing.m};
   text-align: left;
   position: absolute;
   width: 90%;
@@ -48,9 +57,11 @@ export const HeroSection = () => {
   return (
     <HeroSectionStyled>
       <HeroContentWrapper>
-        <HeroTitle>Explore the World with TravelMate</HeroTitle>
-        <HeroText>Discover amazing places, cities and countries.</HeroText>
-        <HeroText>Your next adventure is just a click away.</HeroText>
+        <HeroTextBox>
+          <HeroTitle>Explore the World with TravelMate</HeroTitle>
+          <HeroText>Discover amazing places, cities and countries.</HeroText>
+          <HeroText>Your next adventure is just a click away.</HeroText>
+        </HeroTextBox>
         <SearchBar />
       </HeroContentWrapper>
       <HeroImageWrapper>
