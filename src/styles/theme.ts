@@ -146,11 +146,11 @@ const base = {
   },
 
   spacing: {
-    xs: "0.75rem",
-    s: "1rem",
-    m: "1.5rem",
-    l: "2rem",
-    xl: "3.5rem",
+    xs: "0.5rem",
+    s: "0.75rem",
+    m: "1rem",
+    l: "1.5rem",
+    xl: "2rem",
   },
 
   sizes: {
