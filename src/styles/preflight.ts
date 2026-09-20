@@ -113,6 +113,7 @@ export const preflight = css`
   [type="button"],
   [type="reset"],
   [type="submit"] {
+    appearance: button;
     -webkit-appearance: button;
     background-color: transparent;
     background-image: none;
@@ -136,6 +137,7 @@ export const preflight = css`
   }
 
   [type="search"] {
+    appearance: textfield;
     -webkit-appearance: textfield;
     outline-offset: -2px;
   }
@@ -208,7 +210,6 @@ export const preflight = css`
   embed,
   object {
     display: block;
-    vertical-align: middle;
   }
 
   img,
