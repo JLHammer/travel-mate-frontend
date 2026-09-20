@@ -5,20 +5,43 @@ import { ROUTES } from "../../data/routes";
 const NavBarStyled = styled.nav`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
 `;
 
 const NavUl = styled.ul`
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
-const NavLi = styled.li``;
+const NavLi = styled.li`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0 0 0.1rem;
+`;
 
 const NavBarLink = styled(NavLink)`
   display: inline-block;
+  text-decoration: none;
+  padding: ${({ theme }) => theme.spacing.xs} 0;
+  width: 100%;
+  transition: all 0.05s ease;
 
   &.active {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: ${({ theme }) => theme.fontWeights.semibold};
+    background-color: ${({ theme }) => theme.colors.primarySoft};
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: ${({ theme }) => theme.fontWeights.semibold};
+    background-color: ${({ theme }) => theme.colors.primarySoft};
   }
 `;
 
