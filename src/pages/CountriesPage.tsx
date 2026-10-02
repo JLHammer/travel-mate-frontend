@@ -1,10 +1,12 @@
-import { MainLayout } from "../components/layout/MainLayout";
-import { CountriesSection } from "../components/sections/CountriesSection";
+import { PageTitle } from "../components/ui/PageTitle";
 
 export const CountriesPage = () => {
   return (
-    <MainLayout>
-      <CountriesSection />
-    </MainLayout>
+    <>
+      <PageTitle title="Countries" />
+      <section>
+        <h1>Countries</h1>
+      </section>
+    </>
   );
 };

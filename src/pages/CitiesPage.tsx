@@ -1,10 +1,12 @@
-import { MainLayout } from "../components/layout/MainLayout";
-import { CitiesSection } from "../components/sections/CitiesSection";
+import { PageTitle } from "../components/ui/PageTitle";
 
 export const CitiesPage = () => {
   return (
-    <MainLayout>
-      <CitiesSection />
-    </MainLayout>
+    <>
+      <PageTitle title="Cities" />
+      <section>
+        <h1>Cities</h1>
+      </section>
+    </>
   );
 };

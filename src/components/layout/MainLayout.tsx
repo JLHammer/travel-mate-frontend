@@ -1,27 +1,22 @@
-import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "../partials/Header";
-import { NavBar } from "../partials/NavBar";
 import { Footer } from "../partials/Footer";
 
-type MainLayoutProps = {
-  children?: ReactNode;
-  pageTitle?: string;
-};
-
 const MainStyled = styled.main`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-export const MainLayout = ({ children }: MainLayoutProps) => {
+export const MainLayout = () => {
   return (
     <>
-      <Header>
-        <NavBar />
-      </Header>
-      <MainStyled>{children}</MainStyled>
+      <Header />
+      <MainStyled>
+        <Outlet />
+      </MainStyled>
       <Footer />
     </>
   );

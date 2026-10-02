@@ -1,11 +1,11 @@
 import { PageTitle } from "../components/ui/PageTitle";
 
-export const AboutPage = () => {
+export const TermsPage = () => {
   return (
     <>
-      <PageTitle title="About" />
+      <PageTitle title="Terms" />
       <section>
-        <h1>About</h1>
+        <h1>Terms</h1>
       </section>
     </>
   );

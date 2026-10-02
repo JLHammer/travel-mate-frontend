@@ -2,21 +2,25 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { ROUTES } from "../../data/routes";
-import { BurgerMenu } from "../ui/BurgerMenu";
+import { NAV_LINKS, ROUTES } from "../../router/routes";
+import { BurgerMenu } from "../ui/header/BurgerMenu";
+import { PreferenceToggles } from "./PreferenceToggles";
 
 const NavBarStyled = styled.nav`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  gap: ${({ theme }) => theme.mobile.spacing.xs};
+  padding: ${({ theme }) => theme.mobile.spacing.xs} 0;
 `;
 
 const NavStripe = styled.div`
-  display: flex;
-  justify-content: flex-end;
   width: 100%;
-  height: ${({ theme }) => theme.sizes.navItemHeight};
+  height: ${({ theme }) => theme.mobile.sizes.navItemHeight};
+  display: flex;
+  justify-content: space-between;
+  padding: 0 ${({ theme }) => theme.mobile.spacing.xs};
 `;
 
 const NavUl = styled(motion.ul)`
@@ -40,7 +44,7 @@ const NavBarLink = styled(NavLink)`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: ${({ theme }) => theme.sizes.navItemHeight};
+  height: ${({ theme }) => theme.mobile.sizes.navItemHeight};
   text-decoration: none;
   width: 100%;
   transition: all 0.05s ease;
@@ -58,15 +62,7 @@ const NavBarLink = styled(NavLink)`
   }
 `;
 
-const { home, countries, cities, places, about } = ROUTES;
-
-const navLinks = [
-  { to: home, label: "Home" },
-  { to: countries, label: "Countries" },
-  { to: cities, label: "Cities" },
-  { to: places, label: "Places" },
-  { to: about, label: "About" },
-];
+const { home } = ROUTES;
 
 export const NavBar = () => {
   const { pathname } = useLocation();
@@ -77,6 +73,7 @@ export const NavBar = () => {
   return (
     <NavBarStyled>
       <NavStripe>
+        <PreferenceToggles />
         <BurgerMenu open={open} onToggle={toggle} />
       </NavStripe>
       <AnimatePresence initial={false}>
@@ -87,9 +84,9 @@ export const NavBar = () => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            {navLinks.map(({ to, label }) => (
-              <NavLi key={to}>
-                <NavBarLink to={to} end={to === home}>
+            {NAV_LINKS.map(({ path, label }) => (
+              <NavLi key={path}>
+                <NavBarLink to={path} end={path === home}>
                   {label}
                 </NavBarLink>
               </NavLi>
