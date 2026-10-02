@@ -1,15 +1,15 @@
-import { useState } from "react";
 import styled from "styled-components";
 import { motion } from "motion/react";
 import { Moon, Sun } from "lucide-react";
-import type { ThemeMode } from "../../styles/theme";
+import { useThemeMode } from "../../../hooks/useThemeMode";
 
 const ThemePill = styled.fieldset`
   display: inline-flex;
   align-items: center;
-  height: ${({ theme }) => theme.sizes.pillHeight};
-  padding: 0.125rem ${({ theme }) => theme.spacing.xxs};
+  height: 100%;
   border-radius: ${({ theme }) => theme.radii.pill};
+  border: ${({ theme }) => theme.borders.themeToggle} solid;
+  border-color: ${({ theme }) => theme.colors.contrast};
   background-color: ${({ theme }) => theme.colors.surfaceMuted};
 `;
 
@@ -24,12 +24,11 @@ const ThemeOption = styled.label<{ $active: boolean }>`
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.mobile.spacing.xxs};
   height: 100%;
-  padding: 0 ${({ theme }) => theme.spacing.s};
-  color: ${({ theme, $active }) =>
-    $active ? theme.colors.text.onContrast : theme.colors.text.body};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
+  padding: 0 ${({ theme }) => theme.mobile.spacing.s};
+  color: ${({ theme, $active }) => theme.colors[$active ? "onContrast" : "bodyText"]};
+  font-size: ${({ theme }) => theme.mobile.fontSizes.toggle};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   cursor: pointer;
   user-select: none;
@@ -56,7 +55,7 @@ const ThemeRadio = styled.input`
 `;
 
 export const ThemeToggle = () => {
-  const [mode, setMode] = useState<ThemeMode>("light");
+  const { mode, setMode } = useThemeMode();
 
   return (
     <ThemePill>
@@ -69,7 +68,7 @@ export const ThemeToggle = () => {
           onChange={() => setMode("light")}
         />
         {mode === "light" && <ThemeThumb layoutId="theme-thumb" />}
-        <Sun size={16} />
+        <Sun size={24} />
         <span>Light</span>
       </ThemeOption>
 
@@ -82,7 +81,7 @@ export const ThemeToggle = () => {
           onChange={() => setMode("dark")}
         />
         {mode === "dark" && <ThemeThumb layoutId="theme-thumb" />}
-        <Moon size={16} />
+        <Moon size={24} />
         <span>Dark</span>
       </ThemeOption>
     </ThemePill>
