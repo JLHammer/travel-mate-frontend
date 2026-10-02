@@ -1,8 +1,8 @@
 import type { Variants } from "motion/react";
 import { motion } from "motion/react";
 import { forwardRef } from "react";
-import { useAnimatedIcon } from "../../hooks/useAnimatedIcon";
-import type { AnimatedIconHandle, AnimatedIconProps } from "../../types";
+import { useAnimatedIcon } from "../../../hooks/useAnimatedIcon";
+import type { AnimatedIconHandle, AnimatedIconProps } from "../../../types";
 
 const LINES = [
   { id: 1, y: 6 },

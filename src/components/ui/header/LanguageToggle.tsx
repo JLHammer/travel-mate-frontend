@@ -11,21 +11,27 @@ const LANGUAGES: { id: Language; title: string }[] = [
 ];
 
 const LanguageWrapper = styled.div`
+  height: 100%;
   position: relative;
 `;
 
-const LanguagePill = styled.button`
+const LanguagePill = styled.button<{ $open: boolean }>`
   display: inline-flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
-  height: ${({ theme }) => theme.sizes.pillHeight};
-  padding: 0 ${({ theme }) => theme.spacing.s};
-  border-radius: ${({ theme }) => theme.radii.m};
-  background-color: ${({ theme }) => theme.colors.surfaceMuted};
-  color: ${({ theme }) => theme.colors.text.heading};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
+  gap: ${({ theme }) => theme.mobile.spacing.xs};
+  height: 100%;
+  padding: 0 ${({ theme }) => theme.mobile.spacing.s};
+  border: ${({ theme }) => theme.borders.themeToggle} solid;
+  border-color: ${({ theme }) => theme.colors.contrast};
+  border-radius: ${({ theme }) => theme.radii.button};
+  background-color: ${({ theme, $open }) => theme.colors[$open ? "headingText" : "surfaceMuted"]};
+  color: ${({ theme, $open }) => theme.colors[$open ? "surfaceMuted" : "headingText"]};
+  font-size: ${({ theme }) => theme.mobile.fontSizes.toggle};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   text-transform: uppercase;
+  transition:
+    background-color ${({ theme }) => theme.transitions.fast},
+    color ${({ theme }) => theme.transitions.fast};
 `;
 
 const Chevron = styled(ChevronDown)<{ $open: boolean }>`
@@ -35,13 +41,13 @@ const Chevron = styled(ChevronDown)<{ $open: boolean }>`
 
 const LanguageList = styled(motion.ul)`
   position: absolute;
-  top: calc(100% + ${({ theme }) => theme.spacing.xxs});
+  top: calc(100% + ${({ theme }) => theme.mobile.spacing.xxs});
   left: 0;
-  z-index: 1;
+  z-index: ${({ theme }) => theme.zIndices.dropdown};
   min-width: 100%;
-  padding: ${({ theme }) => theme.spacing.xxs};
-  border: 0.0625rem solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.m};
+  padding: ${({ theme }) => theme.mobile.spacing.xxs};
+  border: ${({ theme }) => theme.borders.width} solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.card};
   background-color: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadows.card};
 `;
@@ -49,13 +55,12 @@ const LanguageList = styled(motion.ul)`
 const LanguageOption = styled.button<{ $selected: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.mobile.spacing.xs};
   width: 100%;
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.s};
-  border-radius: ${({ theme }) => theme.radii.s};
-  color: ${({ theme, $selected }) =>
-    $selected ? theme.colors.primary : theme.colors.text.heading};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
+  padding: ${({ theme }) => theme.mobile.spacing.xs} ${({ theme }) => theme.mobile.spacing.s};
+  border-radius: ${({ theme }) => theme.radii.inset};
+  color: ${({ theme, $selected }) => theme.colors[$selected ? "primary" : "headingText"]};
+  font-size: ${({ theme }) => theme.mobile.fontSizes.toggle};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   white-space: nowrap;
   transition: background-color ${({ theme }) => theme.transitions.fast};
@@ -72,7 +77,7 @@ const OptionCode = styled.span`
 
 const OptionLabel = styled.span`
   flex: 1;
-  color: ${({ theme }) => theme.colors.text.muted};
+  color: ${({ theme }) => theme.colors.mutedText};
   font-weight: ${({ theme }) => theme.fontWeights.regular};
 `;
 
@@ -97,10 +102,10 @@ export const LanguageToggle = () => {
 
   return (
     <LanguageWrapper ref={wrapperRef}>
-      <LanguagePill type="button" onClick={() => setOpen((prev) => !prev)}>
-        <Globe size={18} />
+      <LanguagePill type="button" $open={open} onClick={() => setOpen((prev) => !prev)}>
+        <Globe size={24} />
         {language}
-        <Chevron size={16} $open={open} />
+        <Chevron size={24} $open={open} />
       </LanguagePill>
 
       <AnimatePresence>

@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { LanguageToggle } from "../ui/LanguageToggle";
-import { ThemeToggle } from "../ui/ThemeToggle";
+import { LanguageToggle } from "../ui/header/LanguageToggle";
+import { ThemeToggle } from "../ui/header/ThemeToggle";
 
 const PreferenceTogglesStyled = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  gap: ${({ theme }) => theme.mobile.spacing.xs};
   align-items: center;
 `;
 

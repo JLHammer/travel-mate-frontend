@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { forwardRef } from "react";
-import { useAnimatedIcon } from "../../hooks/useAnimatedIcon";
-import type { AnimatedIconHandle, AnimatedIconProps } from "../../types";
+import { useAnimatedIcon } from "../../../hooks/useAnimatedIcon";
+import type { AnimatedIconHandle, AnimatedIconProps } from "../../../types";
 
 const SPEED_LINES = [
   { x1: 5, y1: 15, x2: 1, y2: 19, delay: 0.1 },

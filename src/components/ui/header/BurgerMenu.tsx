@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { MenuIcon } from "./MenuIcon";
-import type { AnimatedIconHandle } from "../../types";
+import { MenuIcon } from "../icons/MenuIcon";
+import type { AnimatedIconHandle } from "../../../types";
 
 type BurgerMenuProps = {
   open: boolean;
@@ -13,10 +13,10 @@ const BurgerButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ theme }) => theme.sizes.navItemHeight};
-  height: ${({ theme }) => theme.sizes.navItemHeight};
-  border-radius: ${({ theme }) => theme.radii.m};
-  color: ${({ theme }) => theme.colors.text.heading};
+  width: ${({ theme }) => theme.mobile.sizes.navItemHeight};
+  height: ${({ theme }) => theme.mobile.sizes.navItemHeight};
+  border-radius: ${({ theme }) => theme.radii.button};
+  color: ${({ theme }) => theme.colors.headingText};
 `;
 
 export const BurgerMenu = ({ open, onToggle, className }: BurgerMenuProps) => {
@@ -29,7 +29,7 @@ export const BurgerMenu = ({ open, onToggle, className }: BurgerMenuProps) => {
 
   return (
     <BurgerButton type="button" className={className} onClick={onToggle}>
-      <MenuIcon ref={iconRef} size={32} />
+      <MenuIcon ref={iconRef} size={40} />
     </BurgerButton>
   );
 };
