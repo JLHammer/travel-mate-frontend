@@ -3,12 +3,12 @@ import { Search } from "lucide-react";
 
 const SearchBarStyled = styled.form`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.mobile.spacing.xs};
   width: 100%;
-  max-width: 25rem;
-  padding: ${({ theme }) => theme.spacing.xxs};
-  border: 0.0625rem solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.m};
+  max-width: ${({ theme }) => theme.mobile.sizes.searchBarWidth};
+  padding: ${({ theme }) => theme.mobile.spacing.xxs};
+  border: ${({ theme }) => theme.borders.width} solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.input};
   background-color: ${({ theme }) => theme.colors.background};
 `;
 
@@ -16,7 +16,7 @@ const SearchBarIconContainer = styled.div`
   display: flex;
   align-self: center;
   flex-shrink: 0;
-  padding: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.mobile.spacing.xs};
 `;
 
 const SearchBarInput = styled.input`
@@ -24,8 +24,8 @@ const SearchBarInput = styled.input`
   border: none;
   outline: none;
   background-color: ${({ theme }) => theme.colors.background};
-  color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ theme }) => theme.fontSizes.s};
+  color: ${({ theme }) => theme.colors.bodyText};
+  font-size: ${({ theme }) => theme.mobile.fontSizes.formText};
   width: 100%;
 `;
 
@@ -34,9 +34,9 @@ const SearchBarButton = styled.button`
   color: ${({ theme }) => theme.colors.surface};
   border: none;
   outline: none;
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.l};
-  border-radius: ${({ theme }) => theme.radii.s};
-  font-size: ${({ theme }) => theme.fontSizes.s};
+  padding: ${({ theme }) => theme.mobile.spacing.xs} ${({ theme }) => theme.mobile.spacing.l};
+  border-radius: ${({ theme }) => theme.radii.inset};
+  font-size: ${({ theme }) => theme.mobile.fontSizes.formText};
   cursor: pointer;
   transition: background-color 0.1s ease-in;
 

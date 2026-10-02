@@ -1,0 +1,162 @@
+export type ThemeMode = "light" | "dark";
+
+export type BadgeCategory =
+  "historical" | "museum" | "park" | "attraction" | "landmark";
+
+export interface ThemeFontSizes {
+  body: string;
+  h1: string;
+  h2: string;
+  h3: string;
+  logo: string;
+  heroText: string;
+  toggle: string;
+  formText: string;
+}
+
+export interface ThemeLineHeights {
+  body: string;
+  h1: string;
+  h2: string;
+  h3: string;
+  heroText: string;
+  detailsText: string;
+}
+
+export interface ThemeSpacing {
+  xxs: string;
+  xs: string;
+  s: string;
+  m: string;
+  l: string;
+  xl: string;
+}
+
+export interface ThemeLayout {
+  contentWidth: string;
+}
+
+export interface ThemeSizes {
+  headerHeight: string;
+  heroHeight: string;
+  heroTextWidth: string;
+  searchBarWidth: string;
+  searchBarHeight: string;
+  buttonHeight: string;
+  navItemHeight: string;
+  favoriteButtonSize: string;
+  pillHeight: string;
+  cardImageHeight: string;
+  cardImageHeightLarge: string;
+  detailsImageHeight: string;
+  mapHeight: string;
+  flagWidth: string;
+  flagWidthLarge: string;
+  socialIcon: string;
+  loader: string;
+}
+
+export interface ThemeBreakpointTokens {
+  fontSizes: ThemeFontSizes;
+  lineHeights: ThemeLineHeights;
+  spacing: ThemeSpacing;
+  layout: ThemeLayout;
+  sizes: ThemeSizes;
+}
+
+export interface ThemeColors {
+  primary: string;
+  primaryHover: string;
+  primarySoft: string;
+  contrast: string;
+  contrastHover: string;
+  accent: string;
+
+  background: string;
+  surface: string;
+  surfaceMuted: string;
+  border: string;
+  borderLight: string;
+
+  headingText: string;
+  bodyText: string;
+  mutedText: string;
+  placeholder: string;
+  onPrimary: string;
+  onContrast: string;
+
+  overlay: string;
+  overlaySoft: string;
+
+  badges: Record<BadgeCategory, { background: string; text: string }>;
+}
+
+export interface ThemeShadows {
+  header: string;
+  card: string;
+  cardHover: string;
+  search: string;
+}
+
+export interface ThemeBase {
+  fonts: {
+    heading: string;
+    body: string;
+  };
+
+  fontWeights: {
+    regular: number;
+    medium: number;
+    semibold: number;
+    bold: number;
+  };
+
+  mobile: ThemeBreakpointTokens;
+  tablet: ThemeBreakpointTokens;
+  desktop: ThemeBreakpointTokens;
+
+  radii: {
+    inset: string;
+    badge: string;
+    button: string;
+    input: string;
+    card: string;
+    panel: string;
+    pill: string;
+    round: string;
+  };
+
+  borders: {
+    width: string;
+    themeToggle: string;
+    loader: string;
+  };
+
+  transitions: {
+    fast: string;
+    normal: string;
+  };
+
+  zIndices: {
+    dropdown: number;
+    header: number;
+    modal: number;
+  };
+
+  breakpoints: {
+    tablet: string;
+    desktop: string;
+  };
+
+  media: {
+    tablet: string;
+    desktop: string;
+    hover: string;
+  };
+}
+
+export interface Theme extends ThemeBase {
+  mode: ThemeMode;
+  colors: ThemeColors;
+  shadows: ThemeShadows;
+}

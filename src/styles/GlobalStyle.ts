@@ -25,36 +25,46 @@ export const GlobalStyle = createGlobalStyle`
   body {
     background-color: ${({ theme }) => theme.colors.background};
     font-family: ${({ theme }) => theme.fonts.body};
-    font-size: ${({ theme }) => theme.fontSizes.xs};
-    color: ${({ theme }) => theme.colors.text.body};
+    font-size: ${({ theme }) => theme.mobile.fontSizes.body};
+    color: ${({ theme }) => theme.colors.bodyText};
+  }
+
+  #root {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
 
   main:focus {
     outline: none;
   }
 
+  section {
+    width: 100%;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: ${({ theme }) => theme.fonts.heading};
-    color: ${({ theme }) => theme.colors.text.heading};
+    color: ${({ theme }) => theme.colors.headingText};
     text-wrap: balance;
   }
 
   h1 {
-    font-size: ${({ theme }) => theme.fontSizes.xxl};
+    font-size: ${({ theme }) => theme.mobile.fontSizes.h1};
     font-weight: ${({ theme }) => theme.fontWeights.bold};
-    line-height: ${({ theme }) => theme.lineHeights.tight};
+    line-height: ${({ theme }) => theme.mobile.lineHeights.h1};
   }
 
   h2 {
-    font-size: ${({ theme }) => theme.fontSizes.m};
+    font-size: ${({ theme }) => theme.mobile.fontSizes.h2};
     font-weight: ${({ theme }) => theme.fontWeights.bold};
-    line-height: ${({ theme }) => theme.lineHeights.snug};
+    line-height: ${({ theme }) => theme.mobile.lineHeights.h2};
   }
 
   h3 {
-    font-size: ${({ theme }) => theme.fontSizes.s};
+    font-size: ${({ theme }) => theme.mobile.fontSizes.h3};
     font-weight: ${({ theme }) => theme.fontWeights.semibold};
-    line-height: ${({ theme }) => theme.lineHeights.snug};
+    line-height: ${({ theme }) => theme.mobile.lineHeights.h3};
   }
 
   p {
