@@ -1,23 +1,24 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../router/routes";
+import { tokens } from "../../styles/theme";
 
 const NotFoundSectionStyled = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${({ theme }) => theme.mobile.spacing.m};
-  padding: ${({ theme }) => theme.mobile.spacing.xl} ${({ theme }) => theme.mobile.spacing.m};
+  gap: ${tokens.mobile.spacing.m};
+  padding: ${tokens.mobile.spacing.xl} ${tokens.mobile.spacing.m};
   text-align: center;
 `;
 
 const HomeLink = styled(Link)`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.onPrimary};
-  padding: ${({ theme }) => theme.mobile.spacing.xs} ${({ theme }) => theme.mobile.spacing.l};
-  border-radius: ${({ theme }) => theme.radii.button};
+  padding: ${tokens.mobile.spacing.xs} ${tokens.mobile.spacing.l};
+  border-radius: ${tokens.radii.button};
   text-decoration: none;
-  transition: background-color ${({ theme }) => theme.transitions.fast};
+  transition: background-color ${tokens.transitions.fast};
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primaryHover};

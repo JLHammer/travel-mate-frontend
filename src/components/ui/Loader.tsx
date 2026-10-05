@@ -1,5 +1,6 @@
 import { ClipLoader } from "react-spinners";
 import styled, { useTheme } from "styled-components";
+import { tokens } from "../../styles/theme";
 
 export const Loader = () => {
   const theme = useTheme();
@@ -8,9 +9,8 @@ export const Loader = () => {
     <LoaderStyled>
       <ClipLoader
         color={theme.colors.primary}
-        size={theme.mobile.sizes.loader}
-        cssOverride={{ borderWidth: theme.borders.loader }}
-        aria-label="Loading"
+        size={tokens.mobile.sizes.loader}
+        cssOverride={{ borderWidth: tokens.borders.loader }}
       />
     </LoaderStyled>
   );
@@ -20,5 +20,5 @@ const LoaderStyled = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: ${({ theme }) => theme.mobile.spacing.m};
+  padding: ${tokens.mobile.spacing.m};
 `;
