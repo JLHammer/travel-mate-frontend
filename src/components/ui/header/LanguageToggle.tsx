@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, ChevronDown, Globe } from "lucide-react";
+import { tokens } from "../../../styles/theme";
 
 type Language = "da" | "en";
 
@@ -18,36 +19,55 @@ const LanguageWrapper = styled.div`
 const LanguagePill = styled.button<{ $open: boolean }>`
   display: inline-flex;
   align-items: center;
-  gap: ${({ theme }) => theme.mobile.spacing.xs};
   height: 100%;
-  padding: 0 ${({ theme }) => theme.mobile.spacing.s};
-  border: ${({ theme }) => theme.borders.themeToggle} solid;
-  border-color: ${({ theme }) => theme.colors.contrast};
-  border-radius: ${({ theme }) => theme.radii.button};
+  border-radius: ${tokens.radii.button};
   background-color: ${({ theme, $open }) => theme.colors[$open ? "headingText" : "surfaceMuted"]};
   color: ${({ theme, $open }) => theme.colors[$open ? "surfaceMuted" : "headingText"]};
-  font-size: ${({ theme }) => theme.mobile.fontSizes.toggle};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  font-weight: ${tokens.fontWeights.semibold};
   text-transform: uppercase;
   transition:
-    background-color ${({ theme }) => theme.transitions.fast},
-    color ${({ theme }) => theme.transitions.fast};
+    background-color ${tokens.transitions.fast},
+    color ${tokens.transitions.fast};
+
+  gap: ${tokens.mobile.spacing.xs};
+  padding: 0 ${tokens.mobile.spacing.s};
+  font-size: ${tokens.mobile.fontSizes.toggle};
+
+  ${tokens.media.hover} {
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.headingText};
+      color: ${({ theme }) => theme.colors.surfaceMuted};
+    }
+  }
+`;
+
+const LanguageLabel = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: ${tokens.mobile.spacing.xxs};
+
+  & > svg {
+    width: ${tokens.mobile.sizes.headerIcon};
+    height: ${tokens.mobile.sizes.headerIcon};
+  }
 `;
 
 const Chevron = styled(ChevronDown)<{ $open: boolean }>`
-  transition: transform ${({ theme }) => theme.transitions.fast};
+  width: ${tokens.mobile.sizes.headerChevron};
+  height: ${tokens.mobile.sizes.headerChevron};
+  transition: transform ${tokens.transitions.fast};
   transform: rotate(${({ $open }) => ($open ? 180 : 0)}deg);
 `;
 
 const LanguageList = styled(motion.ul)`
   position: absolute;
-  top: calc(100% + ${({ theme }) => theme.mobile.spacing.xxs});
+  top: calc(100% + ${tokens.mobile.spacing.xxs});
   left: 0;
-  z-index: ${({ theme }) => theme.zIndices.dropdown};
+  z-index: ${tokens.zIndices.dropdown};
   min-width: 100%;
-  padding: ${({ theme }) => theme.mobile.spacing.xxs};
-  border: ${({ theme }) => theme.borders.width} solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.card};
+  padding: ${tokens.mobile.spacing.xxs};
+  border: ${tokens.borders.width} solid ${({ theme }) => theme.colors.border};
+  border-radius: ${tokens.radii.card};
   background-color: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadows.card};
 `;
@@ -55,15 +75,15 @@ const LanguageList = styled(motion.ul)`
 const LanguageOption = styled.button<{ $selected: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.mobile.spacing.xs};
+  gap: ${tokens.mobile.spacing.xs};
   width: 100%;
-  padding: ${({ theme }) => theme.mobile.spacing.xs} ${({ theme }) => theme.mobile.spacing.s};
-  border-radius: ${({ theme }) => theme.radii.inset};
+  padding: ${tokens.mobile.spacing.xs} ${tokens.mobile.spacing.s};
+  border-radius: ${tokens.radii.inset};
   color: ${({ theme, $selected }) => theme.colors[$selected ? "primary" : "headingText"]};
-  font-size: ${({ theme }) => theme.mobile.fontSizes.toggle};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  font-size: ${tokens.mobile.fontSizes.toggle};
+  font-weight: ${tokens.fontWeights.medium};
   white-space: nowrap;
-  transition: background-color ${({ theme }) => theme.transitions.fast};
+  transition: background-color ${tokens.transitions.fast};
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primarySoft};
@@ -78,7 +98,7 @@ const OptionCode = styled.span`
 const OptionLabel = styled.span`
   flex: 1;
   color: ${({ theme }) => theme.colors.mutedText};
-  font-weight: ${({ theme }) => theme.fontWeights.regular};
+  font-weight: ${tokens.fontWeights.regular};
 `;
 
 export const LanguageToggle = () => {
@@ -103,9 +123,11 @@ export const LanguageToggle = () => {
   return (
     <LanguageWrapper ref={wrapperRef}>
       <LanguagePill type="button" $open={open} onClick={() => setOpen((prev) => !prev)}>
-        <Globe size={24} />
-        {language}
-        <Chevron size={24} $open={open} />
+        <LanguageLabel>
+          <Globe />
+          {language}
+        </LanguageLabel>
+        <Chevron $open={open} />
       </LanguagePill>
 
       <AnimatePresence>

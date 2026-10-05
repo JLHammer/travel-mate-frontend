@@ -2,24 +2,41 @@ import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { MenuIcon } from "../icons/MenuIcon";
 import type { AnimatedIconHandle } from "../../../types";
+import { tokens } from "../../../styles/theme";
 
 type BurgerMenuProps = {
   open: boolean;
   onToggle: () => void;
-  className?: string;
 };
 
 const BurgerButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ theme }) => theme.mobile.sizes.navItemHeight};
-  height: ${({ theme }) => theme.mobile.sizes.navItemHeight};
-  border-radius: ${({ theme }) => theme.radii.button};
-  color: ${({ theme }) => theme.colors.headingText};
+  border-radius: ${tokens.radii.button};
+  background-color: ${({ theme }) => theme.colors.primarySoft};
+  color: ${({ theme }) => theme.colors.primary};
+  transition:
+    background-color ${tokens.transitions.fast},
+    color ${tokens.transitions.fast};
+
+  width: ${tokens.mobile.sizes.pillHeight};
+  height: ${tokens.mobile.sizes.pillHeight};
+
+  svg {
+    width: ${tokens.mobile.sizes.headerIcon};
+    height: ${tokens.mobile.sizes.headerIcon};
+  }
+
+  ${tokens.media.hover} {
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.primary};
+      color: ${({ theme }) => theme.colors.onPrimary};
+    }
+  }
 `;
 
-export const BurgerMenu = ({ open, onToggle, className }: BurgerMenuProps) => {
+export const BurgerMenu = ({ open, onToggle }: BurgerMenuProps) => {
   const iconRef = useRef<AnimatedIconHandle>(null);
 
   useEffect(() => {
@@ -28,8 +45,8 @@ export const BurgerMenu = ({ open, onToggle, className }: BurgerMenuProps) => {
   }, [open]);
 
   return (
-    <BurgerButton type="button" className={className} onClick={onToggle}>
-      <MenuIcon ref={iconRef} size={40} />
+    <BurgerButton type="button" onClick={onToggle}>
+      <MenuIcon ref={iconRef} />
     </BurgerButton>
   );
 };

@@ -72,7 +72,7 @@ const AirplaneIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
 AirplaneIcon.displayName = "AirplaneIcon";

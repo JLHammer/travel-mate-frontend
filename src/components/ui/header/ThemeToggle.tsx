@@ -1,89 +1,64 @@
 import styled from "styled-components";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Moon, Sun } from "lucide-react";
 import { useThemeMode } from "../../../hooks/useThemeMode";
+import { tokens } from "../../../styles/theme";
 
-const ThemePill = styled.fieldset`
-  display: inline-flex;
+const ThemeButton = styled.button`
+  display: flex;
   align-items: center;
+  justify-content: center;
   height: 100%;
-  border-radius: ${({ theme }) => theme.radii.pill};
-  border: ${({ theme }) => theme.borders.themeToggle} solid;
-  border-color: ${({ theme }) => theme.colors.contrast};
+  aspect-ratio: 1;
+  border-radius: ${tokens.radii.button};
   background-color: ${({ theme }) => theme.colors.surfaceMuted};
-`;
+  color: ${({ theme }) => theme.colors.headingText};
+  transition:
+    background-color ${tokens.transitions.fast},
+    color ${tokens.transitions.fast};
 
-const ThemeThumb = styled(motion.span)`
-  position: absolute;
-  inset: 0;
-  border-radius: ${({ theme }) => theme.radii.pill};
-  background-color: ${({ theme }) => theme.colors.contrast};
-`;
-
-const ThemeOption = styled.label<{ $active: boolean }>`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.mobile.spacing.xxs};
-  height: 100%;
-  padding: 0 ${({ theme }) => theme.mobile.spacing.s};
-  color: ${({ theme, $active }) => theme.colors[$active ? "onContrast" : "bodyText"]};
-  font-size: ${({ theme }) => theme.mobile.fontSizes.toggle};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  cursor: pointer;
-  user-select: none;
-  transition: color ${({ theme }) => theme.transitions.fast};
-
-  > :not(${ThemeThumb}) {
-    position: relative;
+  svg {
+    width: ${tokens.mobile.sizes.headerIcon};
+    height: ${tokens.mobile.sizes.headerIcon};
   }
 
-  > svg {
-    color: ${({ theme, $active }) => ($active ? theme.colors.accent : "inherit")};
-    fill: ${({ theme, $active }) => ($active ? theme.colors.accent : "none")};
-    transition:
-      color ${({ theme }) => theme.transitions.fast},
-      fill ${({ theme }) => theme.transitions.fast};
+  svg {
+    transition: fill ${tokens.transitions.fast};
+  }
+
+  ${tokens.media.hover} {
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.contrast};
+      color: ${({ theme }) => theme.colors.accent};
+    }
+
+    &:hover svg {
+      fill: ${({ theme }) => theme.colors.accent};
+    }
   }
 `;
 
-const ThemeRadio = styled.input`
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
+const ThemeIcon = styled(motion.span)`
+  display: flex;
 `;
 
 export const ThemeToggle = () => {
   const { mode, setMode } = useThemeMode();
+  const next = mode === "light" ? "dark" : "light";
 
   return (
-    <ThemePill>
-      <ThemeOption $active={mode === "light"}>
-        <ThemeRadio
-          type="radio"
-          name="theme"
-          value="light"
-          checked={mode === "light"}
-          onChange={() => setMode("light")}
-        />
-        {mode === "light" && <ThemeThumb layoutId="theme-thumb" />}
-        <Sun size={24} />
-        <span>Light</span>
-      </ThemeOption>
-
-      <ThemeOption $active={mode === "dark"}>
-        <ThemeRadio
-          type="radio"
-          name="theme"
-          value="dark"
-          checked={mode === "dark"}
-          onChange={() => setMode("dark")}
-        />
-        {mode === "dark" && <ThemeThumb layoutId="theme-thumb" />}
-        <Moon size={24} />
-        <span>Dark</span>
-      </ThemeOption>
-    </ThemePill>
+    <ThemeButton type="button" title={`Switch to ${next} mode`} onClick={() => setMode(next)}>
+      <AnimatePresence mode="wait" initial={false}>
+        <ThemeIcon
+          key={next}
+          initial={{ rotate: -90, scale: 0, opacity: 0 }}
+          animate={{ rotate: 0, scale: 1, opacity: 1 }}
+          exit={{ rotate: 90, scale: 0, opacity: 0 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+        >
+          {next === "dark" ? <Moon /> : <Sun />}
+        </ThemeIcon>
+      </AnimatePresence>
+    </ThemeButton>
   );
 };
