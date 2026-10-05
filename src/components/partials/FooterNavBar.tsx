@@ -1,31 +1,34 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { FOOTER_LINKS } from "../../router/routes";
+import { tokens } from "../../styles/theme";
 
 const FooterNavBarStyled = styled.nav`
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: ${({ theme }) => theme.mobile.spacing.xs};
-  padding: ${({ theme }) => theme.mobile.spacing.xs} 0;
+  justify-content: center;
 `;
 
 const FooterNavUl = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: ${({ theme }) => theme.mobile.spacing.l};
+  gap: ${tokens.mobile.spacing.l};
+  font-size: ${tokens.mobile.fontSizes.footerText};
 `;
 
 const FooterNavLink = styled(NavLink)`
   color: ${({ theme }) => theme.colors.mutedText};
   text-decoration: none;
-  transition: color ${({ theme }) => theme.transitions.fast};
+  transition: color ${tokens.transitions.fast};
 
-  &.active,
-  &:hover {
+  &.active {
     color: ${({ theme }) => theme.colors.primary};
+  }
+
+  ${tokens.media.hover} {
+    &:hover {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 

@@ -1,24 +1,28 @@
 import styled from "styled-components";
-import { socials } from "../../data/socials";
+import { socials } from "../../../data/socials";
+import { tokens } from "../../../styles/theme";
 
 const SocialsListStyled = styled.ul`
   display: flex;
-  gap: ${({ theme }) => theme.mobile.spacing.m};
+  justify-content: center;
+  gap: ${tokens.mobile.spacing.l};
 `;
 
 const SocialLink = styled.a`
   display: flex;
   color: ${({ theme }) => theme.colors.headingText};
-  transition: color ${({ theme }) => theme.transitions.fast};
+  transition: color ${tokens.transitions.fast};
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+  ${tokens.media.hover} {
+    &:hover {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 
 const SocialIcon = styled.svg`
-  width: ${({ theme }) => theme.mobile.sizes.socialIcon};
-  height: ${({ theme }) => theme.mobile.sizes.socialIcon};
+  width: ${tokens.mobile.sizes.socialIcon};
+  height: ${tokens.mobile.sizes.socialIcon};
 `;
 
 export const SocialsList = () => {
@@ -26,7 +30,7 @@ export const SocialsList = () => {
     <SocialsListStyled>
       {socials.map(({ name, href, Icon }) => (
         <li key={name}>
-          <SocialLink href={href} target="_blank" rel="noopener noreferrer" aria-label={name}>
+          <SocialLink href={href} target="_blank" rel="noopener noreferrer">
             <SocialIcon as={Icon} />
           </SocialLink>
         </li>
