@@ -1,58 +1,120 @@
+import { useRef, useState, type FormEvent } from "react";
 import styled from "styled-components";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
+import { tokens } from "../../styles/theme";
 
 const SearchBarStyled = styled.form`
   display: flex;
-  gap: ${({ theme }) => theme.mobile.spacing.xs};
+  align-items: center;
+  gap: ${tokens.mobile.spacing.xs};
   width: 100%;
-  max-width: ${({ theme }) => theme.mobile.sizes.searchBarWidth};
-  padding: ${({ theme }) => theme.mobile.spacing.xxs};
-  border: ${({ theme }) => theme.borders.width} solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radii.input};
-  background-color: ${({ theme }) => theme.colors.background};
+  max-width: ${tokens.mobile.sizes.searchBarWidth};
+  height: ${tokens.mobile.sizes.searchBarHeight};
+  padding: ${tokens.mobile.spacing.xxs};
+  padding-left: ${tokens.mobile.spacing.m};
+  border: ${tokens.borders.width} solid ${({ theme }) => theme.colors.border};
+  border-radius: ${tokens.radii.input};
+  background-color: ${({ theme }) => theme.colors.surface};
+  box-shadow: ${({ theme }) => theme.shadows.search};
 `;
 
-const SearchBarIconContainer = styled.div`
-  display: flex;
-  align-self: center;
+const SearchBarIcon = styled(Search)`
   flex-shrink: 0;
-  padding: ${({ theme }) => theme.mobile.spacing.xs};
+  width: ${tokens.mobile.sizes.headerIcon};
+  height: ${tokens.mobile.sizes.headerIcon};
+  padding: ${tokens.mobile.spacing.xxs};
+  color: ${({ theme }) => theme.colors.headingText};
 `;
 
 const SearchBarInput = styled.input`
   flex: 1;
+  min-width: 0;
+  height: 100%;
   border: none;
   outline: none;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: transparent;
   color: ${({ theme }) => theme.colors.bodyText};
-  font-size: ${({ theme }) => theme.mobile.fontSizes.formText};
-  width: 100%;
+  font-size: ${tokens.mobile.fontSizes.formText};
+  text-overflow: ellipsis;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.placeholder};
+    text-overflow: ellipsis;
+  }
 `;
 
 const SearchBarButton = styled.button`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.surface};
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: ${tokens.mobile.sizes.buttonHeight};
+  height: ${tokens.mobile.sizes.buttonHeight};
   border: none;
-  outline: none;
-  padding: ${({ theme }) => theme.mobile.spacing.xs} ${({ theme }) => theme.mobile.spacing.l};
-  border-radius: ${({ theme }) => theme.radii.inset};
-  font-size: ${({ theme }) => theme.mobile.fontSizes.formText};
+  border-radius: ${tokens.radii.inset};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.onPrimary};
+  font-size: ${tokens.mobile.fontSizes.formText};
+  font-weight: ${tokens.fontWeights.semibold};
   cursor: pointer;
-  transition: background-color 0.1s ease-in;
+  transition: background-color ${tokens.transitions.fast};
 
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryHover};
+  ${tokens.media.hover} {
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.primaryHover};
+    }
+  }
+
+  ${tokens.media.tablet} {
+    width: auto;
+    padding: 0 ${tokens.tablet.spacing.xl};
+  }
+`;
+
+const SearchBarButtonIcon = styled(ArrowRight)`
+  width: ${tokens.mobile.sizes.headerIcon};
+  height: ${tokens.mobile.sizes.headerIcon};
+
+  ${tokens.media.tablet} {
+    display: none;
+  }
+`;
+
+const SearchBarButtonLabel = styled.span`
+  display: none;
+
+  ${tokens.media.tablet} {
+    display: inline;
   }
 `;
 
 export const SearchBar = () => {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    if (query.trim() === "") {
+      e.preventDefault();
+      inputRef.current?.focus();
+    }
+  };
+
   return (
-    <SearchBarStyled>
-      <SearchBarIconContainer>
-        <Search size={20} />
-      </SearchBarIconContainer>
-      <SearchBarInput type="text" placeholder="Search..." name="search-input" />
-      <SearchBarButton type="submit">Search</SearchBarButton>
+    <SearchBarStyled onSubmit={handleSubmit}>
+      <SearchBarIcon />
+      <SearchBarInput
+        ref={inputRef}
+        type="search"
+        enterKeyHint="search"
+        placeholder="Search destinations..."
+        name="search-input"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <SearchBarButton type="submit">
+        <SearchBarButtonIcon />
+        <SearchBarButtonLabel>Search</SearchBarButtonLabel>
+      </SearchBarButton>
     </SearchBarStyled>
   );
 };
