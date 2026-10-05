@@ -1,12 +1,11 @@
 import { PageTitle } from "../components/ui/PageTitle";
+import { AboutSection } from "../components/sections/AboutSection";
 
 export const AboutPage = () => {
   return (
     <>
       <PageTitle title="About" />
-      <section>
-        <h1>About</h1>
-      </section>
+      <AboutSection />
     </>
   );
 };
