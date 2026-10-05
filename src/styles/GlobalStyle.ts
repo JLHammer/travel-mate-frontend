@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import { preflight } from "./preflight";
+import { tokens } from "./theme";
 
 export const GlobalStyle = createGlobalStyle`
   ${preflight}
@@ -24,8 +25,8 @@ export const GlobalStyle = createGlobalStyle`
 
   body {
     background-color: ${({ theme }) => theme.colors.background};
-    font-family: ${({ theme }) => theme.fonts.body};
-    font-size: ${({ theme }) => theme.mobile.fontSizes.body};
+    font-family: ${tokens.fonts.body};
+    font-size: ${tokens.mobile.fontSizes.body};
     color: ${({ theme }) => theme.colors.bodyText};
   }
 
@@ -44,27 +45,27 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: ${({ theme }) => theme.fonts.heading};
+    font-family: ${tokens.fonts.heading};
     color: ${({ theme }) => theme.colors.headingText};
     text-wrap: balance;
   }
 
   h1 {
-    font-size: ${({ theme }) => theme.mobile.fontSizes.h1};
-    font-weight: ${({ theme }) => theme.fontWeights.bold};
-    line-height: ${({ theme }) => theme.mobile.lineHeights.h1};
+    font-size: ${tokens.mobile.fontSizes.h1};
+    font-weight: ${tokens.fontWeights.bold};
+    line-height: ${tokens.mobile.lineHeights.h1};
   }
 
   h2 {
-    font-size: ${({ theme }) => theme.mobile.fontSizes.h2};
-    font-weight: ${({ theme }) => theme.fontWeights.bold};
-    line-height: ${({ theme }) => theme.mobile.lineHeights.h2};
+    font-size: ${tokens.mobile.fontSizes.h2};
+    font-weight: ${tokens.fontWeights.bold};
+    line-height: ${tokens.mobile.lineHeights.h2};
   }
 
   h3 {
-    font-size: ${({ theme }) => theme.mobile.fontSizes.h3};
-    font-weight: ${({ theme }) => theme.fontWeights.semibold};
-    line-height: ${({ theme }) => theme.mobile.lineHeights.h3};
+    font-size: ${tokens.mobile.fontSizes.h3};
+    font-weight: ${tokens.fontWeights.semibold};
+    line-height: ${tokens.mobile.lineHeights.h3};
   }
 
   p {

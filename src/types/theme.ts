@@ -1,7 +1,6 @@
 export type ThemeMode = "light" | "dark";
 
-export type BadgeCategory =
-  "historical" | "museum" | "park" | "attraction" | "landmark";
+export type BadgeCategory = "historical" | "museum" | "park" | "attraction" | "landmark";
 
 export interface ThemeFontSizes {
   body: string;
@@ -9,9 +8,14 @@ export interface ThemeFontSizes {
   h2: string;
   h3: string;
   logo: string;
+  footerLogo: string;
+  footerText: string;
   heroText: string;
   toggle: string;
+  navLink: string;
   formText: string;
+  small: string;
+  detailsText: string;
 }
 
 export interface ThemeLineHeights {
@@ -46,6 +50,9 @@ export interface ThemeSizes {
   navItemHeight: string;
   favoriteButtonSize: string;
   pillHeight: string;
+  logoIcon: string;
+  headerIcon: string;
+  headerChevron: string;
   cardImageHeight: string;
   cardImageHeightLarge: string;
   detailsImageHeight: string;
@@ -54,6 +61,17 @@ export interface ThemeSizes {
   flagWidthLarge: string;
   socialIcon: string;
   loader: string;
+  cardRowHeight: string;
+  carouselControlWidth: string;
+  carouselChevron: string;
+  carouselDot: string;
+  carouselDotActive: string;
+  cardMetaIcon: string;
+  favoriteIcon: string;
+  cardChevron: string;
+  linkIcon: string;
+  infoIconBox: string;
+  infoIcon: string;
 }
 
 export interface ThemeBreakpointTokens {
@@ -87,6 +105,9 @@ export interface ThemeColors {
 
   overlay: string;
   overlaySoft: string;
+  overlaySoftBorder: string;
+  scrim: string;
+  onScrim: string;
 
   badges: Record<BadgeCategory, { background: string; text: string }>;
 }
@@ -123,7 +144,6 @@ export interface ThemeBase {
     card: string;
     panel: string;
     pill: string;
-    round: string;
   };
 
   borders: {
@@ -139,6 +159,8 @@ export interface ThemeBase {
 
   zIndices: {
     dropdown: number;
+    carouselControl: number;
+    cardAction: number;
     header: number;
     modal: number;
   };

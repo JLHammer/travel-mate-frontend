@@ -18,10 +18,15 @@ const mobile = {
     h1: "2.625rem",
     h2: "1.25rem",
     h3: "1rem",
-    logo: "2.5rem",
+    logo: "1.625rem",
+    footerLogo: "1.375rem",
+    footerText: "0.8125rem",
     heroText: "1rem",
-    toggle: "1rem",
+    toggle: "0.875rem",
+    navLink: "1rem",
     formText: "1rem",
+    small: "0.75rem",
+    detailsText: "1rem",
   },
 
   lineHeights: {
@@ -48,22 +53,36 @@ const mobile = {
 
   sizes: {
     headerHeight: "3.75rem",
-    heroHeight: "16.875rem",
+    heroHeight: "23.75rem",
     heroTextWidth: "min(100%, 23.75rem)",
     searchBarWidth: "min(100%, 25rem)",
     searchBarHeight: "3rem",
     buttonHeight: "2.5rem",
     navItemHeight: "2.5rem",
-    favoriteButtonSize: "2rem",
-    pillHeight: "2.25rem",
+    favoriteButtonSize: "2.25rem",
+    pillHeight: "2.75rem",
+    logoIcon: "2.125rem",
+    headerIcon: "1.5rem",
+    headerChevron: "1rem",
     cardImageHeight: "6.25rem",
     cardImageHeightLarge: "10rem",
-    detailsImageHeight: "21.25rem",
-    mapHeight: "21.875rem",
+    detailsImageHeight: "14.5rem",
+    mapHeight: "17.5rem",
     flagWidth: "1.75rem",
     flagWidthLarge: "3.5rem",
-    socialIcon: "1.25rem",
+    socialIcon: "1.375rem",
     loader: "3rem",
+    cardRowHeight: "11.75rem",
+    carouselControlWidth: "2.75rem",
+    carouselChevron: "1.25rem",
+    carouselDot: "0.375rem",
+    carouselDotActive: "1.125rem",
+    cardMetaIcon: "0.75rem",
+    favoriteIcon: "1.25rem",
+    cardChevron: "1rem",
+    linkIcon: "0.875rem",
+    infoIconBox: "2.5rem",
+    infoIcon: "1.25rem",
   },
 } satisfies ThemeBreakpointTokens;
 
@@ -74,6 +93,9 @@ const tablet = {
   },
   sizes: {
     ...mobile.sizes,
+    heroHeight: "16.875rem",
+    detailsImageHeight: "21.25rem",
+    mapHeight: "18.5rem",
   },
 } satisfies ThemeBreakpointTokens;
 
@@ -84,6 +106,7 @@ const desktop = {
   },
   sizes: {
     ...tablet.sizes,
+    mapHeight: "21.875rem",
   },
 } satisfies ThemeBreakpointTokens;
 
@@ -108,8 +131,11 @@ const lightColors = {
   onPrimary: "#ffffff",
   onContrast: "#ffffff",
 
-  overlay: "rgba(255, 255, 255, 0.85)",
-  overlaySoft: "rgba(255, 255, 255, 0.6)",
+  overlay: "rgba(15, 23, 42, 0.35)",
+  overlaySoft: "rgba(255, 255, 255, 0.75)",
+  overlaySoftBorder: "rgba(255, 255, 255, 0.6)",
+  scrim: "rgba(8, 18, 32, 0.7)",
+  onScrim: "#ffffff",
 
   badges: {
     historical: { background: "#fdeed2", text: "#b45309" },
@@ -141,8 +167,11 @@ const darkColors = {
   onPrimary: "#ffffff",
   onContrast: "#0f2440",
 
-  overlay: "rgba(15, 23, 42, 0.75)",
-  overlaySoft: "rgba(15, 23, 42, 0.5)",
+  overlay: "rgba(0, 0, 0, 0.4)",
+  overlaySoft: "rgba(15, 23, 42, 0.72)",
+  overlaySoftBorder: "rgba(255, 255, 255, 0.12)",
+  scrim: "rgba(0, 0, 0, 0.75)",
+  onScrim: "#ffffff",
 
   badges: {
     historical: { background: "#3d2a0f", text: "#fbbf24" },
@@ -167,7 +196,7 @@ const darkShadows = {
   search: "0 8px 24px rgba(0, 0, 0, 0.55)",
 } satisfies ThemeShadows;
 
-const base = {
+export const tokens = {
   fonts: {
     heading: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
     body: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
@@ -192,7 +221,6 @@ const base = {
     card: "10px",
     panel: "14px",
     pill: "999px",
-    round: "50%",
   },
 
   borders: {
@@ -208,6 +236,8 @@ const base = {
 
   zIndices: {
     dropdown: 1,
+    carouselControl: 1,
+    cardAction: 2,
     header: 5,
     modal: 10,
   },
@@ -222,14 +252,14 @@ const base = {
 } satisfies ThemeBase;
 
 export const lightTheme = {
-  ...base,
+  ...tokens,
   mode: "light" as ThemeMode,
   colors: lightColors,
   shadows: lightShadows,
 } satisfies Theme;
 
 export const darkTheme = {
-  ...base,
+  ...tokens,
   mode: "dark" as ThemeMode,
   colors: darkColors,
   shadows: darkShadows,

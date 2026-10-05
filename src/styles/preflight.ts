@@ -192,8 +192,7 @@ export const preflight = css`
     opacity: 1;
   }
 
-  button,
-  [role="button"] {
+  button {
     cursor: pointer;
   }
 
