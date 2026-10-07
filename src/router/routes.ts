@@ -12,6 +12,8 @@ export const ROUTES = {
   contact: "/contact",
   privacy: "/privacy",
   terms: "/terms",
+  login: "/login",
+  favorites: "/favorites",
   search: "/search",
   notFound: "*",
 } as const;

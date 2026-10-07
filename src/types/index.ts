@@ -1,3 +1,5 @@
+export type { AuthResponse, User } from "./auth";
+
 export type { AnimatedIconHandle, AnimatedIconProps } from "./icons";
 
 export type {
