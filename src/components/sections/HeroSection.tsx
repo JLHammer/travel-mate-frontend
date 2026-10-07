@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import heroImage from "../../assets/hero.webp";
 import { SearchBar } from "../ui/SearchBar";
+import { HeroTagline } from "../ui/HeroTagline";
+import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
 const HeroSectionStyled = styled.section`
@@ -45,6 +47,7 @@ const HeroContentWrapper = styled.div`
 const HeroTextBox = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: ${tokens.mobile.sizes.searchBarWidth};
   gap: ${tokens.mobile.spacing.s};
   padding: ${tokens.mobile.spacing.l};
   border: 1px solid ${({ theme }) => theme.colors.overlaySoftBorder};
@@ -53,8 +56,15 @@ const HeroTextBox = styled.div`
   backdrop-filter: blur(8px);
 
   ${tokens.media.tablet} {
-    max-width: ${tokens.tablet.sizes.heroTextWidth};
+    max-width: ${tokens.tablet.sizes.searchBarWidth};
     gap: ${tokens.tablet.spacing.xs};
+  }
+
+  ${tokens.media.desktop} {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    backdrop-filter: none;
   }
 `;
 
@@ -82,17 +92,20 @@ const HeroSentence = styled.span`
 `;
 
 export const HeroSection = () => {
+  const { t } = useTranslation();
+
   return (
     <HeroSectionStyled>
       <HeroImage src={heroImage} alt="" />
       <HeroContentWrapper>
         <HeroTextBox>
-          <HeroTitle>Explore the World with TravelMate</HeroTitle>
+          <HeroTitle>{t.hero.title}</HeroTitle>
           <HeroText>
-            <HeroSentence>Discover amazing attractions, cities and countries.</HeroSentence>
-            <HeroSentence>Your next adventure is just a click away.</HeroSentence>
+            <HeroSentence>{t.hero.line1}</HeroSentence>
+            <HeroSentence>{t.hero.line2}</HeroSentence>
           </HeroText>
         </HeroTextBox>
+        <HeroTagline />
         <SearchBar />
       </HeroContentWrapper>
     </HeroSectionStyled>
