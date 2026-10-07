@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { ROUTES } from "./routes";
+import { ProtectedRoute } from "./ProtectedRoute";
 import { MainLayout } from "../components/layout/MainLayout";
 import { HomePage } from "../pages/HomePage";
 import { CountriesPage } from "../pages/CountriesPage";
@@ -13,6 +14,7 @@ import { ContactPage } from "../pages/ContactPage";
 import { PrivacyPage } from "../pages/PrivacyPage";
 import { TermsPage } from "../pages/TermsPage";
 import { LoginPage } from "../pages/LoginPage";
+import { FavoritesPage } from "../pages/FavoritesPage";
 import { SearchPage } from "../pages/SearchPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
@@ -29,6 +31,7 @@ const {
   privacy,
   terms,
   login,
+  favorites,
   search,
   notFound,
 } = ROUTES;
@@ -50,6 +53,9 @@ export const AppRouter = () => {
         <Route path={terms} element={<TermsPage />} />
         <Route path={search} element={<SearchPage />} />
         <Route path={login} element={<LoginPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path={favorites} element={<FavoritesPage />} />
+        </Route>
         <Route path={notFound} element={<NotFoundPage />} />
       </Route>
     </Routes>
