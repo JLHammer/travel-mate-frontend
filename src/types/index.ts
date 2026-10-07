@@ -1,12 +1,9 @@
-export type { Image } from "./common";
-
 export type { AnimatedIconHandle, AnimatedIconProps } from "./icons";
 
 export type {
   Attraction,
   AttractionCardData,
   AttractionDetail,
-  AttractionListItem,
   AttractionSummary,
   City,
   CityCardData,
@@ -15,7 +12,10 @@ export type {
   Country,
   CountryDetail,
   CountrySummary,
+  Featured,
   Language,
+  SanityImage,
+  SearchData,
 } from "./sanity";
 
 export type {

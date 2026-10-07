@@ -1,68 +1,35 @@
+import type {
+  ATTRACTION_DETAIL_QUERY_RESULT,
+  ATTRACTIONS_QUERY_RESULT,
+  CITIES_QUERY_RESULT,
+  CITY_DETAIL_QUERY_RESULT,
+  COUNTRIES_QUERY_RESULT,
+  COUNTRY_DETAIL_QUERY_RESULT,
+  FEATURED_QUERY_RESULT,
+  SEARCH_QUERY_RESULT,
+} from "./sanity.types";
 import type { BadgeCategory } from "./theme";
 
 export type Language = "da" | "en" | "es";
 
-interface CardFields {
-  tagline: string | null;
-  description: string | null;
-  imageUrl: string | null;
-  featured: boolean | null;
-}
+export type Country = COUNTRIES_QUERY_RESULT[number];
+export type City = CITIES_QUERY_RESULT[number];
+export type Attraction = ATTRACTIONS_QUERY_RESULT[number];
+export type Featured = FEATURED_QUERY_RESULT;
+export type SearchData = SEARCH_QUERY_RESULT;
 
-interface LocationFields {
-  latitude: number | null;
-  longitude: number | null;
-  website: string | null;
-}
+export type CountryDetail = NonNullable<COUNTRY_DETAIL_QUERY_RESULT>;
+export type CityDetail = NonNullable<CITY_DETAIL_QUERY_RESULT>;
+export type AttractionDetail = NonNullable<ATTRACTION_DETAIL_QUERY_RESULT>;
 
-export interface CountrySummary {
-  _id: string;
-  name: string | null;
-  code: string | null;
-  slug: string | null;
-}
+export type SanityImage = NonNullable<Country["image"]>;
 
-export interface Country extends CountrySummary, CardFields {}
-
-export interface CitySummary {
-  _id: string;
-  name: string | null;
-  slug: string | null;
-}
-
-export interface City extends CitySummary, CardFields, LocationFields {
-  country: CountrySummary | null;
-}
-
-export interface AttractionSummary {
-  _id: string;
-  name: string | null;
-  slug: string | null;
-  imageUrl: string | null;
-}
-
-export interface Attraction extends AttractionSummary, CardFields, LocationFields {
-  category: BadgeCategory | null;
-  address: string | null;
-  city: (CitySummary & { country: CountrySummary | null }) | null;
-}
-
-export type AttractionListItem = AttractionSummary & CardFields & { category: BadgeCategory | null };
-
-export interface CountryDetail extends Country {
-  cities: (CitySummary & CardFields)[];
-}
-
-export interface CityDetail extends City {
-  attractions: AttractionListItem[];
-}
-
-export interface AttractionDetail extends Attraction {
-  related: AttractionListItem[];
-}
+export type CountrySummary = NonNullable<City["country"]>;
+export type CitySummary = Pick<City, "_id" | "name" | "slug">;
+export type AttractionSummary = Pick<Attraction, "_id" | "name" | "slug" | "image">;
 
 export interface CityCardData extends CitySummary {
-  imageUrl: string | null;
+  image: SanityImage | null;
   description?: string | null;
   country?: Pick<CountrySummary, "name"> | null;
 }
