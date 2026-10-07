@@ -22,9 +22,10 @@ const FooterInner = styled.div`
   width: ${tokens.mobile.layout.contentWidth};
   gap: ${tokens.mobile.spacing.m};
 
-  ${tokens.media.desktop} {
+  ${tokens.media.tablet} {
     flex-direction: row;
     justify-content: space-between;
+    text-align: left;
   }
 `;
 
@@ -33,8 +34,13 @@ const FooterBrand = styled.div`
   flex-direction: column;
   align-items: center;
 
-  ${tokens.media.desktop} {
+  ${tokens.media.tablet} {
     flex-direction: row;
+    align-items: baseline;
+    gap: ${tokens.tablet.spacing.m};
+  }
+
+  ${tokens.media.desktop} {
     gap: ${tokens.desktop.spacing.l};
   }
 `;
@@ -50,8 +56,12 @@ const FooterLinks = styled.div`
   align-items: center;
   gap: ${tokens.mobile.spacing.m};
 
-  ${tokens.media.desktop} {
+  ${tokens.media.tablet} {
     flex-direction: row;
+    gap: ${tokens.tablet.spacing.l};
+  }
+
+  ${tokens.media.desktop} {
     gap: ${tokens.desktop.spacing.xl};
   }
 `;
