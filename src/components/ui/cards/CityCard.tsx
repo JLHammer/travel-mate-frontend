@@ -22,13 +22,13 @@ type CityCardProps = {
 };
 
 export const CityCard = ({ city, variant = "featured" }: CityCardProps) => {
-  const { name, slug, imageUrl, description, country } = city;
+  const { name, slug, image, description, country } = city;
 
   return (
     <CardBase
       to={slug ? cityPath(slug) : ROUTES.cities}
       title={name}
-      imageUrl={imageUrl}
+      image={image}
       imageAlt={name ?? ""}
       largeImage={variant === "detailed"}
     >

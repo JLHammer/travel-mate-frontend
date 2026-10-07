@@ -15,7 +15,7 @@ type CountryCardProps = {
 };
 
 export const CountryCard = ({ country }: CountryCardProps) => {
-  const { name, code, slug, tagline, description, imageUrl } = country;
+  const { name, code, slug, tagline, description, image } = country;
   // Description is the fallback if a tagline is missing
   const summary = tagline ?? description;
 
@@ -28,7 +28,7 @@ export const CountryCard = ({ country }: CountryCardProps) => {
           {name}
         </>
       }
-      imageUrl={imageUrl}
+      image={image}
       imageAlt={name ?? ""}
     >
       {summary && <CardDescription>{summary}</CardDescription>}

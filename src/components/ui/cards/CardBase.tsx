@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { tokens } from "../../../styles/theme";
+import type { SanityImage } from "../../../types";
+import { sanityImageProps } from "../../../utils/imageUrl";
 
 const CardWrapper = styled.div`
   position: relative;
@@ -102,10 +104,12 @@ export const CardMeta = styled.p`
   }
 `;
 
+const CARD_IMAGE_SIZES = "(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 50vw";
+
 type CardBaseProps = {
   to: string;
   title: ReactNode;
-  imageUrl: string | null;
+  image: SanityImage | null;
   imageAlt: string;
   action?: ReactNode;
   largeImage?: boolean;
@@ -115,7 +119,7 @@ type CardBaseProps = {
 export const CardBase = ({
   to,
   title,
-  imageUrl,
+  image,
   imageAlt,
   action,
   largeImage = false,
@@ -125,8 +129,13 @@ export const CardBase = ({
     <CardWrapper>
       <CardLink to={to}>
         <CardBaseStyled>
-          {imageUrl ? (
-            <CardImage src={imageUrl} alt={imageAlt} $large={largeImage} />
+          {image ? (
+            <CardImage
+              {...sanityImageProps(image, CARD_IMAGE_SIZES)}
+              alt={image.alt ?? imageAlt}
+              loading="lazy"
+              $large={largeImage}
+            />
           ) : (
             <CardImagePlaceholder $large={largeImage} />
           )}
