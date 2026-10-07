@@ -1,4 +1,4 @@
-import { generatePath } from "react-router-dom";
+import { createSearchParams, generatePath } from "react-router-dom";
 
 export const ROUTES = {
   home: "/",
@@ -12,6 +12,7 @@ export const ROUTES = {
   contact: "/contact",
   privacy: "/privacy",
   terms: "/terms",
+  search: "/search",
   notFound: "*",
 } as const;
 
@@ -31,6 +32,9 @@ export const FOOTER_LINKS = [
   { path: privacy, key: "privacy" },
   { path: terms, key: "terms" },
 ] as const;
+
+export const searchPath = (query: string) =>
+  `${ROUTES.search}?${createSearchParams({ q: query.trim() })}`;
 
 export const countryPath = (countrySlug: string) =>
   generatePath(ROUTES.countryDetails, { countrySlug });

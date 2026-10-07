@@ -1,6 +1,9 @@
 import { useRef, useState, type FormEvent } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Search } from "lucide-react";
+import { useTranslation } from "../../hooks/useTranslation";
+import { searchPath } from "../../router/routes";
 import { tokens } from "../../styles/theme";
 
 const SearchBarStyled = styled.form`
@@ -16,6 +19,16 @@ const SearchBarStyled = styled.form`
   border-radius: ${tokens.radii.input};
   background-color: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadows.search};
+
+  /* The input hides its own outline, so ring the whole bar instead */
+  &:has(input:focus-visible) {
+    outline: ${tokens.borders.focus} solid ${({ theme }) => theme.colors.primary};
+    outline-offset: ${tokens.borders.focus};
+  }
+
+  ${tokens.media.desktop} {
+    max-width: ${tokens.desktop.sizes.searchBarWidth};
+  }
 `;
 
 const SearchBarIcon = styled(Search)`
@@ -40,6 +53,31 @@ const SearchBarInput = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.placeholder};
     text-overflow: ellipsis;
+  }
+
+  /* Replace the native clear button with an X in the theme's error color */
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1em;
+    height: 1em;
+    margin-left: ${tokens.mobile.spacing.xs};
+    background-color: ${({ theme }) => theme.colors.error};
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    cursor: pointer;
+  }
+
+  /* Override the browser's autofill colors so saved suggestions match normal typing */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: ${({ theme }) => theme.colors.bodyText};
+    caret-color: ${({ theme }) => theme.colors.bodyText};
+    box-shadow: 0 0 0 100vmax ${({ theme }) => theme.colors.surface} inset;
+    transition: background-color 0s 600000s;
   }
 `;
 
@@ -88,14 +126,28 @@ const SearchBarButtonLabel = styled.span`
   }
 `;
 
-export const SearchBar = () => {
-  const [query, setQuery] = useState("");
+type SearchBarProps = {
+  value?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+};
+
+export const SearchBar = ({ value, onChange, placeholder }: SearchBarProps) => {
+  const { t } = useTranslation();
+  const [localQuery, setLocalQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const isLive = onChange !== undefined;
+  const query = value ?? localQuery;
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    if (query.trim() === "") {
-      e.preventDefault();
+    e.preventDefault();
+    if (isLive) {
+      inputRef.current?.blur();
+    } else if (query.trim() === "") {
       inputRef.current?.focus();
+    } else {
+      navigate(searchPath(query));
     }
   };
 
@@ -106,14 +158,14 @@ export const SearchBar = () => {
         ref={inputRef}
         type="search"
         enterKeyHint="search"
-        placeholder="Search destinations..."
+        placeholder={placeholder ?? t.search.placeholder}
         name="search-input"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => (isLive ? onChange(e.target.value) : setLocalQuery(e.target.value))}
       />
       <SearchBarButton type="submit">
         <SearchBarButtonIcon />
-        <SearchBarButtonLabel>Search</SearchBarButtonLabel>
+        <SearchBarButtonLabel>{t.search.button}</SearchBarButtonLabel>
       </SearchBarButton>
     </SearchBarStyled>
   );

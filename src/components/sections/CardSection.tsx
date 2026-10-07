@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, useEffect, useRef, useState, type ReactNode } from "react";
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { tokens } from "../../styles/theme";
 import { Loader } from "../ui/Loader";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const CardSectionStyled = styled.section`
   width: ${tokens.mobile.layout.contentWidth};
@@ -16,6 +17,13 @@ const CardSectionHeader = styled.div`
   justify-content: space-between;
   gap: ${tokens.mobile.spacing.m};
   margin-bottom: ${tokens.mobile.spacing.m};
+`;
+
+/* Always styled as an h2, even when rendered as the page's h1 */
+const CardSectionTitle = styled.h2`
+  font-size: ${tokens.mobile.fontSizes.h2};
+  font-weight: ${tokens.fontWeights.bold};
+  line-height: ${tokens.mobile.lineHeights.h2};
 `;
 
 const ViewAllLink = styled(Link)`
@@ -41,7 +49,13 @@ const ViewAllLink = styled(Link)`
   }
 `;
 
-const ViewAllNoun = styled.span`
+const ViewAllShort = styled.span`
+  ${tokens.media.tablet} {
+    display: none;
+  }
+`;
+
+const ViewAllFull = styled.span`
   display: none;
 
   ${tokens.media.tablet} {
@@ -282,34 +296,66 @@ const CardCarousel = ({ mobileOnly, children }: CardCarouselProps) => {
   );
 };
 
+const CardSectionToolbar = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: ${tokens.mobile.spacing.m};
+`;
+
+const EmptyMessage = styled.p`
+  padding-block: ${tokens.mobile.spacing.l};
+  color: ${({ theme }) => theme.colors.bodyText};
+  text-align: center;
+`;
+
 type CardSectionProps = {
   title: string;
+  headingAs?: "h1" | "h2";
   linkPath?: string;
-  linkNoun?: string;
+  linkLabel?: string;
   carousel?: boolean | "mobile";
   loading?: boolean;
+  toolbar?: ReactNode;
+  emptyMessage?: string;
   children?: ReactNode;
 };
 
 export const CardSection = ({
   title,
+  headingAs = "h2",
   linkPath,
-  linkNoun,
+  linkLabel,
   carousel = false,
   loading = false,
+  toolbar,
+  emptyMessage,
   children,
 }: CardSectionProps) => {
+  const { t } = useTranslation();
+  const isEmpty = !loading && emptyMessage !== undefined && Children.count(children) === 0;
+
   return (
     <CardSectionStyled>
       <CardSectionHeader>
-        <h2>{title}</h2>
+        <CardSectionTitle as={headingAs}>{title}</CardSectionTitle>
         {linkPath && (
           <ViewAllLink to={linkPath}>
-            View all{linkNoun && <ViewAllNoun> {linkNoun}</ViewAllNoun>} <ArrowRight />
+            {linkLabel ? (
+              <>
+                <ViewAllShort>{t.sections.viewAll}</ViewAllShort>
+                <ViewAllFull>{linkLabel}</ViewAllFull>
+              </>
+            ) : (
+              t.sections.viewAll
+            )}{" "}
+            <ArrowRight />
           </ViewAllLink>
         )}
       </CardSectionHeader>
-      {loading ? (
+      {toolbar && <CardSectionToolbar>{toolbar}</CardSectionToolbar>}
+      {isEmpty ? (
+        <EmptyMessage>{emptyMessage}</EmptyMessage>
+      ) : loading ? (
         <CardRowLoader>
           <Loader />
         </CardRowLoader>

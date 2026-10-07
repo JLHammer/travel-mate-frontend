@@ -12,6 +12,7 @@ import { AboutPage } from "../pages/AboutPage";
 import { ContactPage } from "../pages/ContactPage";
 import { PrivacyPage } from "../pages/PrivacyPage";
 import { TermsPage } from "../pages/TermsPage";
+import { SearchPage } from "../pages/SearchPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
 const {
@@ -26,6 +27,7 @@ const {
   contact,
   privacy,
   terms,
+  search,
   notFound,
 } = ROUTES;
 
@@ -44,6 +46,7 @@ export const AppRouter = () => {
         <Route path={contact} element={<ContactPage />} />
         <Route path={privacy} element={<PrivacyPage />} />
         <Route path={terms} element={<TermsPage />} />
+        <Route path={search} element={<SearchPage />} />
         <Route path={notFound} element={<NotFoundPage />} />
       </Route>
     </Routes>
