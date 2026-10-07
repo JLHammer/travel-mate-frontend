@@ -2,14 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, ChevronDown, Globe } from "lucide-react";
+import { useLanguage } from "../../../hooks/useLanguage";
+import { LANGUAGES } from "../../../i18n/translations";
+import type { Language } from "../../../types";
 import { tokens } from "../../../styles/theme";
-
-type Language = "da" | "en";
-
-const LANGUAGES: { id: Language; title: string }[] = [
-  { id: "da", title: "Dansk" },
-  { id: "en", title: "English" },
-];
 
 const LanguageWrapper = styled.div`
   height: 100%;
@@ -20,6 +16,7 @@ const LanguagePill = styled.button<{ $open: boolean }>`
   display: inline-flex;
   align-items: center;
   height: 100%;
+  border: ${tokens.borders.themeToggle} solid ${({ theme }) => theme.colors.primarySoft};
   border-radius: ${tokens.radii.button};
   background-color: ${({ theme, $open }) => theme.colors[$open ? "headingText" : "surfaceMuted"]};
   color: ${({ theme, $open }) => theme.colors[$open ? "surfaceMuted" : "headingText"]};
@@ -102,7 +99,7 @@ const OptionLabel = styled.span`
 `;
 
 export const LanguageToggle = () => {
-  const [language, setLanguage] = useState<Language>("da");
+  const { language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
