@@ -24,17 +24,23 @@ export const useSanityQuery = <T>(query: string, params: QueryParams = {}) => {
   useEffect(() => {
     const controller = new AbortController();
 
-    sanityClient
-      .fetch<T>(query, JSON.parse(paramsKey), { signal: controller.signal })
-      .then((data) => setState({ key: requestKey, data, error: null }))
-      .catch((err: unknown) => {
+    const fetchData = async () => {
+      try {
+        const data = await sanityClient.fetch<T>(query, JSON.parse(paramsKey), {
+          signal: controller.signal,
+        });
+        setState({ key: requestKey, data, error: null });
+      } catch (err: unknown) {
         if (controller.signal.aborted) return;
         setState({
           key: requestKey,
           data: null,
           error: err instanceof Error ? err : new Error(String(err)),
         });
-      });
+      }
+    };
+
+    fetchData();
 
     return () => controller.abort();
   }, [query, paramsKey, requestKey]);
