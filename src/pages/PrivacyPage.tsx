@@ -1,12 +1,4 @@
-import { PageTitle } from "../components/ui/PageTitle";
+import { PrivacySection } from "../components/sections/PrivacySection";
 
-export const PrivacyPage = () => {
-  return (
-    <>
-      <PageTitle title="Privacy" />
-      <section>
-        <h1>Privacy</h1>
-      </section>
-    </>
-  );
-};
+// PageLayout inside the section sets the title, h1 and container
+export const PrivacyPage = () => <PrivacySection />;

@@ -1,12 +1,4 @@
-import { PageTitle } from "../components/ui/PageTitle";
+import { TermsSection } from "../components/sections/TermsSection";
 
-export const TermsPage = () => {
-  return (
-    <>
-      <PageTitle title="Terms" />
-      <section>
-        <h1>Terms</h1>
-      </section>
-    </>
-  );
-};
+// PageLayout inside the section sets the title, h1 and container
+export const TermsPage = () => <TermsSection />;
