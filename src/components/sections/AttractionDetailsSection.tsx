@@ -2,37 +2,41 @@ import type { AttractionDetail } from "../../types";
 import { ROUTES } from "../../router/routes";
 import { AttractionCard } from "../ui/cards/AttractionCard";
 import { placeInfo } from "../ui/details/placeInfo";
+import { FavoriteButton } from "../ui/FavoriteButton";
 import { CardSection } from "./CardSection";
 import { DetailsSection } from "./DetailsSection";
+import { useTranslation } from "../../hooks/useTranslation";
 
 type AttractionDetailsSectionProps = {
   attraction: AttractionDetail;
 };
 
 export const AttractionDetailsSection = ({ attraction }: AttractionDetailsSectionProps) => {
-  const { name, imageUrl, description, address, latitude, longitude, website, city, related } =
+  const { t } = useTranslation();
+  const { _id, name, image, description, address, latitude, longitude, website, city, related } =
     attraction;
 
   return (
     <>
       <DetailsSection
         backPath={ROUTES.attractions}
-        backNoun="attractions"
+        backLabel={t.details.backToAttractions}
         name={name}
         flagCode={city?.country?.code}
-        imageUrl={imageUrl}
+        image={image}
         description={description}
-        info={placeInfo({ address, latitude, longitude, website })}
+        info={placeInfo({ address, latitude, longitude, website }, t.details)}
         latitude={latitude}
         longitude={longitude}
         mapZoom={16}
+        imageAction={<FavoriteButton attractionId={_id} variant="image" />}
       />
 
       {related.length > 0 && (
         <CardSection
-          title={`More places in ${city?.name ?? "this city"}`}
+          title={t.sections.moreAttractionsIn(city?.name ?? t.sections.thisCity)}
           linkPath={ROUTES.attractions}
-          linkNoun="places"
+          linkLabel={t.sections.viewAllAttractions}
           carousel="mobile"
         >
           {related.map((other) => (

@@ -4,6 +4,7 @@ import type { AttractionCardData, BadgeCategory } from "../../../types";
 import { ROUTES, attractionPath } from "../../../router/routes";
 import { CardBase, CardDescription, CardMeta } from "./CardBase";
 import { FavoriteButton } from "../FavoriteButton";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { tokens } from "../../../styles/theme";
 
 const CategoryBadgeRow = styled.div`
@@ -26,15 +27,14 @@ const CategoryBadge = styled.span<{ $category: BadgeCategory }>`
 type AttractionCardProps = {
   attraction: AttractionCardData;
   variant?: "featured" | "detailed";
-  isFavorite?: boolean;
 };
 
 export const AttractionCard = ({
   attraction,
   variant = "featured",
-  isFavorite = false,
 }: AttractionCardProps) => {
-  const { name, slug, imageUrl, description, category, city } = attraction;
+  const { t } = useTranslation();
+  const { _id, name, slug, image, description, category, city } = attraction;
 
   const location = [city?.name, city?.country?.name].filter(Boolean).join(", ");
 
@@ -42,9 +42,9 @@ export const AttractionCard = ({
     <CardBase
       to={slug ? attractionPath(slug) : ROUTES.attractions}
       title={name}
-      imageUrl={imageUrl}
+      image={image}
       imageAlt={name ?? ""}
-      action={<FavoriteButton isFavorite={isFavorite} />}
+      action={<FavoriteButton attractionId={_id} />}
       largeImage={variant === "detailed"}
     >
       {variant === "detailed" && description && (
@@ -57,7 +57,7 @@ export const AttractionCard = ({
       )}
       {variant === "featured" && category && (
         <CategoryBadgeRow>
-          <CategoryBadge $category={category}>{category}</CategoryBadge>
+          <CategoryBadge $category={category}>{t.categories[category]}</CategoryBadge>
         </CategoryBadgeRow>
       )}
     </CardBase>
