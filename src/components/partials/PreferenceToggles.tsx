@@ -3,6 +3,10 @@ import { LanguageToggle } from "../ui/header/LanguageToggle";
 import { ThemeToggle } from "../ui/header/ThemeToggle";
 import { tokens } from "../../styles/theme";
 
+type PreferenceTogglesProps = {
+  themeVariant?: "button" | "slider";
+};
+
 const PreferenceTogglesStyled = styled.div`
   height: 100%;
   display: flex;
@@ -10,11 +14,11 @@ const PreferenceTogglesStyled = styled.div`
   align-items: center;
 `;
 
-export const PreferenceToggles = () => {
+export const PreferenceToggles = ({ themeVariant }: PreferenceTogglesProps) => {
   return (
     <PreferenceTogglesStyled>
       <LanguageToggle />
-      <ThemeToggle />
+      <ThemeToggle variant={themeVariant} />
     </PreferenceTogglesStyled>
   );
 };

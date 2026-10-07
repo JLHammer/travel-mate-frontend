@@ -1,16 +1,21 @@
 import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
-import { NavLink } from "react-router-dom";
-import { NAV_LINKS, ROUTES } from "../../router/routes";
+import { NavLinks } from "./NavLinks";
 import { PreferenceToggles } from "./PreferenceToggles";
+import { AuthLink } from "../ui/header/AuthLink";
 import { tokens } from "../../styles/theme";
 
 type NavBarProps = {
   open: boolean;
+  onNavigate: () => void;
 };
 
 const NavBarStyled = styled.nav`
   width: 100%;
+
+  ${tokens.media.desktop} {
+    display: none;
+  }
 `;
 
 const NavPanel = styled(motion.div)`
@@ -29,48 +34,18 @@ const MenuToggles = styled.div`
   }
 `;
 
-const NavUl = styled.ul`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const NavLi = styled.li`
-  width: 100%;
+const MenuAuth = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin: 0 0 0.1rem;
-`;
+  padding: ${tokens.mobile.spacing.xs} ${tokens.mobile.spacing.m};
+  border-top: ${tokens.borders.width} solid ${({ theme }) => theme.colors.border};
 
-const NavBarLink = styled(NavLink)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: ${tokens.mobile.sizes.navItemHeight};
-  font-size: ${tokens.mobile.fontSizes.navLink};
-  text-decoration: none;
-  width: 100%;
-  transition: all 0.05s ease;
-
-  &.active {
-    color: ${({ theme }) => theme.colors.primary};
-    font-weight: ${tokens.fontWeights.semibold};
-    background-color: ${({ theme }) => theme.colors.primarySoft};
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    font-weight: ${tokens.fontWeights.semibold};
-    background-color: ${({ theme }) => theme.colors.primarySoft};
+  ${tokens.media.tablet} {
+    display: none;
   }
 `;
 
-const { home } = ROUTES;
-
-export const NavBar = ({ open }: NavBarProps) => {
+export const NavBar = ({ open, onNavigate }: NavBarProps) => {
   return (
     <NavBarStyled>
       <AnimatePresence initial={false}>
@@ -84,15 +59,10 @@ export const NavBar = ({ open }: NavBarProps) => {
             <MenuToggles>
               <PreferenceToggles />
             </MenuToggles>
-            <NavUl>
-              {NAV_LINKS.map(({ path, label }) => (
-                <NavLi key={path}>
-                  <NavBarLink to={path} end={path === home}>
-                    {label}
-                  </NavBarLink>
-                </NavLi>
-              ))}
-            </NavUl>
+            <NavLinks variant="menu" onNavigate={onNavigate} />
+            <MenuAuth>
+              <AuthLink onNavigate={onNavigate} />
+            </MenuAuth>
           </NavPanel>
         )}
       </AnimatePresence>
