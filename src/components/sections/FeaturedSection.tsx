@@ -1,67 +1,69 @@
-import { useAttractions } from "../../hooks/useAttractions";
-import { useCities } from "../../hooks/useCities";
-import { useCountries } from "../../hooks/useCountries";
+import { useFeatured } from "../../hooks/useFeatured";
 import { ROUTES } from "../../router/routes";
 import { AttractionCard } from "../ui/cards/AttractionCard";
 import { CityCard } from "../ui/cards/CityCard";
 import { CountryCard } from "../ui/cards/CountryCard";
 import { CardSection } from "./CardSection";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export const FeaturedSection = () => {
-  const countries = useCountries();
-  const cities = useCities();
-  const attractions = useAttractions();
+  const { t } = useTranslation();
+  const { data, isLoading, error } = useFeatured();
 
-  if (countries.isLoading || cities.isLoading || attractions.isLoading) {
+  if (isLoading) {
     return (
       <CardSection
-        title="Popular Countries"
+        title={t.sections.popularCountries}
         linkPath={ROUTES.countries}
-        linkNoun="countries"
+        linkLabel={t.sections.viewAllCountries}
         loading
       />
     );
   }
 
-  if (countries.error || cities.error || attractions.error) {
-    return <p>Could not load the featured destinations. Please try again later.</p>;
+  if (error) {
+    return <p>{t.errors.featured}</p>;
   }
 
   return (
     <>
       <CardSection
-        title="Popular Countries"
+        title={t.sections.popularCountries}
         linkPath={ROUTES.countries}
-        linkNoun="countries"
+        linkLabel={t.sections.viewAllCountries}
         carousel
       >
-        {countries.data
-          ?.filter((country) => country.featured)
-          .map((country) => (
-            <li key={country._id}>
-              <CountryCard country={country} />
-            </li>
-          ))}
+        {data?.countries.map((country) => (
+          <li key={country._id}>
+            <CountryCard country={country} />
+          </li>
+        ))}
       </CardSection>
 
-      <CardSection title="Popular Cities" linkPath={ROUTES.cities} linkNoun="cities" carousel>
-        {cities.data
-          ?.filter((city) => city.featured)
-          .map((city) => (
-            <li key={city._id}>
-              <CityCard city={city} />
-            </li>
-          ))}
+      <CardSection
+        title={t.sections.popularCities}
+        linkPath={ROUTES.cities}
+        linkLabel={t.sections.viewAllCities}
+        carousel
+      >
+        {data?.cities.map((city) => (
+          <li key={city._id}>
+            <CityCard city={city} />
+          </li>
+        ))}
       </CardSection>
 
-      <CardSection title="Featured Attractions" linkPath={ROUTES.attractions} linkNoun="attractions" carousel>
-        {attractions.data
-          ?.filter((attraction) => attraction.featured)
-          .map((attraction) => (
-            <li key={attraction._id}>
-              <AttractionCard attraction={attraction} />
-            </li>
-          ))}
+      <CardSection
+        title={t.sections.featuredAttractions}
+        linkPath={ROUTES.attractions}
+        linkLabel={t.sections.viewAllAttractions}
+        carousel
+      >
+        {data?.attractions.map((attraction) => (
+          <li key={attraction._id}>
+            <AttractionCard attraction={attraction} />
+          </li>
+        ))}
       </CardSection>
     </>
   );
