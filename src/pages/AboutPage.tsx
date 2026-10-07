@@ -1,11 +1,4 @@
-import { PageTitle } from "../components/ui/PageTitle";
 import { AboutSection } from "../components/sections/AboutSection";
 
-export const AboutPage = () => {
-  return (
-    <>
-      <PageTitle title="About" />
-      <AboutSection />
-    </>
-  );
-};
+// PageLayout inside the section sets the title, h1 and container
+export const AboutPage = () => <AboutSection />;
