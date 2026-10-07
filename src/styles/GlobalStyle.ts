@@ -36,6 +36,11 @@ export const GlobalStyle = createGlobalStyle`
     flex-direction: column;
   }
 
+  :focus-visible {
+    outline: ${tokens.borders.focus} solid ${({ theme }) => theme.colors.primary};
+    outline-offset: ${tokens.borders.focus};
+  }
+
   main:focus {
     outline: none;
   }

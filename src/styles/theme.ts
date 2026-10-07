@@ -83,6 +83,11 @@ const mobile = {
     linkIcon: "0.875rem",
     infoIconBox: "2.5rem",
     infoIcon: "1.25rem",
+    formWidth: "min(100%, 40rem)",
+    textareaHeight: "10rem",
+    toastWidth: "22.25rem",
+    toastCloseButton: "1.75rem",
+    toastCloseIcon: "1.125rem",
   },
 } satisfies ThemeBreakpointTokens;
 
@@ -96,6 +101,7 @@ const tablet = {
     heroHeight: "16.875rem",
     detailsImageHeight: "21.25rem",
     mapHeight: "18.5rem",
+    toastWidth: "38rem",
   },
 } satisfies ThemeBreakpointTokens;
 
@@ -106,6 +112,7 @@ const desktop = {
   },
   sizes: {
     ...tablet.sizes,
+    searchBarWidth: "min(100%, 32rem)",
     mapHeight: "21.875rem",
   },
 } satisfies ThemeBreakpointTokens;
@@ -136,6 +143,10 @@ const lightColors = {
   overlaySoftBorder: "rgba(255, 255, 255, 0.6)",
   scrim: "rgba(8, 18, 32, 0.7)",
   onScrim: "#ffffff",
+
+  error: "#b91c1c",
+  success: "#15803d",
+  successSoft: "#d1f0d6",
 
   badges: {
     historical: { background: "#fdeed2", text: "#b45309" },
@@ -172,6 +183,10 @@ const darkColors = {
   overlaySoftBorder: "rgba(255, 255, 255, 0.12)",
   scrim: "rgba(0, 0, 0, 0.75)",
   onScrim: "#ffffff",
+
+  error: "#fca5a5",
+  success: "#86efac",
+  successSoft: "#11341f",
 
   badges: {
     historical: { background: "#3d2a0f", text: "#fbbf24" },
@@ -227,6 +242,7 @@ export const tokens = {
     width: "1px",
     themeToggle: "2px",
     loader: "3px",
+    focus: "2px",
   },
 
   transitions: {
@@ -240,6 +256,7 @@ export const tokens = {
     cardAction: 2,
     header: 5,
     modal: 10,
+    skipLink: 20,
   },
 
   breakpoints,
@@ -247,6 +264,7 @@ export const tokens = {
   media: {
     tablet: `@media (min-width: ${breakpoints.tablet})`,
     desktop: `@media (min-width: ${breakpoints.desktop})`,
+    tabletOnly: `@media (${breakpoints.tablet} <= width < ${breakpoints.desktop})`,
     hover: `@media (hover: hover)`,
   },
 } satisfies ThemeBase;

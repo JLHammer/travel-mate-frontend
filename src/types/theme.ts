@@ -72,6 +72,11 @@ export interface ThemeSizes {
   linkIcon: string;
   infoIconBox: string;
   infoIcon: string;
+  formWidth: string;
+  textareaHeight: string;
+  toastWidth: string;
+  toastCloseButton: string;
+  toastCloseIcon: string;
 }
 
 export interface ThemeBreakpointTokens {
@@ -108,6 +113,10 @@ export interface ThemeColors {
   overlaySoftBorder: string;
   scrim: string;
   onScrim: string;
+
+  error: string;
+  success: string;
+  successSoft: string;
 
   badges: Record<BadgeCategory, { background: string; text: string }>;
 }
@@ -150,6 +159,7 @@ export interface ThemeBase {
     width: string;
     themeToggle: string;
     loader: string;
+    focus: string;
   };
 
   transitions: {
@@ -163,6 +173,7 @@ export interface ThemeBase {
     cardAction: number;
     header: number;
     modal: number;
+    skipLink: number;
   };
 
   breakpoints: {
@@ -173,6 +184,7 @@ export interface ThemeBase {
   media: {
     tablet: string;
     desktop: string;
+    tabletOnly: string;
     hover: string;
   };
 }
