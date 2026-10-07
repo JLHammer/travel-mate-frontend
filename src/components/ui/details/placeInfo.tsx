@@ -1,6 +1,7 @@
 import { Globe, LocateFixed, MapPin } from "lucide-react";
 import { ExternalLink } from "../ExternalLink";
 import type { InfoItem } from "./InfoList";
+import type { Dictionary } from "../../../i18n/translations";
 
 type PlaceInfoFields = {
   address?: string | null;
@@ -9,17 +10,20 @@ type PlaceInfoFields = {
   website?: string | null;
 };
 
-export const placeInfo = ({ address, latitude, longitude, website }: PlaceInfoFields) => {
+export const placeInfo = (
+  { address, latitude, longitude, website }: PlaceInfoFields,
+  labels: Dictionary["details"],
+) => {
   const items: InfoItem[] = [];
 
   if (address) {
-    items.push({ icon: <MapPin />, label: "Address", value: address });
+    items.push({ icon: <MapPin />, label: labels.address, value: address });
   }
 
   if (latitude != null && longitude != null) {
     items.push({
       icon: <LocateFixed />,
-      label: "Coordinates",
+      label: labels.coordinates,
       value: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
     });
   }
@@ -27,7 +31,7 @@ export const placeInfo = ({ address, latitude, longitude, website }: PlaceInfoFi
   if (website) {
     items.push({
       icon: <Globe />,
-      label: "Website",
+      label: labels.website,
       value: (
         <ExternalLink href={website} primary>
           {website}

@@ -4,13 +4,15 @@ import { AttractionCard } from "../ui/cards/AttractionCard";
 import { placeInfo } from "../ui/details/placeInfo";
 import { CardSection } from "./CardSection";
 import { DetailsSection } from "./DetailsSection";
+import { useTranslation } from "../../hooks/useTranslation";
 
 type CityDetailsSectionProps = {
   city: CityDetail;
 };
 
 export const CityDetailsSection = ({ city }: CityDetailsSectionProps) => {
-  const { name, imageUrl, description, latitude, longitude, website, country, attractions } = city;
+  const { t } = useTranslation();
+  const { name, image, description, latitude, longitude, website, country, attractions } = city;
 
   const address = [name, country?.name].filter(Boolean).join(", ");
 
@@ -18,12 +20,12 @@ export const CityDetailsSection = ({ city }: CityDetailsSectionProps) => {
     <>
       <DetailsSection
         backPath={ROUTES.cities}
-        backNoun="cities"
+        backLabel={t.details.backToCities}
         name={name}
         flagCode={country?.code}
-        imageUrl={imageUrl}
+        image={image}
         description={description}
-        info={placeInfo({ address, latitude, longitude, website })}
+        info={placeInfo({ address, latitude, longitude, website }, t.details)}
         latitude={latitude}
         longitude={longitude}
         mapZoom={12}
@@ -31,9 +33,9 @@ export const CityDetailsSection = ({ city }: CityDetailsSectionProps) => {
 
       {attractions.length > 0 && (
         <CardSection
-          title={`Popular places in ${name}`}
+          title={t.sections.popularAttractionsIn(name ?? "")}
           linkPath={ROUTES.attractions}
-          linkNoun="places"
+          linkLabel={t.sections.viewAllAttractions}
           carousel="mobile"
         >
           {attractions.map((attraction) => (

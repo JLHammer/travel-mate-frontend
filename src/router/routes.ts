@@ -18,18 +18,18 @@ export const ROUTES = {
 const { home, countries, cities, attractions, about, contact, privacy, terms } = ROUTES;
 
 export const NAV_LINKS = [
-  { path: home, label: "Home" },
-  { path: countries, label: "Countries" },
-  { path: cities, label: "Cities" },
-  { path: attractions, label: "Attractions" },
-  { path: about, label: "About" },
+  { path: home, key: "home" },
+  { path: countries, key: "countries" },
+  { path: cities, key: "cities" },
+  { path: attractions, key: "attractions" },
+  { path: about, key: "about" },
 ] as const;
 
 export const FOOTER_LINKS = [
-  { path: about, label: "About" },
-  { path: contact, label: "Contact" },
-  { path: privacy, label: "Privacy" },
-  { path: terms, label: "Terms" },
+  { path: about, key: "about" },
+  { path: contact, key: "contact" },
+  { path: privacy, key: "privacy" },
+  { path: terms, key: "terms" },
 ] as const;
 
 export const countryPath = (countrySlug: string) =>

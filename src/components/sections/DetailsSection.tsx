@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -5,6 +6,9 @@ import { InfoList, type InfoItem } from "../ui/details/InfoList";
 import { LocationMap } from "../ui/details/LocationMap";
 import { tokens } from "../../styles/theme";
 import { flagUrl } from "../../utils/flagUrl";
+import { sanityImageProps } from "../../utils/imageUrl";
+import type { SanityImage } from "../../types";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const DetailsSectionStyled = styled.section`
   display: flex;
@@ -75,8 +79,21 @@ const DetailsBody = styled.div<{ $hasInfo: boolean }>`
   }
 `;
 
-const detailsImage = css`
+const DetailsMedia = styled.div`
+  position: relative;
   grid-area: image;
+  align-self: start;
+`;
+
+const ImageAction = styled.div`
+  position: absolute;
+  z-index: ${tokens.zIndices.cardAction};
+  top: 0;
+  right: 0;
+`;
+
+const detailsImage = css`
+  display: block;
   width: 100%;
   border-radius: ${tokens.radii.panel};
   box-shadow: ${({ theme }) => theme.shadows.card};
@@ -120,38 +137,43 @@ const MapBlock = styled.div`
   margin-top: ${tokens.mobile.spacing.m};
 `;
 
+const DETAILS_IMAGE_SIZES = "(min-width: 1024px) 55vw, 100vw";
+
 type DetailsSectionProps = {
   backPath: string;
-  backNoun: string;
+  backLabel: string;
   name: string | null;
   flagCode?: string | null;
-  imageUrl: string | null;
+  image: SanityImage | null;
   description: string | null;
   info?: InfoItem[];
   latitude?: number | null;
   longitude?: number | null;
   mapZoom?: number;
+  imageAction?: ReactNode;
 };
 
 export const DetailsSection = ({
   backPath,
-  backNoun,
+  backLabel,
   name,
   flagCode,
-  imageUrl,
+  image,
   description,
   info = [],
   latitude,
   longitude,
   mapZoom = 12,
+  imageAction,
 }: DetailsSectionProps) => {
+  const { t } = useTranslation();
   const hasInfo = info.length > 0;
 
   return (
     <DetailsSectionStyled>
       <DetailsHeader>
         <BackLink to={backPath}>
-          <ArrowLeft /> Back to {backNoun}
+          <ArrowLeft /> {backLabel}
         </BackLink>
         <DetailsTitle>
           {flagCode && <DetailsFlag src={flagUrl(flagCode)} alt="" />}
@@ -160,7 +182,17 @@ export const DetailsSection = ({
       </DetailsHeader>
 
       <DetailsBody $hasInfo={hasInfo}>
-        {imageUrl ? <DetailsImage src={imageUrl} alt={name ?? ""} /> : <DetailsImagePlaceholder />}
+        <DetailsMedia>
+          {image ? (
+            <DetailsImage
+              {...sanityImageProps(image, DETAILS_IMAGE_SIZES)}
+              alt={image.alt ?? name ?? ""}
+            />
+          ) : (
+            <DetailsImagePlaceholder />
+          )}
+          {imageAction && <ImageAction>{imageAction}</ImageAction>}
+        </DetailsMedia>
         {description && <DetailsDescription>{description}</DetailsDescription>}
         {hasInfo && (
           <DetailsInfo>
@@ -171,7 +203,7 @@ export const DetailsSection = ({
 
       {latitude != null && longitude != null && (
         <MapBlock>
-          <h2>Find on the map</h2>
+          <h2>{t.details.findOnMap}</h2>
           <LocationMap latitude={latitude} longitude={longitude} zoom={mapZoom} />
         </MapBlock>
       )}

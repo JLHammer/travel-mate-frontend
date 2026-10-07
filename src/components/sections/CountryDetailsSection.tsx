@@ -3,30 +3,32 @@ import { ROUTES } from "../../router/routes";
 import { CityCard } from "../ui/cards/CityCard";
 import { CardSection } from "./CardSection";
 import { DetailsSection } from "./DetailsSection";
+import { useTranslation } from "../../hooks/useTranslation";
 
 type CountryDetailsSectionProps = {
   country: CountryDetail;
 };
 
 export const CountryDetailsSection = ({ country }: CountryDetailsSectionProps) => {
-  const { name, code, imageUrl, description, cities } = country;
+  const { t } = useTranslation();
+  const { name, code, image, description, cities } = country;
 
   return (
     <>
       <DetailsSection
         backPath={ROUTES.countries}
-        backNoun="countries"
+        backLabel={t.details.backToCountries}
         name={name}
         flagCode={code}
-        imageUrl={imageUrl}
+        image={image}
         description={description}
       />
 
       {cities.length > 0 && (
         <CardSection
-          title={`Popular cities in ${name}`}
+          title={t.sections.popularCitiesIn(name ?? "")}
           linkPath={ROUTES.cities}
-          linkNoun="cities"
+          linkLabel={t.sections.viewAllCities}
           carousel="mobile"
         >
           {cities.map((city) => (

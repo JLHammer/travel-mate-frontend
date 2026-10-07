@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { FooterNavBar } from "./FooterNavBar";
 import { Logo } from "../ui/header/Logo";
 import { SocialsList } from "../ui/footer/SocialsList";
+import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
 const FooterStyled = styled.footer`
@@ -56,12 +57,14 @@ const FooterLinks = styled.div`
 `;
 
 export const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <FooterStyled>
       <FooterInner>
         <FooterBrand>
           <Logo iconVisible={false} variant="footer" />
-          <Tagline>Explore. Discover. Belong.</Tagline>
+          <Tagline>{t.footer.tagline}</Tagline>
         </FooterBrand>
         <FooterLinks>
           <FooterNavBar />

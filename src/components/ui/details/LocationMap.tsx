@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { ExternalLink } from "../ExternalLink";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { tokens } from "../../../styles/theme";
 
 const MapFrame = styled.iframe`
@@ -32,6 +33,7 @@ type LocationMapProps = {
 };
 
 export const LocationMap = ({ latitude, longitude, zoom }: LocationMapProps) => {
+  const { t } = useTranslation();
   const lngSpan = (360 / 2 ** zoom) * 2;
   const latSpan = lngSpan / 2;
   const bbox = [longitude - lngSpan, latitude - latSpan, longitude + lngSpan, latitude + latSpan]
@@ -45,7 +47,7 @@ export const LocationMap = ({ latitude, longitude, zoom }: LocationMapProps) => 
     <div>
       <MapFrame src={embedUrl} loading="lazy" />
       <MapCaption>
-        Open a larger map in <ExternalLink href={fullMapUrl}>OpenStreetMap</ExternalLink>
+        {t.details.openLargerMap} <ExternalLink href={fullMapUrl}>OpenStreetMap</ExternalLink>
       </MapCaption>
     </div>
   );
