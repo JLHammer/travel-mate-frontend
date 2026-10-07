@@ -1,12 +1,4 @@
-import { PageTitle } from "../components/ui/PageTitle";
+import { ContactSection } from "../components/sections/ContactSection";
 
-export const ContactPage = () => {
-  return (
-    <>
-      <PageTitle title="Contact" />
-      <section>
-        <h1>Contact</h1>
-      </section>
-    </>
-  );
-};
+// PageLayout inside the section sets the title, h1 and container
+export const ContactPage = () => <ContactSection />;
