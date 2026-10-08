@@ -1,35 +1,240 @@
-# React + TypeScript + Vite
+# TravelMate
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+TravelMate is a travel guide built with React, TypeScript, Vite and styled-components. Countries, cities and attractions come from a Sanity CMS (project `cc196r01`, dataset `production`). None of this content is written in the React code.
 
-Currently, two official plugins are available:
+```text
+Sanity → GROQ → Custom Hook → React Component → User
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Getting started
 
-## React Compiler
+```bash
+npm install
+npm run dev
+```
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## GROQ or GraphQL?
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+I use **GROQ** to fetch data from Sanity.
 
-## Expanding the Oxlint configuration
+### Why GROQ
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+I chose GROQ because it's native to Sanity and needs no schema deploy. It lets me shape each response to exactly what my components need, and it can follow references in both directions in one query. I use that for the city page's attractions.
+
+## Content model
+
+The content follows the structure of the TravelMate API:
+
+```text
+Country
+  └── City        (city.country → reference to Country)
+       └── Attraction  (attraction.city → reference to City)
+```
+
+## Languages
+
+TravelMate shows countries, cities and attractions in Danish, English and Spanish.
+
+The user picks a language in the header, and every page switches to it.
+
+The language follows this flow from the CMS to the screen:
+
+```text
+Language → Info models → GROQ → React → Language switch
+```
+
+| Step | What it does | Where |
+|---|---|---|
+| Language | Defines which languages exist | `schemaTypes/languages.ts` (Studio) |
+| Info models | Store each text in every language | `localeString`, `localeText` (Studio) |
+| GROQ | Pick out the selected language | `src/data/queries.ts` |
+| React | Send the selected language to the queries | `LanguageContext`, data hooks |
+| Language switch | Change the language and reload the content | `LanguageToggle` |
+
+### 1. Language
+
+The languages are defined once in the Studio, in `schemaTypes/languages.ts`:
+
+```ts
+export const LANGUAGES = [
+  {id: 'da', title: 'Dansk'},
+  {id: 'en', title: 'English'},
+  {id: 'es', title: 'Español'},
+] as const
+```
+
+The frontend has a matching list in `src/i18n/translations.ts`, and the type `Language = "da" | "en" | "es"` in `src/types/sanity.ts`.
+
+### 2. Info models
+
+Two object types are built from `LANGUAGES`. `localeString` is for short text and `localeText` for longer text, and each has one field per language. Text that changes with the language uses these types. Data that is the same in every language stays directly on the document.
+
+| Field | Depends on language? | Type |
+|---|---|---|
+| `name`, `tagline`, `description` | Yes | `localeString` / `localeText` |
+| `slug`, `code`, `image`, `location`, `address`, `website`, `category`, `featured` | No | Plain fields on the document |
+
+A country is still a single document, and its translations sit next to each other:
 
 ```json
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+  "code": "IT",
+  "name": { "da": "Italien", "en": "Italy", "es": "Italia" },
+  "description": { "da": "…", "en": "…", "es": "Italia es conocida por su rica historia…" }
 }
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Validation in the Studio requires every language on `name` and `description`, so a country, city or attraction can't be published with a translation missing.
+
+### 3. GROQ
+
+Every query takes a `$lang` parameter. Each localized field picks the selected language:
+
+```groq
+"name": coalesce(select($lang == "da" => name.da, $lang == "es" => name.es), name.en)
+```
+
+- `select(...)` picks `name.da` or `name.es` depending on `$lang`.
+- `coalesce(..., name.en)` uses English if the text is empty in the selected language. For `name` and `description` that can't happen once a document is published, but `tagline` is optional.
+
+The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`) in `src/data/queries.ts`, so they are written once and used by every query. Lists are sorted by the name in the selected language too. React receives plain text, e.g. `name: "Italien"`, and never handles the language object itself.
+
+### 4. React
+
+- **`LanguageContextProvider`** holds the selected language. On the first visit it uses the browser's language if TravelMate supports it, and Danish otherwise. The choice is saved in `localStorage` and set on `<html lang>` for screen readers.
+- **`useLanguage`** gives components the language and `setLanguage`.
+- **Data hooks** (`useCountry`, `useCities`, …) send the language to the query as `lang`:
+
+  ```ts
+  const { language } = useLanguage();
+  return useSanityQuery(COUNTRY_DETAIL_QUERY, { slug: slug ?? "", lang: language });
+  ```
+
+- **Fixed UI text** (navigation, buttons, forms, footer) doesn't come from Sanity. It lives in `src/i18n/translations.ts` and is read through `useTranslation`.
+
+### 5. Language switch
+
+When the user picks a language in `LanguageToggle` in the header:
+
+1. `setLanguage("en")` updates the context.
+2. Every component that uses `useLanguage` renders again.
+3. The data hooks now send `lang: "en"`. `useSanityQuery` sees the new parameter, cancels the old request and fetches again.
+4. GROQ returns the English text, and the page shows it.
+5. `useTranslation` switches the fixed UI text at the same time.
+6. The choice is saved in `localStorage` and set on `<html lang="en">`.
+
+Countries, cities and attractions all change together, with no code specific to the language switch in any page.
+
+### Choosing a localization model
+
+There are three ways to structure translations in Sanity. The difference is where the translated text lives.
+
+**Field-level localization (TravelMate).** Each text field holds one value per language. Language is organised per field: "here is the name in every language".
+
+```json
+{ "_type": "country", "code": "IT", "name": { "da": "Italien", "en": "Italy" } }
+```
+
+**Embedded language objects.** The document holds an array with one object per language, and each object has all the text for that language. Language is organised per bundle: "here is everything in Danish".
+
+```json
+{
+  "_type": "country",
+  "code": "IT",
+  "info": [
+    { "language": "da", "name": "Italien", "description": "…" },
+    { "language": "en", "name": "Italy", "description": "…" }
+  ]
+}
+```
+
+```groq
+"info": info[language == $language][0] { name, description }
+```
+
+**Document-level localization (referenced Info documents).** `Language`, `CountryInfo`, `CityInfo` and `AttractionInfo` are document types of their own, connected by references, like tables in a relational database. A country in two languages becomes one `Country` document and two `CountryInfo` documents.
+
+```text
+Language    { code: "da", title: "Dansk" }
+Country     { code: "IT", image }
+CountryInfo { country: → Country (IT), language: → Language (da), name: "Italien", description: "…" }
+```
+
+```groq
+"info": *[_type == "countryInfo" && country._ref == ^._id && language->code == $lang][0] {
+  name, description
+}
+```
+
+#### Comparison
+
+| | Field-level localization (TravelMate) | Embedded language objects | Document-level localization |
+|---|---|---|---|
+| Where the text lives | In each field | In a list inside the document | In separate documents |
+| Documents per country (2 languages) | 1 | 1 | 3 (+ Language documents) |
+| What "Language" is | A list in code | A dropdown (`options.list`) | A document type |
+| Can a translation go missing unnoticed? | No, validation catches it on `name` and `description` | Yes, nobody has to add the entry | Yes, nobody has to create the document |
+| Editor experience | All languages side by side | One block per language | Jump between documents |
+| Query | Simplest | Filter the array | Reverse lookup across documents |
+| Can each language have its own fields or publish on its own? | No | No | Yes |
+
+#### Why field-level localization
+
+Document-level localization is the strongest model when each language needs its own fields, its own publishing schedule or its own editors, or when a site has many languages. TravelMate has none of those needs:
+
+- **Every language has the same structure.** A country has the same fields in every language, and only the text differs.
+- **Translations can't go missing unnoticed.** The editor sees all languages side by side, and the validation flags a missing `name` or `description`. With Info documents, every place needs extra documents that are created and linked by hand, and nothing warns if one is forgotten.
+- **Simpler queries.** GROQ reads the right language straight from the document, without joining in extra documents through references.
+- **It matches Sanity's own guidance.** Sanity's localization docs describe field-level localization as best for documents with a mix of language-specific and shared fields. TravelMate's documents are exactly that: `name`, `tagline` and `description` are translated, while `slug`, `image`, `location` and the rest are shared.
+
+The parts of the assignment's model are still there, in a different form: `Language` is the `LANGUAGES` list, and the Info layer is the `localeString`/`localeText` objects on each document.
+
+### Adding a language
+
+Adding a fourth language takes:
+
+1. **Sanity:** one line in `LANGUAGES` in `schemaTypes/languages.ts`. The new field appears on every localized field in the Studio automatically.
+2. **Content:** translating `name`, `tagline` and `description` in the Studio. Validation flags every document that is still missing the new language.
+3. **GROQ:** one more branch in the `select()` for `NAME`, `TAGLINE` and `DESCRIPTION`, then `npm run typegen`.
+4. **React:** one entry in `LANGUAGES` and a translation object for the UI text in `src/i18n/translations.ts`, the privacy and terms text in `src/i18n/legal.ts`, and the language code in the `Language` type in `src/types/sanity.ts`. TypeScript flags any translation that is missing. No component needs to change.
+
+## API calls and Custom Hooks
+
+Page components never call Sanity directly. The data flow is split into layers:
+
+- **Sanity client** (`src/utils/sanityClient.ts`): one shared `@sanity/client` instance configured with the project ID and dataset from `.env`. It builds the request URL, encodes the query and passes GROQ parameters safely, so no URL is put together by hand.
+- **GROQ queries** (`src/data/queries.ts`): every query lives in one place, separate from the components. Queries are built from shared fragments (`CITY_SUMMARY`, `IMAGE`, `CARD`, …) so each field is defined once. They pick the text in the selected language (da/en/es), follow references with `->` (a city comes with its country), and use `references(^._id)` to fetch the reverse relations (a country with its cities, a city with its attractions).
+- **TypeScript types** (`src/types/`): each type matches the shape a GROQ query returns. They are generated by Sanity TypeGen (see below).
+- **Generic hook** (`src/hooks/useSanityQuery.ts`): one reusable hook that runs any query and returns `{ data, isLoading, error, refetch }`. It cancels outdated requests with an `AbortController` when the parameters change, for example when the user switches language or opens another city.
+- **Data hooks** (`src/hooks/`): small hooks that pair a query with its parameters and result type. `useFavoriteAttractions` also combines the query with the liked attraction IDs:
+
+  | Hook | Used for |
+  |---|---|
+  | `useFeatured` | Featured countries, cities and attractions on the home page (one request) |
+  | `useCountries`, `useCities`, `useAttractions` | List pages |
+  | `useCountry`, `useCity`, `useAttraction` | Detail pages, looked up by slug |
+  | `useSearch` | Search results |
+  | `useFavoriteAttractions` | The favourites page, by liked attraction IDs |
+
+- **Components:** detail pages and list sections call a data hook, show the `Loader` while loading and an error message if the CMS can't be reached, then pass the data on to the card and detail components.
+
+Images come from Sanity too. `src/utils/imageUrl.ts` builds responsive `srcset` URLs and positions the image by the hotspot set in the Studio.
+
+## Generated types (Sanity TypeGen)
+
+The types for query results are not written by hand. Sanity TypeGen reads the Studio schema and every `defineQuery` in `src/data/queries.ts`, then writes `src/types/sanity.types.ts`. `src/types/sanity.ts` gives those generated types shorter names for the components. If a field is renamed in the Studio, TypeScript shows an error in the frontend instead of the page quietly showing nothing.
+
+The Studio repo must sit next to this one (`TravelMate/travel-mate-cms/studio`). After changing a schema or a query, run:
+
+```bash
+cd ../travel-mate-cms/studio
+npm run typegen
+```
+
+Query fragments in `queries.ts` are plain string constants, not helper functions, because TypeGen can only read constants.
+
+## Showing that content comes from the CMS
+
+Change the name or description of a city in Sanity Studio, then reload TravelMate. The change appears without any change to the React code.
+
+The client queries Sanity's live API rather than the CDN (`useCdn: false`), so changes show up right away.
