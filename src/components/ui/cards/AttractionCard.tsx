@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { MapPin } from "lucide-react";
 import type { AttractionCardData, BadgeCategory } from "../../../types";
-import { ROUTES, attractionPath } from "../../../router/routes";
+import { usePaths } from "../../../hooks/usePaths";
 import { CardBase, CardDescription, CardMeta } from "./CardBase";
 import { FavoriteButton } from "../FavoriteButton";
 import { useTranslation } from "../../../hooks/useTranslation";
@@ -34,13 +34,14 @@ export const AttractionCard = ({
   variant = "featured",
 }: AttractionCardProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { _id, name, slug, image, description, category, city } = attraction;
 
   const location = [city?.name, city?.country?.name].filter(Boolean).join(", ");
 
   return (
     <CardBase
-      to={slug ? attractionPath(slug) : ROUTES.attractions}
+      to={slug ? paths.attraction(slug) : paths.attractions}
       title={name}
       image={image}
       imageAlt={name ?? ""}

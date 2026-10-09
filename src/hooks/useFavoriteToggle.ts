@@ -4,12 +4,13 @@ import { toast } from "sonner";
 import { useAuth } from "./useAuth";
 import { useLikes } from "./useLikes";
 import { useTranslation } from "./useTranslation";
-import { ROUTES } from "../router/routes";
+import { usePaths } from "./usePaths";
 
 export const useFavoriteToggle = (attractionId: string) => {
   const { user } = useAuth();
   const { isLiked, toggleLike } = useLikes();
   const { t } = useTranslation();
+  const paths = usePaths();
   const navigate = useNavigate();
   const location = useLocation();
   const [isPending, setIsPending] = useState(false);
@@ -17,7 +18,7 @@ export const useFavoriteToggle = (attractionId: string) => {
 
   const handleClick = async () => {
     if (!user) {
-      navigate(ROUTES.login, {
+      navigate(paths.login, {
         state: {
           from: location.pathname + location.search,
           likeAttractionId: attractionId,

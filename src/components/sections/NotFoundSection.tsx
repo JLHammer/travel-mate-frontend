@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
@@ -28,12 +28,13 @@ const HomeLink = styled(Link)`
 
 export const NotFoundSection = () => {
   const { t } = useTranslation();
+  const paths = usePaths();
 
   return (
     <NotFoundSectionStyled>
       <h1>{t.notFound.title}</h1>
       <p>{t.notFound.text}</p>
-      <HomeLink to={ROUTES.home}>{t.notFound.backHome}</HomeLink>
+      <HomeLink to={paths.home}>{t.notFound.backHome}</HomeLink>
     </NotFoundSectionStyled>
   );
 };

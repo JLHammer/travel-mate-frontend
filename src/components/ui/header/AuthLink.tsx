@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { LogIn, UserRound } from "lucide-react";
-import { ROUTES } from "../../../router/routes";
+import { usePaths } from "../../../hooks/usePaths";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { useAuth } from "../../../hooks/useAuth";
 import { tokens } from "../../../styles/theme";
@@ -63,12 +63,13 @@ const AuthLinkStyled = styled(Link)<{ $loggedIn: boolean }>`
 
 export const AuthLink = ({ onNavigate }: AuthLinkProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { user } = useAuth();
   const Icon = user ? UserRound : LogIn;
 
   return (
     <AuthLinkStyled
-      to={ROUTES.login}
+      to={paths.login}
       onClick={onNavigate}
       $loggedIn={Boolean(user)}
     >

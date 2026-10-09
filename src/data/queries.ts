@@ -6,8 +6,20 @@ const DESCRIPTION = `coalesce(select($lang == "da" => description.da, $lang == "
 const ALT = `coalesce(select($lang == "da" => alt.da, $lang == "es" => alt.es), alt.en)`;
 const BY_NAME = `order(${NAME} asc)`;
 
-const COUNTRY_SUMMARY = `_id, "name": ${NAME}, code, "slug": slug.current`;
-const CITY_SUMMARY = `_id, "name": ${NAME}, "slug": slug.current`;
+// The slug in the selected language, for links. slug.current is the shape from before slugs were
+// localized, and can go once the localize-slugs migration has run
+const SLUG = `coalesce(select($lang == "da" => slug.da.current, $lang == "es" => slug.es.current), slug.en.current, slug.current)`;
+// Every language's slug, so a detail page knows its URL in the other languages
+const SLUGS = `"slugs": {
+  "da": coalesce(slug.da.current, slug.en.current, slug.current),
+  "en": coalesce(slug.en.current, slug.current),
+  "es": coalesce(slug.es.current, slug.en.current, slug.current)
+}`;
+// Detail pages accept the slug in any language, so a shared link still opens in the reader's language
+const MATCHES_SLUG = `$slug in [slug.da.current, slug.en.current, slug.es.current, slug.current]`;
+
+const COUNTRY_SUMMARY = `_id, "name": ${NAME}, code, "slug": ${SLUG}`;
+const CITY_SUMMARY = `_id, "name": ${NAME}, "slug": ${SLUG}`;
 const IMAGE = `image{ asset, crop, hotspot, "alt": ${ALT} }`;
 const CARD = `"tagline": ${TAGLINE}, "description": ${DESCRIPTION}, ${IMAGE}`;
 const LOCATION = `"latitude": location.lat, "longitude": location.lng`;
@@ -25,7 +37,7 @@ const CITY = `
 const ATTRACTION = `
   _id,
   "name": ${NAME},
-  "slug": slug.current,
+  "slug": ${SLUG},
   ${CARD},
   category,
   address,
@@ -34,7 +46,7 @@ const ATTRACTION = `
   "city": city->{ ${CITY_SUMMARY}, "country": country->{ ${COUNTRY_SUMMARY} } }
 `;
 
-const ATTRACTION_LIST_ITEM = `_id, "name": ${NAME}, "slug": slug.current, ${CARD}, category`;
+const ATTRACTION_LIST_ITEM = `_id, "name": ${NAME}, "slug": ${SLUG}, ${CARD}, category`;
 
 export const COUNTRIES_QUERY = defineQuery(`
   *[_type == "country"] | ${BY_NAME} { ${COUNTRY} }
@@ -72,8 +84,9 @@ export const FAVORITE_ATTRACTIONS_QUERY = defineQuery(`
 `);
 
 export const COUNTRY_DETAIL_QUERY = defineQuery(`
-  *[_type == "country" && slug.current == $slug][0] {
+  *[_type == "country" && ${MATCHES_SLUG}][0] {
     ${COUNTRY},
+    ${SLUGS},
     "cities": *[_type == "city" && references(^._id)] | ${BY_NAME} {
       ${CITY_SUMMARY},
       ${CARD}
@@ -82,8 +95,9 @@ export const COUNTRY_DETAIL_QUERY = defineQuery(`
 `);
 
 export const CITY_DETAIL_QUERY = defineQuery(`
-  *[_type == "city" && slug.current == $slug][0] {
+  *[_type == "city" && ${MATCHES_SLUG}][0] {
     ${CITY},
+    ${SLUGS},
     "attractions": *[_type == "attraction" && references(^._id)] | ${BY_NAME} {
       ${ATTRACTION_LIST_ITEM}
     }
@@ -91,8 +105,9 @@ export const CITY_DETAIL_QUERY = defineQuery(`
 `);
 
 export const ATTRACTION_DETAIL_QUERY = defineQuery(`
-  *[_type == "attraction" && slug.current == $slug][0] {
+  *[_type == "attraction" && ${MATCHES_SLUG}][0] {
     ${ATTRACTION},
+    ${SLUGS},
     "related": *[_type == "attraction" && city._ref == ^.city._ref && _id != ^._id] | ${BY_NAME} {
       ${ATTRACTION_LIST_ITEM}
     }

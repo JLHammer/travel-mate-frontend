@@ -1,5 +1,5 @@
 import { useFeatured } from "../../hooks/useFeatured";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { AttractionCard } from "../ui/cards/AttractionCard";
 import { CityCard } from "../ui/cards/CityCard";
 import { CountryCard } from "../ui/cards/CountryCard";
@@ -8,13 +8,14 @@ import { useTranslation } from "../../hooks/useTranslation";
 
 export const FeaturedSection = () => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { data, isLoading, error } = useFeatured();
 
   if (isLoading) {
     return (
       <CardSection
         title={t.sections.popularCountries}
-        linkPath={ROUTES.countries}
+        linkPath={paths.countries}
         linkLabel={t.sections.viewAllCountries}
         loading
       />
@@ -29,7 +30,7 @@ export const FeaturedSection = () => {
     <>
       <CardSection
         title={t.sections.popularCountries}
-        linkPath={ROUTES.countries}
+        linkPath={paths.countries}
         linkLabel={t.sections.viewAllCountries}
         carousel
       >
@@ -42,7 +43,7 @@ export const FeaturedSection = () => {
 
       <CardSection
         title={t.sections.popularCities}
-        linkPath={ROUTES.cities}
+        linkPath={paths.cities}
         linkLabel={t.sections.viewAllCities}
         carousel
       >
@@ -55,7 +56,7 @@ export const FeaturedSection = () => {
 
       <CardSection
         title={t.sections.featuredAttractions}
-        linkPath={ROUTES.attractions}
+        linkPath={paths.attractions}
         linkLabel={t.sections.viewAllAttractions}
         carousel
       >

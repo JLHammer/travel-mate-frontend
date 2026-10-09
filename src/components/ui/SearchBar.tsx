@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Search } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation";
-import { searchPath } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { tokens } from "../../styles/theme";
 
 const SearchBarStyled = styled.form`
@@ -134,6 +134,7 @@ type SearchBarProps = {
 
 export const SearchBar = ({ value, onChange, placeholder }: SearchBarProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const [localQuery, setLocalQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -147,7 +148,7 @@ export const SearchBar = ({ value, onChange, placeholder }: SearchBarProps) => {
     } else if (query.trim() === "") {
       inputRef.current?.focus();
     } else {
-      navigate(searchPath(query));
+      navigate(paths.searchFor(query));
     }
   };
 

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { ArrowRight, Building2, Globe, Heart, Landmark, MapPin, Moon } from "lucide-react";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 import { PageLayout, PageText } from "../layout/PageLayout";
@@ -98,9 +98,9 @@ type AboutItem = {
 };
 
 const exploreItems = [
-  { key: "countries", icon: <Globe />, path: ROUTES.countries },
-  { key: "cities", icon: <Building2 />, path: ROUTES.cities },
-  { key: "attractions", icon: <Landmark />, path: ROUTES.attractions },
+  { key: "countries", icon: <Globe /> },
+  { key: "cities", icon: <Building2 /> },
+  { key: "attractions", icon: <Landmark /> },
 ] as const;
 
 const featureItems = [
@@ -128,10 +128,11 @@ const AboutCards = ({ items }: { items: AboutItem[] }) => (
 
 export const AboutSection = () => {
   const { t } = useTranslation();
+  const paths = usePaths();
 
-  const explore: AboutItem[] = exploreItems.map(({ key, icon, path }) => {
+  const explore: AboutItem[] = exploreItems.map(({ key, icon }) => {
     const { title, text, link } = t.about.explore[key];
-    return { icon, title, text, link: { path, label: link } };
+    return { icon, title, text, link: { path: paths[key], label: link } };
   });
 
   const features: AboutItem[] = featureItems.map(({ key, icon }) => ({
@@ -164,7 +165,7 @@ export const AboutSection = () => {
         <AboutOutro>
           <h2>{t.about.upToDateTitle}</h2>
           <PageText>
-            {t.about.upToDateText} <AboutLink to={ROUTES.contact}>{t.about.getInTouch}</AboutLink>.
+            {t.about.upToDateText} <AboutLink to={paths.contact}>{t.about.getInTouch}</AboutLink>.
           </PageText>
         </AboutOutro>
       </AboutContent>

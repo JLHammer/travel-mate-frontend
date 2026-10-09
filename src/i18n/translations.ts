@@ -9,6 +9,9 @@ export const LANGUAGES: { id: Language; title: string }[] = [
   { id: "es", title: "Español" },
 ];
 
+export const isLanguage = (value: string | null | undefined): value is Language =>
+  LANGUAGES.some(({ id }) => id === value);
+
 const en = {
   nav: {
     home: "Home",

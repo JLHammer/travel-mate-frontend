@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import type { Country } from "../../../types";
-import { ROUTES, countryPath } from "../../../router/routes";
+import { usePaths } from "../../../hooks/usePaths";
 import { CardBase, CardDescription } from "./CardBase";
 import { tokens } from "../../../styles/theme";
 import { flagUrl } from "../../../utils/flagUrl";
@@ -15,13 +15,14 @@ type CountryCardProps = {
 };
 
 export const CountryCard = ({ country }: CountryCardProps) => {
+  const paths = usePaths();
   const { name, code, slug, tagline, description, image } = country;
   // Description is the fallback if a tagline is missing
   const summary = tagline ?? description;
 
   return (
     <CardBase
-      to={slug ? countryPath(slug) : ROUTES.countries}
+      to={slug ? paths.country(slug) : paths.countries}
       title={
         <>
           {code && <CountryFlag src={flagUrl(code)} alt="" />}
