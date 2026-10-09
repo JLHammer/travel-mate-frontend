@@ -1,5 +1,5 @@
 import type { CountryDetail } from "../../types";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { CityCard } from "../ui/cards/CityCard";
 import { CardSection } from "./CardSection";
 import { DetailsSection } from "./DetailsSection";
@@ -11,12 +11,13 @@ type CountryDetailsSectionProps = {
 
 export const CountryDetailsSection = ({ country }: CountryDetailsSectionProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { name, code, image, description, cities } = country;
 
   return (
     <>
       <DetailsSection
-        backPath={ROUTES.countries}
+        backPath={paths.countries}
         backLabel={t.details.backToCountries}
         name={name}
         flagCode={code}
@@ -27,7 +28,7 @@ export const CountryDetailsSection = ({ country }: CountryDetailsSectionProps) =
       {cities.length > 0 && (
         <CardSection
           title={t.sections.popularCitiesIn(name ?? "")}
-          linkPath={ROUTES.cities}
+          linkPath={paths.cities}
           linkLabel={t.sections.viewAllCities}
           carousel="mobile"
         >

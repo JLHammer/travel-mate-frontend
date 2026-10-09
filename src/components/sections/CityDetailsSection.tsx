@@ -1,5 +1,5 @@
 import type { CityDetail } from "../../types";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { AttractionCard } from "../ui/cards/AttractionCard";
 import { placeInfo } from "../ui/details/placeInfo";
 import { CardSection } from "./CardSection";
@@ -12,6 +12,7 @@ type CityDetailsSectionProps = {
 
 export const CityDetailsSection = ({ city }: CityDetailsSectionProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { name, image, description, latitude, longitude, website, country, attractions } = city;
 
   const address = [name, country?.name].filter(Boolean).join(", ");
@@ -19,7 +20,7 @@ export const CityDetailsSection = ({ city }: CityDetailsSectionProps) => {
   return (
     <>
       <DetailsSection
-        backPath={ROUTES.cities}
+        backPath={paths.cities}
         backLabel={t.details.backToCities}
         name={name}
         flagCode={country?.code}
@@ -34,7 +35,7 @@ export const CityDetailsSection = ({ city }: CityDetailsSectionProps) => {
       {attractions.length > 0 && (
         <CardSection
           title={t.sections.popularAttractionsIn(name ?? "")}
-          linkPath={ROUTES.attractions}
+          linkPath={paths.attractions}
           linkLabel={t.sections.viewAllAttractions}
           carousel="mobile"
         >

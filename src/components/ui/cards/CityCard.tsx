@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ChevronRight, MapPin } from "lucide-react";
 import type { CityCardData } from "../../../types";
-import { ROUTES, cityPath } from "../../../router/routes";
+import { usePaths } from "../../../hooks/usePaths";
 import { CardBase, CardDescription, CardMeta } from "./CardBase";
 import { tokens } from "../../../styles/theme";
 
@@ -22,11 +22,12 @@ type CityCardProps = {
 };
 
 export const CityCard = ({ city, variant = "featured" }: CityCardProps) => {
+  const paths = usePaths();
   const { name, slug, image, description, country } = city;
 
   return (
     <CardBase
-      to={slug ? cityPath(slug) : ROUTES.cities}
+      to={slug ? paths.city(slug) : paths.cities}
       title={name}
       image={image}
       imageAlt={name ?? ""}

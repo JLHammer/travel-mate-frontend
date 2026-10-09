@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { FOOTER_LINKS } from "../../router/routes";
 import { useTranslation } from "../../hooks/useTranslation";
+import { usePaths } from "../../hooks/usePaths";
 import { tokens } from "../../styles/theme";
 
 const FooterNavBarStyled = styled.nav`
@@ -35,13 +36,14 @@ const FooterNavLink = styled(NavLink)`
 
 export const FooterNavBar = () => {
   const { t } = useTranslation();
+  const paths = usePaths();
 
   return (
     <FooterNavBarStyled>
       <FooterNavUl>
-        {FOOTER_LINKS.map(({ path, key }) => (
-          <li key={path}>
-            <FooterNavLink to={path}>{t.nav[key]}</FooterNavLink>
+        {FOOTER_LINKS.map((key) => (
+          <li key={key}>
+            <FooterNavLink to={paths[key]}>{t.nav[key]}</FooterNavLink>
           </li>
         ))}
       </FooterNavUl>

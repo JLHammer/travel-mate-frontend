@@ -1,5 +1,5 @@
 import type { AttractionDetail } from "../../types";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { AttractionCard } from "../ui/cards/AttractionCard";
 import { placeInfo } from "../ui/details/placeInfo";
 import { FavoriteButton } from "../ui/FavoriteButton";
@@ -13,13 +13,14 @@ type AttractionDetailsSectionProps = {
 
 export const AttractionDetailsSection = ({ attraction }: AttractionDetailsSectionProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { _id, name, image, description, address, latitude, longitude, website, city, related } =
     attraction;
 
   return (
     <>
       <DetailsSection
-        backPath={ROUTES.attractions}
+        backPath={paths.attractions}
         backLabel={t.details.backToAttractions}
         name={name}
         flagCode={city?.country?.code}
@@ -35,7 +36,7 @@ export const AttractionDetailsSection = ({ attraction }: AttractionDetailsSectio
       {related.length > 0 && (
         <CardSection
           title={t.sections.moreAttractionsIn(city?.name ?? t.sections.thisCity)}
-          linkPath={ROUTES.attractions}
+          linkPath={paths.attractions}
           linkLabel={t.sections.viewAllAttractions}
           carousel="mobile"
         >

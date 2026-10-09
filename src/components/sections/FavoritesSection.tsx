@@ -5,7 +5,7 @@ import { useFavoriteAttractions } from "../../hooks/useFavoriteAttractions";
 import { useTranslation } from "../../hooks/useTranslation";
 import { AttractionCard } from "../ui/cards/AttractionCard";
 import { CardSection } from "./CardSection";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { tokens } from "../../styles/theme";
 
 const EmptyState = styled.div`
@@ -32,6 +32,7 @@ const BrowseLink = styled(Link)`
 
 export const FavoritesSection = () => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { attractions, isLoading, error } = useFavoriteAttractions();
 
   if (error) {
@@ -52,7 +53,7 @@ export const FavoritesSection = () => {
       {isEmpty && (
         <EmptyState>
           <p>{t.favorites.empty}</p>
-          <BrowseLink to={ROUTES.attractions}>
+          <BrowseLink to={paths.attractions}>
             {t.favorites.browse} <ArrowRight />
           </BrowseLink>
         </EmptyState>

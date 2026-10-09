@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useCountry } from "../hooks/useCountry";
+import { useLocalizedSlug } from "../hooks/useLocalizedSlug";
 import { PageTitle } from "../components/ui/PageTitle";
 import { useTranslation } from "../hooks/useTranslation";
 import { Loader } from "../components/ui/Loader";
@@ -10,6 +11,8 @@ export const CountryDetailsPage = () => {
   const { countrySlug } = useParams();
   const { t } = useTranslation();
   const { data: country, isLoading, error } = useCountry(countrySlug);
+  // Not while loading, since country still holds the previous page then
+  const redirect = useLocalizedSlug(isLoading ? null : country?.slugs, "country");
 
   if (isLoading) return <Loader />;
 
@@ -18,6 +21,8 @@ export const CountryDetailsPage = () => {
   }
 
   if (!country) return <NotFoundPage />;
+
+  if (redirect) return <Navigate to={redirect} replace />;
 
   return (
     <>

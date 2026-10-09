@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useCity } from "../hooks/useCity";
+import { useLocalizedSlug } from "../hooks/useLocalizedSlug";
 import { PageTitle } from "../components/ui/PageTitle";
 import { useTranslation } from "../hooks/useTranslation";
 import { Loader } from "../components/ui/Loader";
@@ -10,6 +11,8 @@ export const CityDetailsPage = () => {
   const { citySlug } = useParams();
   const { t } = useTranslation();
   const { data: city, isLoading, error } = useCity(citySlug);
+  // Not while loading, since city still holds the previous page then
+  const redirect = useLocalizedSlug(isLoading ? null : city?.slugs, "city");
 
   if (isLoading) return <Loader />;
 
@@ -18,6 +21,8 @@ export const CityDetailsPage = () => {
   }
 
   if (!city) return <NotFoundPage />;
+
+  if (redirect) return <Navigate to={redirect} replace />;
 
   return (
     <>
