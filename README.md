@@ -60,7 +60,7 @@ export const LANGUAGES = [
   {id: 'da', title: 'Dansk'},
   {id: 'en', title: 'English'},
   {id: 'es', title: 'Español'},
-] as const
+]
 ```
 
 The frontend has a matching list in `src/i18n/translations.ts`, and the type `Language = "da" | "en" | "es"` in `src/types/sanity.ts`.
@@ -86,7 +86,7 @@ A country is still a single document, and its translations sit next to each othe
 }
 ```
 
-Validation in the Studio requires every language on `name` and `description`, so a country, city or attraction can't be published with a translation missing.
+Validation in the Studio requires every language on `name`, `description` and `slug`, so a country, city or attraction can't be published with a translation missing. Missing `image.alt` text only gives a warning.
 
 ### 3. GROQ
 
@@ -97,9 +97,9 @@ Every query takes a `$lang` parameter. Each localized field picks the selected l
 ```
 
 - `select(...)` picks `name.da` or `name.es` depending on `$lang`.
-- `coalesce(..., name.en)` uses English if the text is empty in the selected language. For `name` and `description` that can't happen once a document is published, but `tagline` is optional.
+- `coalesce(..., name.en)` uses English if the text is empty in the selected language. For `name` and `description` that can't happen once a document is published, but `tagline` and `image.alt` are optional.
 
-The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`) in `src/data/queries.ts`, so they are written once and used by every query. Lists are sorted by the name in the selected language too. React receives plain text, e.g. `name: "Italien"`, and never handles the language object itself.
+The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`, `ALT`, `SLUG`) in `src/data/queries.ts`, so they are written once and used by every query. Lists are sorted by the name in the selected language too. React receives plain text, e.g. `name: "Italien"`, and never handles the language object itself.
 
 ### 4. React
 
@@ -152,47 +152,34 @@ There are three ways to structure translations in Sanity. The difference is wher
 { "_type": "country", "code": "IT", "name": { "da": "Italien", "en": "Italy" } }
 ```
 
-**Embedded language objects.** The document holds an array with one object per language, and each object has all the text for that language. Language is organised per bundle: "here is everything in Danish".
-
-```json
-{
-  "_type": "country",
-  "code": "IT",
-  "info": [
-    { "language": "da", "name": "Italien", "description": "…" },
-    { "language": "en", "name": "Italy", "description": "…" }
-  ]
-}
-```
-
-```groq
-"info": info[language == $language][0] { name, description }
-```
-
-**Document-level localization (referenced Info documents).** `Language`, `CountryInfo`, `CityInfo` and `AttractionInfo` are document types of their own, connected by references, like tables in a relational database. A country in two languages becomes one `Country` document and two `CountryInfo` documents.
+**Embedded language objects (the assignment's model).** The document holds an `info` array with one object per language, and each object has all the text for that language. Language is organised per bundle: "here is everything in Danish". In the assignment's Studio, `language` is a document type, and `countryInfo` and `cityInfo` are object types inside `country.info` and `city.info`. Each object points to its language with a reference.
 
 ```text
-Language    { code: "da", title: "Dansk" }
-Country     { code: "IT", image }
-CountryInfo { country: → Country (IT), language: → Language (da), name: "Italien", description: "…" }
+language { name: "Dansk", code: "da" }
+country  { name, code, image, info: [countryInfo, …] }
+  countryInfo { language: → language (da), name: "Italien", slug, description: "…" }
 ```
 
 ```groq
-"info": *[_type == "countryInfo" && country._ref == ^._id && language->code == $lang][0] {
-  name, description
-}
+"info": info[language->code == $lang][0] { name, "slug": slug.current, description }
+```
+
+**Document-level localization.** Each language version is a document of its own, connected to the others by references or by the `@sanity/document-internationalization` plugin. A country in two languages becomes two documents, and shared data like the image is stored in each of them or in a separate base document.
+
+```groq
+*[_type == "country" && language == $lang && slug.current == $slug][0]
 ```
 
 #### Comparison
 
-| | Field-level localization (TravelMate) | Embedded language objects | Document-level localization |
+| | Field-level localization (TravelMate) | Embedded language objects (assignment) | Document-level localization |
 |---|---|---|---|
 | Where the text lives | In each field | In a list inside the document | In separate documents |
-| Documents per country (2 languages) | 1 | 1 | 3 (+ Language documents) |
-| What "Language" is | A list in code | A dropdown (`options.list`) | A document type |
-| Can a translation go missing unnoticed? | No, validation catches it on `name` and `description` | Yes, nobody has to add the entry | Yes, nobody has to create the document |
+| Documents per country (2 languages) | 1 | 1 (+ Language documents) | 2 or more |
+| What "Language" is | A list in code | A document type, referenced from each entry | A field or a document type |
+| Can a translation go missing unnoticed? | No, validation catches it on `name`, `description` and `slug` | Yes, nobody has to add the entry | Yes, nobody has to create the document |
 | Editor experience | All languages side by side | One block per language | Jump between documents |
-| Query | Simplest | Filter the array | Reverse lookup across documents |
+| Query | Simplest | Filter the array and follow the language reference | Filter on language across documents |
 | Can each language have its own fields or publish on its own? | No | No | Yes |
 
 #### Why field-level localization
@@ -200,11 +187,11 @@ CountryInfo { country: → Country (IT), language: → Language (da), name: "Ita
 Document-level localization is the strongest model when each language needs its own fields, its own publishing schedule or its own editors, or when a site has many languages. TravelMate has none of those needs:
 
 - **Every language has the same structure.** A country has the same fields in every language, and only the text differs.
-- **Translations can't go missing unnoticed.** The editor sees all languages side by side, and the validation flags a missing `name` or `description`. With Info documents, every place needs extra documents that are created and linked by hand, and nothing warns if one is forgotten.
-- **Simpler queries.** GROQ reads the right language straight from the document, without joining in extra documents through references.
+- **Translations can't go missing unnoticed.** The editor sees all languages side by side, and the validation flags a missing `name`, `description` or `slug`. With `info` entries, the editor adds one entry per language by hand, and nothing warns if a language is forgotten or added twice.
+- **Simpler queries.** GROQ reads the right language straight from the field, without filtering an array or following a reference to the language.
 - **It matches Sanity's own guidance.** Sanity's localization docs describe field-level localization as best for documents with a mix of language-specific and shared fields. TravelMate's documents are exactly that: `name`, `tagline`, `description` and `slug` are translated, while `image`, `location` and the rest are shared.
 
-The parts of the assignment's model are still there, in a different form: `Language` is the `LANGUAGES` list, and the Info layer is the `localeString`/`localeText` objects on each document.
+The parts of the assignment's model are still there, in a different form: the `language` documents are the `LANGUAGES` list, and the `info` objects are the `localeString`/`localeText`/`localeSlug` objects on each field.
 
 ### Adding a language
 
