@@ -6,17 +6,16 @@ const DESCRIPTION = `coalesce(select($lang == "da" => description.da, $lang == "
 const ALT = `coalesce(select($lang == "da" => alt.da, $lang == "es" => alt.es), alt.en)`;
 const BY_NAME = `order(${NAME} asc)`;
 
-// The slug in the selected language, for links. slug.current is the shape from before slugs were
-// localized, and can go once the localize-slugs migration has run
-const SLUG = `coalesce(select($lang == "da" => slug.da.current, $lang == "es" => slug.es.current), slug.en.current, slug.current)`;
+// The slug in the selected language, for links
+const SLUG = `coalesce(select($lang == "da" => slug.da.current, $lang == "es" => slug.es.current), slug.en.current)`;
 // Every language's slug, so a detail page knows its URL in the other languages
 const SLUGS = `"slugs": {
-  "da": coalesce(slug.da.current, slug.en.current, slug.current),
-  "en": coalesce(slug.en.current, slug.current),
-  "es": coalesce(slug.es.current, slug.en.current, slug.current)
+  "da": coalesce(slug.da.current, slug.en.current),
+  "en": slug.en.current,
+  "es": coalesce(slug.es.current, slug.en.current)
 }`;
 // Detail pages accept the slug in any language, so a shared link still opens in the reader's language
-const MATCHES_SLUG = `$slug in [slug.da.current, slug.en.current, slug.es.current, slug.current]`;
+const MATCHES_SLUG = `$slug in [slug.da.current, slug.en.current, slug.es.current]`;
 
 const COUNTRY_SUMMARY = `_id, "name": ${NAME}, code, "slug": ${SLUG}`;
 const CITY_SUMMARY = `_id, "name": ${NAME}, "slug": ${SLUG}`;
