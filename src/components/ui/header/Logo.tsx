@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { AirplaneIcon } from "../icons/AirplaneIcon";
 import type { AnimatedIconHandle } from "../../../types";
 import { tokens } from "../../../styles/theme";
@@ -19,7 +20,7 @@ const LogoContainer = styled.div`
   gap: ${tokens.mobile.spacing.xs};
 `;
 
-const LogoLink = styled.a`
+const LogoLink = styled(Link)`
   text-decoration: none;
   width: fit-content;
 `;
@@ -59,7 +60,7 @@ export const Logo = ({ iconVisible = true, variant = "header" }: LogoProps) => {
   return (
     <LogoContainer>
       <LogoLink
-        href={paths.home}
+        to={paths.home}
         onMouseEnter={() => iconRef.current?.startAnimation()}
         onMouseLeave={() => iconRef.current?.stopAnimation()}
       >
