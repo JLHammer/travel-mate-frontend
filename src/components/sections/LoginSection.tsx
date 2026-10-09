@@ -11,7 +11,7 @@ import { PageLayout, PageText } from "../layout/PageLayout";
 import { useAuth } from "../../hooks/useAuth";
 import { useTranslation } from "../../hooks/useTranslation";
 import { DEMO_LOGIN } from "../../data/users";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { tokens } from "../../styles/theme";
 
 const DemoHint = styled.div`
@@ -41,10 +41,11 @@ const DemoCredentials = styled.p`
 
 export const LoginSection = () => {
   const { t } = useTranslation();
+  const paths = usePaths();
   const { user, isLoading, logout } = useAuth();
   const location = useLocation();
   // ProtectedRoute sends logged-out users here with the page they tried to open
-  const fromFavorites = (location.state as { from?: string } | null)?.from === ROUTES.favorites;
+  const fromFavorites = (location.state as { from?: string } | null)?.from === paths.favorites;
 
   useEffect(() => {
     if (!fromFavorites || user || isLoading) return;

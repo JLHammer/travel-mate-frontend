@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
+import { BrowserRouter } from "react-router-dom";
 import { ThemeModeProvider } from "./contexts/ThemeModeProvider.tsx";
 import { LanguageContextProvider } from "./contexts/LanguageContextProvider.tsx";
 import { AuthProvider } from "./contexts/AuthProvider.tsx";
@@ -9,17 +10,20 @@ import { App } from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <LanguageContextProvider>
-      <ThemeModeProvider>
-        {/* Inside ThemeModeProvider, since it uses the theme colors */}
-        <GlobalStyle />
-        <AuthProvider>
-          {/* Inside AuthProvider, since likes are saved per user */}
-          <LikesProvider>
-            <App />
-          </LikesProvider>
-        </AuthProvider>
-      </ThemeModeProvider>
-    </LanguageContextProvider>
+    {/* Outside LanguageContextProvider, since the language comes from the URL */}
+    <BrowserRouter>
+      <LanguageContextProvider>
+        <ThemeModeProvider>
+          {/* Inside ThemeModeProvider, since it uses the theme colors */}
+          <GlobalStyle />
+          <AuthProvider>
+            {/* Inside AuthProvider, since likes are saved per user */}
+            <LikesProvider>
+              <App />
+            </LikesProvider>
+          </AuthProvider>
+        </ThemeModeProvider>
+      </LanguageContextProvider>
+    </BrowserRouter>
   </StrictMode>,
 );

@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { NavLink } from "react-router-dom";
-import { NAV_LINKS, ROUTES } from "../../router/routes";
+import { NAV_LINKS } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
@@ -74,21 +75,20 @@ const NavBarLink = styled(NavLink)<{ $variant: NavLinksVariant }>`
         `}
 `;
 
-const { home, favorites } = ROUTES;
-
 export const NavLinks = ({ variant, onNavigate }: NavLinksProps) => {
   const { t } = useTranslation();
+  const paths = usePaths();
 
   const links = [
-    ...NAV_LINKS.map(({ path, key }) => ({ path, label: t.nav[key] })),
-    { path: favorites, label: t.nav.favorites },
+    ...NAV_LINKS.map((key) => ({ path: paths[key], label: t.nav[key] })),
+    { path: paths.favorites, label: t.nav.favorites },
   ];
 
   return (
     <NavUl $variant={variant}>
       {links.map(({ path, label }) => (
         <NavLi key={path} $variant={variant}>
-          <NavBarLink to={path} end={path === home} onClick={onNavigate} $variant={variant}>
+          <NavBarLink to={path} end={path === paths.home} onClick={onNavigate} $variant={variant}>
             {label}
           </NavBarLink>
         </NavLi>

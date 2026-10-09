@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { LanguageContext } from "./LanguageContext";
-import { LANGUAGES } from "../i18n/translations";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { LanguageContext, type AlternatePaths } from "./LanguageContext";
+import { isLanguage } from "../i18n/translations";
+import { languageOfPath, translatePath } from "../router/routes";
 import type { Language } from "../types";
 import type { ProviderProps } from "./ThemeModeProvider";
 
 const STORAGE_KEY = "language";
 const DEFAULT_LANGUAGE: Language = "da";
 
-const isLanguage = (value: string | null | undefined): value is Language =>
-  LANGUAGES.some(({ id }) => id === value);
-
-const getInitialLanguage = (): Language => {
+// Used on pages whose URL has no section, like "/" and 404s
+const getPreferredLanguage = (): Language => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (isLanguage(saved)) return saved;
@@ -21,8 +21,17 @@ const getInitialLanguage = (): Language => {
   return browser ?? DEFAULT_LANGUAGE;
 };
 
+// The language follows the URL's section name, e.g. /lande is Danish, so links and reloads keep it
 export const LanguageContextProvider = ({ children }: ProviderProps) => {
-  const [language, setLanguage] = useState<Language>(getInitialLanguage);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [preferred, setPreferred] = useState<Language>(getPreferredLanguage);
+  const [alternatePaths, setAlternatePaths] = useState<AlternatePaths | null>(null);
+
+  const fromUrl = languageOfPath(location.pathname);
+  const language = fromUrl ?? preferred;
+  // Remember the URL's language, so "/" stays in it afterwards
+  if (fromUrl && fromUrl !== preferred) setPreferred(fromUrl);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -31,8 +40,26 @@ export const LanguageContextProvider = ({ children }: ProviderProps) => {
     } catch {}
   }, [language]);
 
+  // Go to the same page in the other language. Detail pages know their exact path there;
+  // other pages only need their section translated, and "/" stays where it is
+  const setLanguage = useCallback(
+    (next: Language) => {
+      setPreferred(next);
+      const current = location.pathname + location.search;
+      const target = alternatePaths?.[next] ?? translatePath(current, next);
+      if (target === current) return;
+
+      const state = location.state as { from?: string } | null;
+      navigate(target, {
+        // Keep the login redirect target, in the new language too
+        state: state?.from ? { ...state, from: translatePath(state.from, next) } : state,
+      });
+    },
+    [alternatePaths, location, navigate],
+  );
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, setAlternatePaths }}>
       {children}
     </LanguageContext.Provider>
   );

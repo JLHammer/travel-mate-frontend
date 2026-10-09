@@ -2,7 +2,7 @@ import type { MouseEvent } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { ROUTES } from "../../router/routes";
+import { usePaths } from "../../hooks/usePaths";
 import { useTranslation } from "../../hooks/useTranslation";
 import { LEGAL_LAST_UPDATED, type LegalDocument } from "../../i18n/legal";
 import { tokens } from "../../styles/theme";
@@ -140,6 +140,7 @@ type LegalSectionProps = {
 
 export const LegalSection = ({ title, content }: LegalSectionProps) => {
   const { t, language } = useTranslation();
+  const paths = usePaths();
 
   const lastUpdated = new Intl.DateTimeFormat(language, {
     dateStyle: "long",
@@ -201,7 +202,7 @@ export const LegalSection = ({ title, content }: LegalSectionProps) => {
             </LegalBlock>
           ))}
 
-          <ContactLink to={ROUTES.contact}>
+          <ContactLink to={paths.contact}>
             {t.legal.contactLink} <ArrowRight />
           </ContactLink>
         </LegalArticle>

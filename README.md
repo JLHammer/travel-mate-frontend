@@ -49,7 +49,7 @@ Language → Info models → GROQ → React → Language switch
 | Info models | Store each text in every language | `localeString`, `localeText` (Studio) |
 | GROQ | Pick out the selected language | `src/data/queries.ts` |
 | React | Send the selected language to the queries | `LanguageContext`, data hooks |
-| Language switch | Change the language and reload the content | `LanguageToggle` |
+| Language switch | Go to the same page in the new language | `LanguageToggle` |
 
 ### 1. Language
 
@@ -67,12 +67,14 @@ The frontend has a matching list in `src/i18n/translations.ts`, and the type `La
 
 ### 2. Info models
 
-Two object types are built from `LANGUAGES`. `localeString` is for short text and `localeText` for longer text, and each has one field per language. Text that changes with the language uses these types. Data that is the same in every language stays directly on the document.
+Three object types are built from `LANGUAGES`. `localeString` is for short text, `localeText` for longer text and `localeSlug` for the URL part, and each has one field per language. Text that changes with the language uses these types. Data that is the same in every language stays directly on the document.
 
 | Field | Depends on language? | Type |
 |---|---|---|
-| `name`, `tagline`, `description` | Yes | `localeString` / `localeText` |
-| `slug`, `code`, `image`, `location`, `address`, `website`, `category`, `featured` | No | Plain fields on the document |
+| `name`, `tagline`, `description`, `image.alt` | Yes | `localeString` / `localeText` |
+| `slug` | Yes | `localeSlug` |
+| `category` | Yes, translated in the frontend from a fixed key | `string` (option list) |
+| `code`, `image` (asset, credit), `location`, `address`, `website`, `featured` | No | Plain fields on the document |
 
 A country is still a single document, and its translations sit next to each other:
 
@@ -101,7 +103,7 @@ The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`) in `
 
 ### 4. React
 
-- **`LanguageContextProvider`** holds the selected language. On the first visit it uses the browser's language if TravelMate supports it, and Danish otherwise. The choice is saved in `localStorage` and set on `<html lang>` for screen readers.
+- **`LanguageContextProvider`** reads the language from the URL (see [URLs](#urls)). On pages without a section, like the front page, it uses the last language the user had, or the browser's language on the first visit, and Danish otherwise. The language is saved in `localStorage` and set on `<html lang>` for screen readers.
 - **`useLanguage`** gives components the language and `setLanguage`.
 - **Data hooks** (`useCountry`, `useCities`, …) send the language to the query as `lang`:
 
@@ -116,12 +118,27 @@ The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`) in `
 
 When the user picks a language in `LanguageToggle` in the header:
 
-1. `setLanguage("en")` updates the context.
-2. Every component that uses `useLanguage` renders again.
+1. `setLanguage("en")` navigates to the same page in English, e.g. from `/lande/italien` to `/countries/italy`. On the front page the URL stays `/`.
+2. The new URL gives the context a new language, and every component that uses `useLanguage` renders again.
 3. The data hooks now send `lang: "en"`. `useSanityQuery` sees the new parameter, cancels the old request and fetches again.
 4. GROQ returns the English text, and the page shows it.
 5. `useTranslation` switches the fixed UI text at the same time.
 6. The choice is saved in `localStorage` and set on `<html lang="en">`.
+
+### URLs
+
+Every page has its own URL in each language. The section names are translated, and so are the slugs:
+
+| | Danish | English | Spanish |
+|---|---|---|---|
+| Country list | `/lande` | `/countries` | `/paises` |
+| A country | `/lande/italien` | `/countries/italy` | `/paises/italia` |
+| An attraction | `/seevaerdigheder/tivoli` | `/attractions/tivoli-gardens` | `/atracciones/jardines-de-tivoli` |
+
+- **No language prefix.** No section name is used by two languages, so the first part of the URL already says which language it is. `languageOfPath` in `src/router/routes.ts` looks it up in `SEGMENTS`, the table of section names. The front page is `/` in every language.
+- **Links** are built with `usePaths()`, which returns every path in the current language, e.g. `paths.country(slug)`. Components never write a path by hand.
+- **Slugs** are made in the Studio from the name in each language, transliterated to ASCII (`Akershus Fæstning` → `akershus-faestning`) so URLs never need percent-encoding. A slug must be unique across all languages within its type, so a URL always leads to one document.
+- **Detail pages accept the slug in any language.** If a Danish reader opens a shared `/attractions/tivoli-gardens`, the page loads and redirects to `/seevaerdigheder/tivoli`. The query returns all three slugs (`slugs`), and `useLocalizedSlug` uses them both for that redirect and to tell `LanguageToggle` the exact URL in the other languages.
 
 Countries, cities and attractions all change together, with no code specific to the language switch in any page.
 
@@ -185,7 +202,7 @@ Document-level localization is the strongest model when each language needs its 
 - **Every language has the same structure.** A country has the same fields in every language, and only the text differs.
 - **Translations can't go missing unnoticed.** The editor sees all languages side by side, and the validation flags a missing `name` or `description`. With Info documents, every place needs extra documents that are created and linked by hand, and nothing warns if one is forgotten.
 - **Simpler queries.** GROQ reads the right language straight from the document, without joining in extra documents through references.
-- **It matches Sanity's own guidance.** Sanity's localization docs describe field-level localization as best for documents with a mix of language-specific and shared fields. TravelMate's documents are exactly that: `name`, `tagline` and `description` are translated, while `slug`, `image`, `location` and the rest are shared.
+- **It matches Sanity's own guidance.** Sanity's localization docs describe field-level localization as best for documents with a mix of language-specific and shared fields. TravelMate's documents are exactly that: `name`, `tagline`, `description` and `slug` are translated, while `image`, `location` and the rest are shared.
 
 The parts of the assignment's model are still there, in a different form: `Language` is the `LANGUAGES` list, and the Info layer is the `localeString`/`localeText` objects on each document.
 
@@ -194,9 +211,9 @@ The parts of the assignment's model are still there, in a different form: `Langu
 Adding a fourth language takes:
 
 1. **Sanity:** one line in `LANGUAGES` in `schemaTypes/languages.ts`. The new field appears on every localized field in the Studio automatically.
-2. **Content:** translating `name`, `tagline` and `description` in the Studio. Validation flags every document that is still missing the new language.
-3. **GROQ:** one more branch in the `select()` for `NAME`, `TAGLINE` and `DESCRIPTION`, then `npm run typegen`.
-4. **React:** one entry in `LANGUAGES` and a translation object for the UI text in `src/i18n/translations.ts`, the privacy and terms text in `src/i18n/legal.ts`, and the language code in the `Language` type in `src/types/sanity.ts`. TypeScript flags any translation that is missing. No component needs to change.
+2. **Content:** translating `name`, `tagline`, `description` and `image.alt`, and generating the new slug, in the Studio. Validation flags every document that is still missing the new language.
+3. **GROQ:** one more branch in the `select()` for `NAME`, `TAGLINE`, `DESCRIPTION`, `ALT` and `SLUG`, and the new language in `SLUGS` and `MATCHES_SLUG`, then `npm run typegen`.
+4. **React:** one entry in `LANGUAGES` and a translation object for the UI text in `src/i18n/translations.ts`, the privacy and terms text in `src/i18n/legal.ts`, the language code in the `Language` type in `src/types/sanity.ts`, and the section names in `SEGMENTS` in `src/router/routes.ts`. TypeScript flags any translation that is missing. No component needs to change.
 
 ## API calls and Custom Hooks
 

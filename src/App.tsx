@@ -1,8 +1,3 @@
-import { BrowserRouter } from "react-router-dom";
 import { AppRouter } from "./router/AppRouter";
 
-export const App = () => (
-  <BrowserRouter>
-    <AppRouter />
-  </BrowserRouter>
-);
+export const App = () => <AppRouter />;

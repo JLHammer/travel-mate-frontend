@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { AirplaneIcon } from "../icons/AirplaneIcon";
 import type { AnimatedIconHandle } from "../../../types";
 import { tokens } from "../../../styles/theme";
+import { usePaths } from "../../../hooks/usePaths";
 
 type LogoVariant = "header" | "footer";
 
@@ -53,11 +54,12 @@ const LogoSpan = styled.span`
 
 export const Logo = ({ iconVisible = true, variant = "header" }: LogoProps) => {
   const iconRef = useRef<AnimatedIconHandle>(null);
+  const paths = usePaths();
 
   return (
     <LogoContainer>
       <LogoLink
-        href="/"
+        href={paths.home}
         onMouseEnter={() => iconRef.current?.startAnimation()}
         onMouseLeave={() => iconRef.current?.stopAnimation()}
       >
