@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
 const CAVEAT_URL = "https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap";
@@ -12,12 +13,12 @@ const HeroTaglineStyled = styled.p`
   align-self: flex-start;
   align-items: flex-start;
   padding-left: ${tokens.mobile.spacing.l};
-  color: #fff;
+  color: ${({ theme }) => theme.colors.onScrim};
   font-family: "Caveat", cursive;
   font-weight: 500;
   font-size: 1.625rem;
   line-height: 0.95;
-  text-shadow: 0 1px 6px rgb(0 0 0 / 35%);
+  text-shadow: ${({ theme }) => theme.shadows.textOnImage};
   transform: rotate(-8deg);
   pointer-events: none;
 
@@ -47,15 +48,19 @@ const TaglineSwoosh = styled.svg`
   margin: 0.5rem 0 0 1.5rem;
 `;
 
-export const HeroTagline = () => (
-  <>
-    <link rel="stylesheet" href={CAVEAT_URL} precedence="default" />
-    <HeroTaglineStyled>
-      <span>Good places</span>
-      <span>Brighter days</span>
-      <TaglineSwoosh viewBox="0 0 140 20">
-        <path d="M2 18 Q60 0 138 6 Q62 4 4 20 Z" fill="currentColor" />
-      </TaglineSwoosh>
-    </HeroTaglineStyled>
-  </>
-);
+export const HeroTagline = () => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <link rel="stylesheet" href={CAVEAT_URL} precedence="default" />
+      <HeroTaglineStyled>
+        <span>{t.hero.tagline.line1}</span>
+        <span>{t.hero.tagline.line2}</span>
+        <TaglineSwoosh viewBox="0 0 140 20">
+          <path d="M2 18 Q60 0 138 6 Q62 4 4 20 Z" fill="currentColor" />
+        </TaglineSwoosh>
+      </HeroTaglineStyled>
+    </>
+  );
+};

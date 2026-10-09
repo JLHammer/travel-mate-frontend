@@ -126,6 +126,7 @@ export interface ThemeShadows {
   card: string;
   cardHover: string;
   search: string;
+  textOnImage: string;
 }
 
 export interface ThemeBase {

@@ -41,6 +41,7 @@ const en = {
     title: "Explore the World with TravelMate",
     line1: "Discover amazing attractions, cities and countries.",
     line2: "Your next adventure is just a click away.",
+    tagline: { line1: "Good places", line2: "Brighter days" },
   },
   search: {
     placeholder: "Search destinations or tags...",
@@ -247,6 +248,7 @@ const da: Dictionary = {
     title: "Udforsk verden med TravelMate",
     line1: "Opdag fantastiske seværdigheder, byer og lande.",
     line2: "Dit næste eventyr er kun et klik væk.",
+    tagline: { line1: "Gode steder", line2: "Lysere dage" },
   },
   search: {
     placeholder: "Søg efter destinationer eller tags...",
@@ -452,6 +454,7 @@ const es: Dictionary = {
     title: "Explora el mundo con TravelMate",
     line1: "Descubre atracciones, ciudades y países increíbles.",
     line2: "Tu próxima aventura está a solo un clic.",
+    tagline: { line1: "Buenos lugares", line2: "Días más brillantes" },
   },
   search: {
     placeholder: "Buscar destinos o etiquetas...",

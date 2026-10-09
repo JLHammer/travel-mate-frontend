@@ -202,6 +202,7 @@ const lightShadows = {
   card: "0 1px 3px rgba(15, 36, 64, 0.06)",
   cardHover: "0 8px 20px rgba(15, 36, 64, 0.12)",
   search: "0 8px 24px rgba(15, 36, 64, 0.14)",
+  textOnImage: "0 1px 6px rgba(0, 0, 0, 0.35)",
 } satisfies ThemeShadows;
 
 const darkShadows = {
@@ -209,6 +210,7 @@ const darkShadows = {
   card: "0 1px 3px rgba(0, 0, 0, 0.35)",
   cardHover: "0 8px 20px rgba(0, 0, 0, 0.5)",
   search: "0 8px 24px rgba(0, 0, 0, 0.55)",
+  textOnImage: "0 1px 6px rgba(0, 0, 0, 0.35)",
 } satisfies ThemeShadows;
 
 export const tokens = {
