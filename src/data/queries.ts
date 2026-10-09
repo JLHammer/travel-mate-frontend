@@ -3,11 +3,12 @@ import { defineQuery } from "groq";
 const NAME = `coalesce(select($lang == "da" => name.da, $lang == "es" => name.es), name.en)`;
 const TAGLINE = `coalesce(select($lang == "da" => tagline.da, $lang == "es" => tagline.es), tagline.en)`;
 const DESCRIPTION = `coalesce(select($lang == "da" => description.da, $lang == "es" => description.es), description.en)`;
+const ALT = `coalesce(select($lang == "da" => alt.da, $lang == "es" => alt.es), alt.en)`;
 const BY_NAME = `order(${NAME} asc)`;
 
 const COUNTRY_SUMMARY = `_id, "name": ${NAME}, code, "slug": slug.current`;
 const CITY_SUMMARY = `_id, "name": ${NAME}, "slug": slug.current`;
-const IMAGE = `image{ asset, crop, hotspot, alt }`;
+const IMAGE = `image{ asset, crop, hotspot, "alt": ${ALT} }`;
 const CARD = `"tagline": ${TAGLINE}, "description": ${DESCRIPTION}, ${IMAGE}`;
 const LOCATION = `"latitude": location.lat, "longitude": location.lng`;
 
