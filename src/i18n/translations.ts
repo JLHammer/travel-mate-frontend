@@ -44,7 +44,7 @@ const en = {
     tagline: { line1: "Good places", line2: "Brighter days" },
   },
   search: {
-    placeholder: "Search destinations or tags...",
+    placeholder: "Search destinations or categories...",
     button: "Search",
     countries: "Search countries...",
     cities: "Search cities or countries...",
@@ -251,7 +251,7 @@ const da: Dictionary = {
     tagline: { line1: "Gode steder", line2: "Lysere dage" },
   },
   search: {
-    placeholder: "Søg efter destinationer eller tags...",
+    placeholder: "Søg efter destinationer eller kategorier...",
     button: "Søg",
     countries: "Søg efter lande...",
     cities: "Søg efter byer eller lande...",
@@ -457,7 +457,7 @@ const es: Dictionary = {
     tagline: { line1: "Buenos lugares", line2: "Días más brillantes" },
   },
   search: {
-    placeholder: "Buscar destinos o etiquetas...",
+    placeholder: "Buscar destinos o categorías...",
     button: "Buscar",
     countries: "Buscar países...",
     cities: "Buscar ciudades o países...",
