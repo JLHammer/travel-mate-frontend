@@ -8,12 +8,8 @@ import { matchesSearch } from "../../utils/matchesSearch";
 
 export const CitiesSection = () => {
   const { t } = useTranslation();
-  const { data: cities, isLoading, error } = useCities();
+  const { data: cities, isLoading, error, refetch } = useCities();
   const [query, setQuery] = useState("");
-
-  if (error) {
-    return <p>{t.errors.cities}</p>;
-  }
 
   const results = cities?.filter((city) =>
     matchesSearch(query, [city.name, city.country?.name, city.tagline]),
@@ -26,6 +22,8 @@ export const CitiesSection = () => {
       loading={isLoading}
       toolbar={<SearchBar value={query} onChange={setQuery} placeholder={t.search.cities} />}
       emptyMessage={t.search.noResults}
+      errorMessage={error ? t.errors.cities : undefined}
+      onRetry={refetch}
     >
       {results?.map((city) => (
         <li key={city._id}>

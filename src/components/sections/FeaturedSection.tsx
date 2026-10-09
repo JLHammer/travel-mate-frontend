@@ -9,21 +9,20 @@ import { useTranslation } from "../../hooks/useTranslation";
 export const FeaturedSection = () => {
   const { t } = useTranslation();
   const paths = usePaths();
-  const { data, isLoading, error } = useFeatured();
+  const { data, isLoading, error, refetch } = useFeatured();
 
-  if (isLoading) {
+  // One section holds the loader or the error until all three can be shown
+  if (isLoading || error) {
     return (
       <CardSection
         title={t.sections.popularCountries}
         linkPath={paths.countries}
         linkLabel={t.sections.viewAllCountries}
-        loading
+        loading={isLoading}
+        errorMessage={error ? t.errors.featured : undefined}
+        onRetry={refetch}
       />
     );
-  }
-
-  if (error) {
-    return <p>{t.errors.featured}</p>;
   }
 
   return (

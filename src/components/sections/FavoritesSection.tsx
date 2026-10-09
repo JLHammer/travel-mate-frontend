@@ -33,17 +33,19 @@ const BrowseLink = styled(Link)`
 export const FavoritesSection = () => {
   const { t } = useTranslation();
   const paths = usePaths();
-  const { attractions, isLoading, error } = useFavoriteAttractions();
+  const { attractions, isLoading, error, refetch } = useFavoriteAttractions();
 
-  if (error) {
-    return <p>{t.errors.attractions}</p>;
-  }
-
-  const isEmpty = !isLoading && attractions.length === 0;
+  const isEmpty = !isLoading && !error && attractions.length === 0;
 
   return (
     <>
-      <CardSection title={t.favorites.title} headingAs="h1" loading={isLoading}>
+      <CardSection
+        title={t.favorites.title}
+        headingAs="h1"
+        loading={isLoading}
+        errorMessage={error ? t.errors.attractions : undefined}
+        onRetry={refetch}
+      >
         {attractions.map((attraction) => (
           <li key={attraction._id}>
             <AttractionCard attraction={attraction} />

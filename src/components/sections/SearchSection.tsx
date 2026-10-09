@@ -10,16 +10,12 @@ import { matchesSearch } from "../../utils/matchesSearch";
 
 export const SearchSection = () => {
   const { t } = useTranslation();
-  const { data, isLoading, error } = useSearch();
+  const { data, isLoading, error, refetch } = useSearch();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") ?? "";
   const hasQuery = query.trim() !== "";
 
   const setQuery = (value: string) => setSearchParams(value ? { q: value } : {}, { replace: true });
-
-  if (error) {
-    return <p>{t.errors.search}</p>;
-  }
 
   const results = hasQuery ? data : null;
 
@@ -53,6 +49,8 @@ export const SearchSection = () => {
         loading={isLoading}
         toolbar={<SearchBar value={query} onChange={setQuery} />}
         emptyMessage={!hasQuery ? t.search.prompt : !hasResults ? t.search.noResults : undefined}
+        errorMessage={error ? t.errors.search : undefined}
+        onRetry={refetch}
       />
 
       {countries.length > 0 && (

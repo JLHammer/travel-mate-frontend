@@ -4,20 +4,21 @@ import { useLocalizedSlug } from "../hooks/useLocalizedSlug";
 import { PageTitle } from "../components/ui/PageTitle";
 import { useTranslation } from "../hooks/useTranslation";
 import { Loader } from "../components/ui/Loader";
+import { ErrorState } from "../components/ui/ErrorState";
 import { CountryDetailsSection } from "../components/sections/CountryDetailsSection";
 import { NotFoundPage } from "./NotFoundPage";
 
 export const CountryDetailsPage = () => {
   const { countrySlug } = useParams();
   const { t } = useTranslation();
-  const { data: country, isLoading, error } = useCountry(countrySlug);
+  const { data: country, isLoading, error, refetch } = useCountry(countrySlug);
   // Not while loading, since country still holds the previous page then
   const redirect = useLocalizedSlug(isLoading ? null : country?.slugs, "country");
 
   if (isLoading) return <Loader />;
 
   if (error) {
-    return <p>{t.errors.country}</p>;
+    return <ErrorState message={t.errors.country} onRetry={refetch} />;
   }
 
   if (!country) return <NotFoundPage />;

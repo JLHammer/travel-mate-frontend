@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { tokens } from "../../styles/theme";
 import { Loader } from "../ui/Loader";
+import { ErrorState } from "../ui/ErrorState";
 import { useTranslation } from "../../hooks/useTranslation";
 
 const CardSectionStyled = styled.section`
@@ -317,6 +318,9 @@ type CardSectionProps = {
   loading?: boolean;
   toolbar?: ReactNode;
   emptyMessage?: string;
+  /** Shown with a retry button instead of the cards when they couldn't be loaded */
+  errorMessage?: string;
+  onRetry?: () => void;
   children?: ReactNode;
 };
 
@@ -329,9 +333,13 @@ export const CardSection = ({
   loading = false,
   toolbar,
   emptyMessage,
+  errorMessage,
+  onRetry,
   children,
 }: CardSectionProps) => {
   const { t } = useTranslation();
+  // The loader wins, so a retry shows it while the old error is still set
+  const hasError = !loading && errorMessage !== undefined;
   const isEmpty = !loading && emptyMessage !== undefined && Children.count(children) === 0;
 
   return (
@@ -352,8 +360,10 @@ export const CardSection = ({
           </ViewAllLink>
         )}
       </CardSectionHeader>
-      {toolbar && <CardSectionToolbar>{toolbar}</CardSectionToolbar>}
-      {isEmpty ? (
+      {toolbar && !hasError && <CardSectionToolbar>{toolbar}</CardSectionToolbar>}
+      {hasError ? (
+        <ErrorState message={errorMessage} onRetry={onRetry} />
+      ) : isEmpty ? (
         <EmptyMessage>{emptyMessage}</EmptyMessage>
       ) : loading ? (
         <CardRowLoader>

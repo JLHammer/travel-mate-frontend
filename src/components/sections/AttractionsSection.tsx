@@ -8,12 +8,8 @@ import { matchesSearch } from "../../utils/matchesSearch";
 
 export const AttractionsSection = () => {
   const { t } = useTranslation();
-  const { data: attractions, isLoading, error } = useAttractions();
+  const { data: attractions, isLoading, error, refetch } = useAttractions();
   const [query, setQuery] = useState("");
-
-  if (error) {
-    return <p>{t.errors.attractions}</p>;
-  }
 
   const results = attractions?.filter((attraction) =>
     matchesSearch(query, [
@@ -32,6 +28,8 @@ export const AttractionsSection = () => {
       loading={isLoading}
       toolbar={<SearchBar value={query} onChange={setQuery} placeholder={t.search.attractions} />}
       emptyMessage={t.search.noResults}
+      errorMessage={error ? t.errors.attractions : undefined}
+      onRetry={refetch}
     >
       {results?.map((attraction) => (
         <li key={attraction._id}>

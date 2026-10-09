@@ -76,6 +76,7 @@ const en = {
     city: "Could not load this city. Please try again later.",
     attraction: "Could not load this attraction. Please try again later.",
     search: "Could not load the search results. Please try again later.",
+    retry: "Try again",
   },
   fallback: {
     country: "Country",
@@ -283,6 +284,7 @@ const da: Dictionary = {
     city: "Byen kunne ikke indlæses. Prøv igen senere.",
     attraction: "Seværdigheden kunne ikke indlæses. Prøv igen senere.",
     search: "Søgeresultaterne kunne ikke indlæses. Prøv igen senere.",
+    retry: "Prøv igen",
   },
   fallback: {
     country: "Land",
@@ -489,6 +491,7 @@ const es: Dictionary = {
     city: "No se pudo cargar esta ciudad. Inténtalo de nuevo más tarde.",
     attraction: "No se pudo cargar esta atracción. Inténtalo de nuevo más tarde.",
     search: "No se pudieron cargar los resultados de búsqueda. Inténtalo de nuevo más tarde.",
+    retry: "Intentar de nuevo",
   },
   fallback: {
     country: "País",
