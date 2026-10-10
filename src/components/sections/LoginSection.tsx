@@ -53,6 +53,11 @@ export const LoginSection = () => {
     toast.info(t.login.favoritesRequired, { id: "favorites-login-required" });
   }, [fromFavorites, user, isLoading, t]);
 
+  const handleLogout = async () => {
+    await logout();
+    toast.success(t.login.loggedOut);
+  };
+
   if (isLoading) {
     return (
       <>
@@ -69,7 +74,7 @@ export const LoginSection = () => {
         heading={t.login.profileTitle}
         intro={<PageText>{t.login.loggedInAs(`${user.firstName} ${user.lastName}`)}</PageText>}
       >
-        <SubmitButton type="button" onClick={logout}>
+        <SubmitButton type="button" onClick={handleLogout}>
           {t.login.logout} <LogOut />
         </SubmitButton>
       </PageLayout>

@@ -24,10 +24,10 @@ export const AuthProvider = ({ children }: ProviderProps) => {
 
   const login = async (email: string, password: string) => {
     const data = await loginRequest(email, password);
-    if (!data) return false;
+    if (!data) return null;
 
     setUser(data.user);
-    return true;
+    return data.user;
   };
 
   const logout = async () => {

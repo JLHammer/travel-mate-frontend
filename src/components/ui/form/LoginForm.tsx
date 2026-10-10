@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { LogIn } from "lucide-react";
+import { toast } from "sonner";
 import {
   loginSchema,
   type LoginErrorKey,
@@ -45,11 +46,15 @@ export const LoginForm = () => {
 
   const onSubmit = async ({ email, password }: LoginFormValues) => {
     likeAfterLogin(likeAttractionId ?? null);
-    const success = await login(email, password);
-    setHasFailed(!success);
-    if (!success) likeAfterLogin(null);
+    const user = await login(email, password);
+    setHasFailed(!user);
+    if (!user) likeAfterLogin(null);
 
-    if (success && from) navigate(from, { replace: true });
+    // Leaving the login page hides the profile view, so confirm the login with a toast instead
+    if (user && from) {
+      toast.success(t.login.welcomeBack(user.firstName));
+      navigate(from, { replace: true });
+    }
   };
 
   return (

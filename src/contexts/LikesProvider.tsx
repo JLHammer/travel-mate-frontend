@@ -30,8 +30,12 @@ export const LikesProvider = ({ children }: ProviderProps) => {
       const pendingId = pendingLikeRef.current;
       if (pendingId !== null) {
         pendingLikeRef.current = null;
-        await addLikeRequest(userId, pendingId);
-        toast.success(t.favorites.added);
+        try {
+          await addLikeRequest(userId, pendingId);
+          toast.success(t.favorites.added);
+        } catch {
+          toast.error(t.favorites.updateFailed);
+        }
       }
 
       const attractionIds = await getLikesRequest(userId);
@@ -50,24 +54,23 @@ export const LikesProvider = ({ children }: ProviderProps) => {
 
   const isLiked = (attractionId: string) => likedAttractionIds.includes(attractionId);
 
-  const toggleLike = async (attractionId: string) => {
+  const setLike = async (attractionId: string, like: boolean) => {
     if (userId === null) return false;
-    const liked = isLiked(attractionId);
 
     try {
-      if (liked) {
-        await removeLikeRequest(userId, attractionId);
-      } else {
+      if (like) {
         await addLikeRequest(userId, attractionId);
+      } else {
+        await removeLikeRequest(userId, attractionId);
       }
 
       setLoaded((current) =>
         current && current.userId === userId
           ? {
               userId,
-              attractionIds: liked
-                ? current.attractionIds.filter((id) => id !== attractionId)
-                : [...current.attractionIds, attractionId],
+              attractionIds: like
+                ? [...current.attractionIds.filter((id) => id !== attractionId), attractionId]
+                : current.attractionIds.filter((id) => id !== attractionId),
             }
           : current,
       );
@@ -77,9 +80,14 @@ export const LikesProvider = ({ children }: ProviderProps) => {
     }
   };
 
+  const toggleLike = (attractionId: string) => setLike(attractionId, !isLiked(attractionId));
+
+  // Explicit, so an undo from an older render can't flip the like back the wrong way
+  const addLike = (attractionId: string) => setLike(attractionId, true);
+
   return (
     <LikesContext.Provider
-      value={{ likedAttractionIds, isLoading, isLiked, toggleLike, likeAfterLogin }}
+      value={{ likedAttractionIds, isLoading, isLiked, toggleLike, addLike, likeAfterLogin }}
     >
       {children}
     </LikesContext.Provider>

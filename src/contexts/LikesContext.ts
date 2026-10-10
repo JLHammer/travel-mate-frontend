@@ -5,6 +5,7 @@ export type LikesContextValue = {
   isLoading: boolean;
   isLiked: (attractionId: string) => boolean;
   toggleLike: (attractionId: string) => Promise<boolean>;
+  addLike: (attractionId: string) => Promise<boolean>;
   likeAfterLogin: (attractionId: string | null) => void;
 };
 

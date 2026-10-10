@@ -8,7 +8,7 @@ import { usePaths } from "./usePaths";
 
 export const useFavoriteToggle = (attractionId: string) => {
   const { user } = useAuth();
-  const { isLiked, toggleLike } = useLikes();
+  const { isLiked, toggleLike, addLike } = useLikes();
   const { t } = useTranslation();
   const paths = usePaths();
   const navigate = useNavigate();
@@ -31,8 +31,21 @@ export const useFavoriteToggle = (attractionId: string) => {
     const success = await toggleLike(attractionId);
     setIsPending(false);
 
-    if (!success) toast.error(t.favorites.updateFailed);
-    else toast.success(liked ? t.favorites.removed : t.favorites.added);
+    if (!success) {
+      toast.error(t.favorites.updateFailed);
+    } else if (liked) {
+      toast.success(t.favorites.removed, {
+        action: { label: t.favorites.undo, onClick: undoRemove },
+      });
+    } else {
+      toast.success(t.favorites.added);
+    }
+  };
+
+  const undoRemove = async () => {
+    const success = await addLike(attractionId);
+    if (success) toast.success(t.favorites.added);
+    else toast.error(t.favorites.updateFailed);
   };
 
   return { liked, isPending, handleClick };
