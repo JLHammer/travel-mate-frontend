@@ -30,6 +30,7 @@ export const privacy: Record<Language, LegalDocument> = {
         list: [
           "Contact form: your name, email address, the subject you choose and your message.",
           "Preferences: your chosen language and whether you use light or dark mode.",
+          "Favourites: the attractions you add to your favourites while you are logged in.",
         ],
       },
       {
@@ -44,7 +45,7 @@ export const privacy: Record<Language, LegalDocument> = {
         id: "stored-on-your-device",
         title: "Stored on your device",
         paragraphs: [
-          "TravelMate does not use tracking or advertising cookies. To remember your settings between visits, we save your chosen language and theme in your browser’s local storage.",
+          "TravelMate does not use tracking or advertising cookies. To remember your settings between visits, we save your chosen language and theme in your browser’s local storage. When you log in, we also save there that you are logged in and which attractions you have added to your favourites.",
           "This information stays on your device and is never sent to us. You can remove it at any time by clearing your browser data.",
         ],
       },
@@ -99,6 +100,7 @@ export const privacy: Record<Language, LegalDocument> = {
         list: [
           "Kontaktformular: dit navn, din e-mailadresse, det emne, du vælger, og din besked.",
           "Indstillinger: dit valgte sprog, og om du bruger lyst eller mørkt tema.",
+          "Favoritter: de seværdigheder, du tilføjer til dine favoritter, når du er logget ind.",
         ],
       },
       {
@@ -113,7 +115,7 @@ export const privacy: Record<Language, LegalDocument> = {
         id: "stored-on-your-device",
         title: "Gemt på din enhed",
         paragraphs: [
-          "TravelMate bruger ikke cookies til sporing eller annoncering. For at huske dine indstillinger mellem besøg gemmer vi dit valgte sprog og tema i din browsers lokale lager (local storage).",
+          "TravelMate bruger ikke cookies til sporing eller annoncering. For at huske dine indstillinger mellem besøg gemmer vi dit valgte sprog og tema i din browsers lokale lager (local storage). Når du logger ind, gemmer vi også, at du er logget ind, og hvilke seværdigheder du har tilføjet til dine favoritter.",
           "Oplysningerne bliver på din enhed og sendes aldrig til os. Du kan til enhver tid fjerne dem ved at rydde dine browserdata.",
         ],
       },
@@ -168,6 +170,7 @@ export const privacy: Record<Language, LegalDocument> = {
         list: [
           "Formulario de contacto: tu nombre, tu correo electrónico, el asunto que elijas y tu mensaje.",
           "Preferencias: el idioma que eliges y si usas el modo claro u oscuro.",
+          "Favoritos: las atracciones que añades a tus favoritos cuando has iniciado sesión.",
         ],
       },
       {
@@ -182,7 +185,7 @@ export const privacy: Record<Language, LegalDocument> = {
         id: "stored-on-your-device",
         title: "Guardado en tu dispositivo",
         paragraphs: [
-          "TravelMate no usa cookies de seguimiento ni de publicidad. Para recordar tus preferencias entre visitas, guardamos el idioma y el tema que eliges en el almacenamiento local (local storage) de tu navegador.",
+          "TravelMate no usa cookies de seguimiento ni de publicidad. Para recordar tus preferencias entre visitas, guardamos el idioma y el tema que eliges en el almacenamiento local (local storage) de tu navegador. Cuando inicias sesión, también guardamos allí que has iniciado sesión y las atracciones que has añadido a tus favoritos.",
           "Esta información se queda en tu dispositivo y nunca se nos envía. Puedes eliminarla en cualquier momento borrando los datos de tu navegador.",
         ],
       },
