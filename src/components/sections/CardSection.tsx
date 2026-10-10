@@ -346,17 +346,10 @@ export const CardSection = ({
     <CardSectionStyled>
       <CardSectionHeader>
         <CardSectionTitle as={headingAs}>{title}</CardSectionTitle>
-        {linkPath && (
+        {linkPath && linkLabel && (
           <ViewAllLink to={linkPath}>
-            {linkLabel ? (
-              <>
-                <ViewAllShort>{t.sections.viewAll}</ViewAllShort>
-                <ViewAllFull>{linkLabel}</ViewAllFull>
-              </>
-            ) : (
-              t.sections.viewAll
-            )}{" "}
-            <ArrowRight />
+            <ViewAllShort>{t.sections.viewAll}</ViewAllShort>
+            <ViewAllFull>{linkLabel}</ViewAllFull> <ArrowRight />
           </ViewAllLink>
         )}
       </CardSectionHeader>
