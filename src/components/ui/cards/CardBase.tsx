@@ -104,7 +104,7 @@ export const CardMeta = styled.p`
   }
 `;
 
-const CARD_IMAGE_SIZES = "(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 50vw";
+const CARD_IMAGE_SIZES = `(min-width: ${tokens.breakpoints.desktop}) 20vw, (min-width: ${tokens.breakpoints.tablet}) 33vw, 50vw`;
 
 type CardBaseProps = {
   to: string;

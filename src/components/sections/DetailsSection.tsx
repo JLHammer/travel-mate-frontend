@@ -137,7 +137,7 @@ const MapBlock = styled.div`
   margin-top: ${tokens.mobile.spacing.m};
 `;
 
-const DETAILS_IMAGE_SIZES = "(min-width: 1024px) 55vw, 100vw";
+const DETAILS_IMAGE_SIZES = `(min-width: ${tokens.breakpoints.desktop}) 55vw, 100vw`;
 
 type DetailsSectionProps = {
   backPath: string;
