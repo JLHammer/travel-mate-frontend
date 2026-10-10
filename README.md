@@ -1,25 +1,26 @@
 # TravelMate
 
-TravelMate is a travel guide built with React, TypeScript, Vite and styled-components. Countries, cities and attractions come from a Sanity CMS (project `cc196r01`, dataset `production`). None of this content is written in the React code.
-
-```text
-Sanity → GROQ → Custom Hook → React Component → User
-```
+TravelMate is a responsive travel guide site built with [React](https://react.dev/), [styled-components](https://styled-components.com/), [TypeScript](https://www.typescriptlang.org/) and [Vite](https://vite.dev/). Countries, cities and attractions live in a [Sanity](https://www.sanity.io/) CMS (project [`cc196r01`](https://www.sanity.io/manage/project/cc196r01), dataset `production`).
 
 ## Getting started
 
 ```bash
+cp .env.example .env
 npm install
 npm run dev
 ```
 
-## GROQ or GraphQL?
+## Query language
 
 I use **GROQ** to fetch data from Sanity.
 
-### Why GROQ
+### Why GROQ over GraphQL?
 
-I chose GROQ because it's native to Sanity and needs no schema deploy. It lets me shape each response to exactly what my components need, and it can follow references in both directions in one query. I use that for the city page's attractions.
+Sanity offers both GROQ and a GraphQL API. I chose GROQ for three reasons:
+
+- **No deploy step.** GROQ is Sanity's own query language and reads the dataset directly. The GraphQL API has to be deployed with `sanity graphql deploy`, and deployed again every time the schema changes.
+- **Responses shaped for the components.** GROQ can compute fields inside the query, so every query returns only the text in the selected language. With GraphQL, each field would come back in all three languages, and React would have to pick one.
+- **References in both directions.** GROQ can follow a reference backwards with `references()`, so a country comes with its cities and a city with its attractions in one query. GraphQL only follows references forward, from an attraction to its city, so those lists would need a separate query.
 
 ## Content model
 
@@ -30,6 +31,28 @@ Country
   └── City        (city.country → reference to Country)
        └── Attraction  (attraction.city → reference to City)
 ```
+
+## Schema types
+
+The Studio has three document types: `country`, `city` and `attraction`. Their fields are defined in `schemaTypes/` in the Studio repo. Fields used by more than one type live in `schemaTypes/fields.ts`, so each one is defined only once.
+
+| Field         | Type           | Country | City | Attraction | Notes                                                                          |
+| ------------- | -------------- | :-----: | :--: | :--------: | ------------------------------------------------------------------------------ |
+| `name`        | `localeString` |    ✓    |  ✓   |     ✓      | Required in every language                                                     |
+| `slug`        | `localeSlug`   |    ✓    |  ✓   |     ✓      | Required in every language, made from the name and unique across all languages |
+| `code`        | `string`       |    ✓    |      |            | Required two-letter ISO code in capitals, e.g. `IT`                            |
+| `country`     | `reference`    |         |  ✓   |            | Required reference to a country                                                |
+| `city`        | `reference`    |         |      |     ✓      | Required reference to a city                                                   |
+| `category`    | `string`       |         |      |     ✓      | Required, one of historical, museum, park, attraction or landmark              |
+| `tagline`     | `localeString` |    ✓    |  ✓   |     ✓      | Optional, max 80 characters per language                                       |
+| `description` | `localeText`   |    ✓    |  ✓   |     ✓      | Required in every language                                                     |
+| `image`       | `image`        |    ✓    |  ✓   |     ✓      | Required, with a hotspot, localized `alt` text and a `credit`                  |
+| `address`     | `string`       |         |      |     ✓      | Required unless the attraction has a `location`                                |
+| `location`    | `geopoint`     |         |  ✓   |     ✓      | Latitude and longitude                                                         |
+| `website`     | `url`          |         |  ✓   |     ✓      | Only `http` and `https` links                                                  |
+| `featured`    | `boolean`      |    ✓    |  ✓   |     ✓      | Shows the item in the featured sections on the home page                       |
+
+`localeString`, `localeText` and `localeSlug` are object types that hold one value per language. They are described under [Info models](#2-info-models) below.
 
 ## Languages
 
@@ -43,13 +66,13 @@ The language follows this flow from the CMS to the screen:
 Language → Info models → GROQ → React → Language switch
 ```
 
-| Step | What it does | Where |
-|---|---|---|
-| Language | Defines which languages exist | `schemaTypes/languages.ts` (Studio) |
-| Info models | Store each text in every language | `localeString`, `localeText` (Studio) |
-| GROQ | Pick out the selected language | `src/data/queries.ts` |
-| React | Send the selected language to the queries | `LanguageContext`, data hooks |
-| Language switch | Go to the same page in the new language | `LanguageToggle` |
+| Step            | What it does                              | Where                                 |
+| --------------- | ----------------------------------------- | ------------------------------------- |
+| Language        | Defines which languages exist             | `schemaTypes/languages.ts` (Studio)   |
+| Info models     | Store each text in every language         | `localeString`, `localeText` (Studio) |
+| GROQ            | Pick out the selected language            | `src/data/queries.ts`                 |
+| React           | Send the selected language to the queries | `LanguageContext`, data hooks         |
+| Language switch | Go to the same page in the new language   | `LanguageToggle`                      |
 
 ### 1. Language
 
@@ -57,24 +80,24 @@ The languages are defined once in the Studio, in `schemaTypes/languages.ts`:
 
 ```ts
 export const LANGUAGES = [
-  {id: 'da', title: 'Dansk'},
-  {id: 'en', title: 'English'},
-  {id: 'es', title: 'Español'},
-]
+  { id: "da", title: "Dansk" },
+  { id: "en", title: "English" },
+  { id: "es", title: "Español" },
+];
 ```
 
-The frontend has a matching list in `src/i18n/translations.ts`, and the type `Language = "da" | "en" | "es"` in `src/types/sanity.ts`.
+The frontend has a matching list in `src/i18n/translations.ts`, and the union type `Language = "da" | "en" | "es"` in `src/types/sanity.ts`.
 
 ### 2. Info models
 
 Three object types are built from `LANGUAGES`. `localeString` is for short text, `localeText` for longer text and `localeSlug` for the URL part, and each has one field per language. Text that changes with the language uses these types. Data that is the same in every language stays directly on the document.
 
-| Field | Depends on language? | Type |
-|---|---|---|
-| `name`, `tagline`, `description`, `image.alt` | Yes | `localeString` / `localeText` |
-| `slug` | Yes | `localeSlug` |
-| `category` | Yes, translated in the frontend from a fixed key | `string` (option list) |
-| `code`, `image` (asset, credit), `location`, `address`, `website`, `featured` | No | Plain fields on the document |
+| Field                                                                         | Example                                           | Depends on language?                             | Type                          |
+| ----------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------ | ----------------------------- |
+| `name`, `tagline`, `description`, `image.alt`                                 | `Danmark` / `Denmark` / `Dinamarca`               | Yes                                              | `localeString` / `localeText` |
+| `slug`                                                                        | `danmark` / `denmark` / `dinamarca`               | Yes                                              | `localeSlug`                  |
+| `category`                                                                    | `historical` → Historisk / Historical / Histórico | Yes, translated in the frontend from a fixed key | `string` (option list)        |
+| `code`, `image` (asset, credit), `location`, `address`, `website`, `featured` | `DK` in every language                            | No                                               | Plain fields on the document  |
 
 A country is still a single document, and its translations sit next to each other:
 
@@ -129,10 +152,10 @@ When the user picks a language in `LanguageToggle` in the header:
 
 Every page has its own URL in each language. The section names are translated, and so are the slugs:
 
-| | Danish | English | Spanish |
-|---|---|---|---|
-| Country list | `/lande` | `/countries` | `/paises` |
-| A country | `/lande/italien` | `/countries/italy` | `/paises/italia` |
+|               | Danish                    | English                       | Spanish                           |
+| ------------- | ------------------------- | ----------------------------- | --------------------------------- |
+| Country list  | `/lande`                  | `/countries`                  | `/paises`                         |
+| A country     | `/lande/italien`          | `/countries/italy`            | `/paises/italia`                  |
 | An attraction | `/seevaerdigheder/tivoli` | `/attractions/tivoli-gardens` | `/atracciones/jardines-de-tivoli` |
 
 - **No language prefix.** No section name is used by two languages, so the first part of the URL already says which language it is. `languageOfPath` in `src/router/routes.ts` looks it up in `SEGMENTS`, the table of section names. The front page is `/` in every language.
@@ -172,15 +195,15 @@ country  { name, code, image, info: [countryInfo, …] }
 
 #### Comparison
 
-| | Field-level localization (TravelMate) | Embedded language objects (assignment) | Document-level localization |
-|---|---|---|---|
-| Where the text lives | In each field | In a list inside the document | In separate documents |
-| Documents per country (2 languages) | 1 | 1 (+ Language documents) | 2 or more |
-| What "Language" is | A list in code | A document type, referenced from each entry | A field or a document type |
-| Can a translation go missing unnoticed? | No, validation catches it on `name`, `description` and `slug` | Yes, nobody has to add the entry | Yes, nobody has to create the document |
-| Editor experience | All languages side by side | One block per language | Jump between documents |
-| Query | Simplest | Filter the array and follow the language reference | Filter on language across documents |
-| Can each language have its own fields or publish on its own? | No | No | Yes |
+|                                                              | Field-level localization (TravelMate)                         | Embedded language objects (assignment)             | Document-level localization            |
+| ------------------------------------------------------------ | ------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------- |
+| Where the text lives                                         | In each field                                                 | In a list inside the document                      | In separate documents                  |
+| Documents per country (2 languages)                          | 1                                                             | 1 (+ Language documents)                           | 2 or more                              |
+| What "Language" is                                           | A list in code                                                | A document type, referenced from each entry        | A field or a document type             |
+| Can a translation go missing unnoticed?                      | No, validation catches it on `name`, `description` and `slug` | Yes, nobody has to add the entry                   | Yes, nobody has to create the document |
+| Editor experience                                            | All languages side by side                                    | One block per language                             | Jump between documents                 |
+| Query                                                        | Simplest                                                      | Filter the array and follow the language reference | Filter on language across documents    |
+| Can each language have its own fields or publish on its own? | No                                                            | No                                                 | Yes                                    |
 
 #### Why field-level localization
 
@@ -204,7 +227,13 @@ Adding a fourth language takes:
 
 ## API calls and Custom Hooks
 
-Page components never call Sanity directly. The data flow is split into layers:
+Page components never call Sanity directly. Content follows this flow from the CMS to the screen:
+
+```text
+Sanity → GROQ → Custom Hook → React Component → User
+```
+
+Each step is its own layer:
 
 - **Sanity client** (`src/utils/sanityClient.ts`): one shared `@sanity/client` instance configured with the project ID and dataset from `.env`. It builds the request URL, encodes the query and passes GROQ parameters safely, so no URL is put together by hand.
 - **GROQ queries** (`src/data/queries.ts`): every query lives in one place, separate from the components. Queries are built from shared fragments (`CITY_SUMMARY`, `IMAGE`, `CARD`, …) so each field is defined once. They pick the text in the selected language (da/en/es), follow references with `->` (a city comes with its country), and use `references(^._id)` to fetch the reverse relations (a country with its cities, a city with its attractions).
@@ -212,15 +241,15 @@ Page components never call Sanity directly. The data flow is split into layers:
 - **Generic hook** (`src/hooks/useSanityQuery.ts`): one reusable hook that runs any query and returns `{ data, isLoading, error, refetch }`. It cancels outdated requests with an `AbortController` when the parameters change, for example when the user switches language or opens another city.
 - **Data hooks** (`src/hooks/`): small hooks that pair a query with its parameters and result type. `useFavoriteAttractions` also combines the query with the liked attraction IDs:
 
-  | Hook | Used for |
-  |---|---|
-  | `useFeatured` | Featured countries, cities and attractions on the home page (one request) |
-  | `useCountries`, `useCities`, `useAttractions` | List pages |
-  | `useCountry`, `useCity`, `useAttraction` | Detail pages, looked up by slug |
-  | `useSearch` | Search results |
-  | `useFavoriteAttractions` | The favourites page, by liked attraction IDs |
+  | Hook                                          | Used for                                                                  |
+  | --------------------------------------------- | ------------------------------------------------------------------------- |
+  | `useFeatured`                                 | Featured countries, cities and attractions on the home page (one request) |
+  | `useCountries`, `useCities`, `useAttractions` | List pages                                                                |
+  | `useCountry`, `useCity`, `useAttraction`      | Detail pages, looked up by slug                                           |
+  | `useSearch`                                   | Search results                                                            |
+  | `useFavoriteAttractions`                      | The favourites page, by liked attraction IDs                              |
 
-- **Components:** detail pages and list sections call a data hook, show the `Loader` while loading and an error message if the CMS can't be reached, then pass the data on to the card and detail components.
+- **Components:** detail pages and list sections call a data hook, show the `Loader` while loading and an `ErrorState` box with a retry button (which calls `refetch`) if the CMS can't be reached, then pass the data on to the card and detail components.
 
 Images come from Sanity too. `src/utils/imageUrl.ts` builds responsive `srcset` URLs and positions the image by the hotspot set in the Studio.
 
