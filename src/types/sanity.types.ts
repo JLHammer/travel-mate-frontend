@@ -26,6 +26,50 @@ export type Locale = {
   enabled?: boolean;
 };
 
+export type Navigation = {
+  _id: string;
+  _type: "navigation";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  headerLinks?: Array<{
+    page?:
+      | "home"
+      | "countries"
+      | "cities"
+      | "attractions"
+      | "about"
+      | "contact"
+      | "privacy"
+      | "terms"
+      | "favorites";
+    label?: InternationalizedArrayString;
+    _type: "navLink";
+    _key: string;
+  }>;
+  footerLinks?: Array<{
+    page?:
+      | "home"
+      | "countries"
+      | "cities"
+      | "attractions"
+      | "about"
+      | "contact"
+      | "privacy"
+      | "terms"
+      | "favorites";
+    label?: InternationalizedArrayString;
+    _type: "navLink";
+    _key: string;
+  }>;
+};
+
+export type InternationalizedArrayString = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayStringValue
+>;
+
 export type CityReference = {
   _ref: string;
   _type: "reference";
@@ -73,12 +117,6 @@ export type Geopoint = {
   lng?: number;
   alt?: number;
 };
-
-export type InternationalizedArrayString = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayStringValue
->;
 
 export type SanityImageCrop = {
   _type: "sanity.imageCrop";
@@ -279,11 +317,12 @@ export type SanityImageAsset = {
 
 export type AllSanitySchemaTypes =
   | Locale
+  | Navigation
+  | InternationalizedArrayString
   | CityReference
   | SanityImageAssetReference
   | Attraction
   | Geopoint
-  | InternationalizedArrayString
   | SanityImageCrop
   | SanityImageHotspot
   | InternationalizedArrayText
@@ -302,6 +341,50 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset;
+
+// Source: ../../travel-mate-frontend/src/data/queries.ts
+// Variable: SITE_SETTINGS_QUERY
+// Query: {  "navigation": *[_id == "navigation"][0] {    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }  }}
+export type SITE_SETTINGS_QUERY_RESULT = {
+  navigation:
+    | {
+        header: null;
+        footer: null;
+      }
+    | {
+        header: Array<{
+          _key: string;
+          page:
+            | "about"
+            | "attractions"
+            | "cities"
+            | "contact"
+            | "countries"
+            | "favorites"
+            | "home"
+            | "privacy"
+            | "terms"
+            | null;
+          label: string | null;
+        }> | null;
+        footer: Array<{
+          _key: string;
+          page:
+            | "about"
+            | "attractions"
+            | "cities"
+            | "contact"
+            | "countries"
+            | "favorites"
+            | "home"
+            | "privacy"
+            | "terms"
+            | null;
+          label: string | null;
+        }> | null;
+      }
+    | null;
+};
 
 // Source: ../../travel-mate-frontend/src/data/queries.ts
 // Variable: COUNTRIES_QUERY
@@ -673,6 +756,7 @@ export type ATTRACTION_DETAIL_QUERY_RESULT = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
+    '{\n  "navigation": *[_id == "navigation"][0] {\n    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },\n    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "country"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } }\n': COUNTRIES_QUERY_RESULT;
     '\n  *[_type == "city"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) }\n }\n': CITIES_QUERY_RESULT;
     '\n  *[_type == "attraction"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id,\n  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),\n  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  category,\n  address,\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } }\n }\n': ATTRACTIONS_QUERY_RESULT;

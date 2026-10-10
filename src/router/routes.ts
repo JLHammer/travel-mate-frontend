@@ -1,6 +1,6 @@
 import { createSearchParams } from "react-router-dom";
 import { LANGUAGES } from "../i18n/translations";
-import type { Language } from "../types";
+import type { Language, SitePage } from "../types";
 
 type Section =
   | "countries"
@@ -75,14 +75,21 @@ export const localizedPaths = (language: Language) => {
     country: (slug: string) => `${section("countries")}/${slug}`,
     city: (slug: string) => `${section("cities")}/${slug}`,
     attraction: (slug: string) => `${section("attractions")}/${slug}`,
-    searchFor: (query: string) =>
-      `${section("search")}?${createSearchParams({ q: query.trim() })}`,
+    searchFor: (query: string) => `${section("search")}?${createSearchParams({ q: query.trim() })}`,
   };
 };
 
-export const NAV_LINKS = ["home", "countries", "cities", "attractions", "about"] as const;
+// The menus are edited under Navigation in the Studio. These are only used if Sanity can't be reached
+export const DEFAULT_HEADER_LINKS: SitePage[] = [
+  "home",
+  "countries",
+  "cities",
+  "attractions",
+  "about",
+  "favorites",
+];
 
-export const FOOTER_LINKS = ["about", "contact", "privacy", "terms"] as const;
+export const DEFAULT_FOOTER_LINKS: SitePage[] = ["about", "contact", "privacy", "terms"];
 
 const SECTIONS = Object.keys(SEGMENTS.en) as Section[];
 

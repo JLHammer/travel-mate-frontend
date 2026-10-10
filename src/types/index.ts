@@ -17,8 +17,11 @@ export type {
   FavoriteAttraction,
   Featured,
   Language,
+  NavItem,
   SanityImage,
   SearchData,
+  SiteSettingsResult,
+  SitePage,
 } from "./sanity";
 
 export type {

@@ -45,6 +45,18 @@ const ATTRACTION = `
 
 const ATTRACTION_LIST_ITEM = `_id, "name": ${NAME}, "slug": ${SLUG}, ${CARD}, category`;
 
+// No English fallback here: a label left empty in this language is null, and the menu shows
+// the page's standard name in the same language instead
+const NAV_LINK = `_key, page, "label": label[language == $lang][0].value`;
+
+// Site-wide content shown on every page, fetched once per language
+export const SITE_SETTINGS_QUERY = defineQuery(`{
+  "navigation": *[_id == "navigation"][0] {
+    "header": headerLinks[]{ ${NAV_LINK} },
+    "footer": footerLinks[]{ ${NAV_LINK} }
+  }
+}`);
+
 export const COUNTRIES_QUERY = defineQuery(`
   *[_type == "country"] | ${BY_NAME} { ${COUNTRY} }
 `);
