@@ -55,6 +55,8 @@ export const LoginSection = () => {
 
   const handleLogout = async () => {
     await logout();
+    // An open undo toast would otherwise still act for the user who just logged out
+    toast.dismiss();
     toast.success(t.login.loggedOut);
   };
 
