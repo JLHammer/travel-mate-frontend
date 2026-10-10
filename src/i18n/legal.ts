@@ -44,7 +44,7 @@ export const privacy: Record<Language, LegalDocument> = {
         id: "stored-on-your-device",
         title: "Stored on your device",
         paragraphs: [
-          "TravelMate does not use tracking or advertising cookies. To remember your settings between visits, we save your chosen language and theme in your browser's local storage.",
+          "TravelMate does not use tracking or advertising cookies. To remember your settings between visits, we save your chosen language and theme in your browser’s local storage.",
           "This information stays on your device and is never sent to us. You can remove it at any time by clearing your browser data.",
         ],
       },
@@ -97,7 +97,7 @@ export const privacy: Record<Language, LegalDocument> = {
           "Du kan bruge TravelMate uden at oprette en konto eller fortælle os, hvem du er. Vi indsamler kun personoplysninger, når du selv vælger at give dem til os, eller når det er nødvendigt for at huske dine indstillinger.",
         ],
         list: [
-          "Kontaktformular: dit navn, din e-mailadresse, det emne du vælger, og din besked.",
+          "Kontaktformular: dit navn, din e-mailadresse, det emne, du vælger, og din besked.",
           "Indstillinger: dit valgte sprog, og om du bruger lyst eller mørkt tema.",
         ],
       },

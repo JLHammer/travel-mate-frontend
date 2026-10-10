@@ -100,7 +100,7 @@ const en = {
   } satisfies Record<BadgeCategory, string>,
   notFound: {
     title: "Page not found",
-    text: "We couldn't find the page you're looking for.",
+    text: "We couldn’t find the page you’re looking for.",
     backHome: "Back to home",
   },
   about: {
@@ -347,7 +347,7 @@ const da: Dictionary = {
       },
       screens: {
         title: "Lavet til alle skærme",
-        text: "Planlæg på din telefon, tablet eller computer, i lyst eller mørkt tema, på det sprog du foretrækker.",
+        text: "Planlæg på din telefon, tablet eller computer, i lyst eller mørkt tema, på det sprog, du foretrækker.",
       },
     },
     upToDateTitle: "Altid opdateret",
@@ -358,7 +358,7 @@ const da: Dictionary = {
   contact: {
     title: "Kontakt os",
     intro:
-      "Har du et spørgsmål, en destination du synes vi bør tilføje, eller har du set noget, der ikke helt stemmer? Send os en besked, så vender vi tilbage så hurtigt som muligt.",
+      "Har du et spørgsmål, en destination, du synes, vi bør tilføje, eller har du set noget, der ikke helt stemmer? Send os en besked, så vender vi tilbage så hurtigt som muligt.",
     labels: { name: "Navn", email: "E-mail", subject: "Emne", message: "Besked" },
     placeholders: {
       name: "Dit navn",
