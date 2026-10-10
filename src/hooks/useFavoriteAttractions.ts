@@ -1,5 +1,5 @@
 import { FAVORITE_ATTRACTIONS_QUERY } from "../data/queries";
-import type { Attraction } from "../types";
+import type { FavoriteAttraction } from "../types";
 import { useLanguage } from "./useLanguage";
 import { useLikes } from "./useLikes";
 import { useSanityQuery } from "./useSanityQuery";
@@ -7,10 +7,10 @@ import { useSanityQuery } from "./useSanityQuery";
 export const useFavoriteAttractions = () => {
   const { language } = useLanguage();
   const { likedAttractionIds, isLoading: likesLoading } = useLikes();
-  const { data, isLoading, error, refetch } = useSanityQuery<Attraction[]>(FAVORITE_ATTRACTIONS_QUERY, {
-    ids: likedAttractionIds,
-    lang: language,
-  });
+  const { data, isLoading, error, refetch } = useSanityQuery<FavoriteAttraction[]>(
+    FAVORITE_ATTRACTIONS_QUERY,
+    { ids: likedAttractionIds, lang: language },
+  );
 
   return {
     attractions: data?.filter(({ _id }) => likedAttractionIds.includes(_id)) ?? [],

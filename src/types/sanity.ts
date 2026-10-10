@@ -5,6 +5,7 @@ import type {
   CITY_DETAIL_QUERY_RESULT,
   COUNTRIES_QUERY_RESULT,
   COUNTRY_DETAIL_QUERY_RESULT,
+  FAVORITE_ATTRACTIONS_QUERY_RESULT,
   FEATURED_QUERY_RESULT,
   SEARCH_QUERY_RESULT,
 } from "./sanity.types";
@@ -15,6 +16,7 @@ export type Language = "da" | "en" | "es";
 export type Country = COUNTRIES_QUERY_RESULT[number];
 export type City = CITIES_QUERY_RESULT[number];
 export type Attraction = ATTRACTIONS_QUERY_RESULT[number];
+export type FavoriteAttraction = FAVORITE_ATTRACTIONS_QUERY_RESULT[number];
 export type Featured = FEATURED_QUERY_RESULT;
 export type SearchData = SEARCH_QUERY_RESULT;
 

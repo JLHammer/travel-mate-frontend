@@ -14,6 +14,7 @@ export type {
   Country,
   CountryDetail,
   CountrySummary,
+  FavoriteAttraction,
   Featured,
   Language,
   SanityImage,
