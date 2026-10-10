@@ -11,7 +11,8 @@ import type {
 } from "./sanity.types";
 import type { BadgeCategory } from "./theme";
 
-export type Language = "da" | "en" | "es";
+// Generated from the enabled languages in the Studio by npm run typegen
+export type { Language } from "../i18n/languages.generated";
 
 export type Country = COUNTRIES_QUERY_RESULT[number];
 export type City = CITIES_QUERY_RESULT[number];

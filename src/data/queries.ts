@@ -1,21 +1,19 @@
 import { defineQuery } from "groq";
 
-const NAME = `coalesce(select($lang == "da" => name.da, $lang == "es" => name.es), name.en)`;
-const TAGLINE = `coalesce(select($lang == "da" => tagline.da, $lang == "es" => tagline.es), tagline.en)`;
-const DESCRIPTION = `coalesce(select($lang == "da" => description.da, $lang == "es" => description.es), description.en)`;
-const ALT = `coalesce(select($lang == "da" => alt.da, $lang == "es" => alt.es), alt.en)`;
+// Each localized field holds one item per language, e.g. name: [{ language: "da", value: "Italien" }, …].
+// These pick the selected language, or English if the text is missing there, so no query names a language
+const NAME = `coalesce(name[language == $lang][0].value, name[language == "en"][0].value)`;
+const TAGLINE = `coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value)`;
+const DESCRIPTION = `coalesce(description[language == $lang][0].value, description[language == "en"][0].value)`;
+const ALT = `coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value)`;
 const BY_NAME = `order(${NAME} asc)`;
 
 // The slug in the selected language, for links
-const SLUG = `coalesce(select($lang == "da" => slug.da.current, $lang == "es" => slug.es.current), slug.en.current)`;
+const SLUG = `coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current)`;
 // Every language's slug, so a detail page knows its URL in the other languages
-const SLUGS = `"slugs": {
-  "da": coalesce(slug.da.current, slug.en.current),
-  "en": slug.en.current,
-  "es": coalesce(slug.es.current, slug.en.current)
-}`;
+const SLUGS = `"slugs": slug[]{ language, "slug": value.current }`;
 // Detail pages accept the slug in any language, so a shared link still opens in the reader's language
-const MATCHES_SLUG = `$slug in [slug.da.current, slug.en.current, slug.es.current]`;
+const MATCHES_SLUG = `$slug in slug[].value.current`;
 
 const COUNTRY_SUMMARY = `_id, "name": ${NAME}, code, "slug": ${SLUG}`;
 const CITY_SUMMARY = `_id, "name": ${NAME}, "slug": ${SLUG}`;

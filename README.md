@@ -36,23 +36,23 @@ Country
 
 The Studio has three document types: `country`, `city` and `attraction`. Their fields are defined in `schemaTypes/` in the Studio repo. Fields used by more than one type live in `schemaTypes/fields.ts`, so each one is defined only once.
 
-| Field         | Type           | Country | City | Attraction | Notes                                                                          |
-| ------------- | -------------- | :-----: | :--: | :--------: | ------------------------------------------------------------------------------ |
-| `name`        | `localeString` |    ✓    |  ✓   |     ✓      | Required in every language                                                     |
-| `slug`        | `localeSlug`   |    ✓    |  ✓   |     ✓      | Required in every language, made from the name and unique across all languages |
-| `code`        | `string`       |    ✓    |      |            | Required two-letter ISO code in capitals, e.g. `IT`                            |
-| `country`     | `reference`    |         |  ✓   |            | Required reference to a country                                                |
-| `city`        | `reference`    |         |      |     ✓      | Required reference to a city                                                   |
-| `category`    | `string`       |         |      |     ✓      | Required, one of historical, museum, park, attraction or landmark              |
-| `tagline`     | `localeString` |    ✓    |  ✓   |     ✓      | Optional, max 80 characters per language                                       |
-| `description` | `localeText`   |    ✓    |  ✓   |     ✓      | Required in every language                                                     |
-| `image`       | `image`        |    ✓    |  ✓   |     ✓      | Required, with a hotspot, localized `alt` text and a `credit`                  |
-| `address`     | `string`       |         |      |     ✓      | Required unless the attraction has a `location`                                |
-| `location`    | `geopoint`     |         |  ✓   |     ✓      | Latitude and longitude                                                         |
-| `website`     | `url`          |         |  ✓   |     ✓      | Only `http` and `https` links                                                  |
-| `featured`    | `boolean`      |    ✓    |  ✓   |     ✓      | Shows the item in the featured sections on the home page                       |
+| Field         | Type                           | Country | City | Attraction | Notes                                                                                  |
+| ------------- | ------------------------------ | :-----: | :--: | :--------: | -------------------------------------------------------------------------------------- |
+| `name`        | `internationalizedArrayString` |    ✓    |  ✓   |     ✓      | Required in every enabled language                                                     |
+| `slug`        | `internationalizedArraySlug`   |    ✓    |  ✓   |     ✓      | Required in every enabled language, made from the name and unique across all languages |
+| `code`        | `string`                       |    ✓    |      |            | Required two-letter ISO code in capitals, e.g. `IT`                                    |
+| `country`     | `reference`                    |         |  ✓   |            | Required reference to a country                                                        |
+| `city`        | `reference`                    |         |      |     ✓      | Required reference to a city                                                           |
+| `category`    | `string`                       |         |      |     ✓      | Required, one of historical, museum, park, attraction or landmark                      |
+| `tagline`     | `internationalizedArrayString` |    ✓    |  ✓   |     ✓      | Optional, max 80 characters per language                                               |
+| `description` | `internationalizedArrayText`   |    ✓    |  ✓   |     ✓      | Required in every enabled language                                                     |
+| `image`       | `image`                        |    ✓    |  ✓   |     ✓      | Required, with a hotspot, localized `alt` text and a `credit`                          |
+| `address`     | `string`                       |         |      |     ✓      | Required unless the attraction has a `location`                                        |
+| `location`    | `geopoint`                     |         |  ✓   |     ✓      | Latitude and longitude                                                                 |
+| `website`     | `url`                          |         |  ✓   |     ✓      | Only `http` and `https` links                                                          |
+| `featured`    | `boolean`                      |    ✓    |  ✓   |     ✓      | Shows the item in the featured sections on the home page                               |
 
-`localeString`, `localeText` and `localeSlug` are object types that hold one value per language. They are described under [Info models](#2-info-models) below.
+The `internationalizedArray…` types come from `sanity-plugin-internationalized-array` and hold one item per language. They are described under [Info models](#2-info-models) below. A fourth document type, `locale`, holds the languages themselves (see [Language](#1-language)).
 
 ## Languages
 
@@ -66,63 +66,74 @@ The language follows this flow from the CMS to the screen:
 Language → Info models → GROQ → React → Language switch
 ```
 
-| Step            | What it does                              | Where                                 |
-| --------------- | ----------------------------------------- | ------------------------------------- |
-| Language        | Defines which languages exist             | `schemaTypes/languages.ts` (Studio)   |
-| Info models     | Store each text in every language         | `localeString`, `localeText` (Studio) |
-| GROQ            | Pick out the selected language            | `src/data/queries.ts`                 |
-| React           | Send the selected language to the queries | `LanguageContext`, data hooks         |
-| Language switch | Go to the same page in the new language   | `LanguageToggle`                      |
+| Step            | What it does                              | Where                                                           |
+| --------------- | ----------------------------------------- | --------------------------------------------------------------- |
+| Language        | Defines which languages exist             | `locale` documents (Studio) → `src/i18n/languages.generated.ts` |
+| Info models     | Store each text in every language         | `internationalizedArrayString`, `…Text`, `…Slug` (Studio)       |
+| GROQ            | Pick out the selected language            | `src/data/queries.ts`                                           |
+| React           | Send the selected language to the queries | `LanguageContext`, data hooks                                   |
+| Language switch | Go to the same page in the new language   | `LanguageToggle`                                                |
 
 ### 1. Language
 
-The languages are defined once in the Studio, in `schemaTypes/languages.ts`:
+Each language is a `locale` document in the Studio, with a name, a two-letter code and an **Enabled** switch. Only administrators see them, under **Languages**. A language can't be deleted or unpublished, and its code can't change once it's published, because every translation is stored under that code.
+
+`npm run typegen` in the Studio writes the enabled languages to `src/i18n/languages.generated.ts`:
 
 ```ts
 export const LANGUAGES = [
   { id: "da", title: "Dansk" },
   { id: "en", title: "English" },
   { id: "es", title: "Español" },
-];
+] as const;
+
+export type Language = (typeof LANGUAGES)[number]["id"];
 ```
 
-The frontend has a matching list in `src/i18n/translations.ts`, and the union type `Language = "da" | "en" | "es"` in `src/types/sanity.ts`.
+The frontend reads its languages only from this file, through `LANGUAGES` in `src/i18n/translations.ts` and the `Language` type in `src/types/sanity.ts`. So the Studio and the website can't disagree about which languages exist, and a language reaches the website only after the developer has run typegen.
 
 ### 2. Info models
 
-Three object types are built from `LANGUAGES`. `localeString` is for short text, `localeText` for longer text and `localeSlug` for the URL part, and each has one field per language. Text that changes with the language uses these types. Data that is the same in every language stays directly on the document.
+Text that changes with the language is stored with `sanity-plugin-internationalized-array`, Sanity's recommended plugin for field-level localization. It adds `internationalizedArrayString` for short text, `internationalizedArrayText` for longer text and `internationalizedArraySlug` for the URL part. Each holds one item per language. Data that is the same in every language stays directly on the document.
 
-| Field                                                                         | Example                                           | Depends on language?                             | Type                          |
-| ----------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------ | ----------------------------- |
-| `name`, `tagline`, `description`, `image.alt`                                 | `Danmark` / `Denmark` / `Dinamarca`               | Yes                                              | `localeString` / `localeText` |
-| `slug`                                                                        | `danmark` / `denmark` / `dinamarca`               | Yes                                              | `localeSlug`                  |
-| `category`                                                                    | `historical` → Historisk / Historical / Histórico | Yes, translated in the frontend from a fixed key | `string` (option list)        |
-| `code`, `image` (asset, credit), `location`, `address`, `website`, `featured` | `DK` in every language                            | No                                               | Plain fields on the document  |
+| Field                                                                         | Example                                           | Depends on language?                             | Type                                     |
+| ----------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------ | ---------------------------------------- |
+| `name`, `tagline`, `description`, `image.alt`                                 | `Danmark` / `Denmark` / `Dinamarca`               | Yes                                              | `internationalizedArrayString` / `…Text` |
+| `slug`                                                                        | `danmark` / `denmark` / `dinamarca`               | Yes                                              | `internationalizedArraySlug`             |
+| `category`                                                                    | `historical` → Historisk / Historical / Histórico | Yes, translated in the frontend from a fixed key | `string` (option list)                   |
+| `code`, `image` (asset, credit), `location`, `address`, `website`, `featured` | `DK` in every language                            | No                                               | Plain fields on the document             |
 
 A country is still a single document, and its translations sit next to each other:
 
 ```json
 {
   "code": "IT",
-  "name": { "da": "Italien", "en": "Italy", "es": "Italia" },
-  "description": { "da": "…", "en": "…", "es": "Italia es conocida por su rica historia…" }
+  "name": [
+    { "language": "da", "value": "Italien" },
+    { "language": "en", "value": "Italy" },
+    { "language": "es", "value": "Italia" }
+  ]
 }
 ```
 
-Validation in the Studio requires every language on `name`, `description` and `slug`, so a country, city or attraction can't be published with a translation missing. Missing `image.alt` text only gives a warning.
+The editor adds a language with the buttons under each field, which add an empty row to translate. Validation reads the `locale` documents:
+
+- In **enabled** languages, a missing `name`, `description` or `slug` is an error, so the document can't be published.
+- In languages that **aren't enabled yet**, it's a warning, so editors can see what's left while they translate.
+- Missing `image.alt` text is only a warning, in every language.
 
 ### 3. GROQ
 
-Every query takes a `$lang` parameter. Each localized field picks the selected language:
+Every query takes a `$lang` parameter. Each localized field picks the item in the selected language:
 
 ```groq
-"name": coalesce(select($lang == "da" => name.da, $lang == "es" => name.es), name.en)
+"name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value)
 ```
 
-- `select(...)` picks `name.da` or `name.es` depending on `$lang`.
-- `coalesce(..., name.en)` uses English if the text is empty in the selected language. For `name` and `description` that can't happen once a document is published, but `tagline` and `image.alt` are optional.
+- `name[language == $lang][0].value` finds the item whose `language` is `$lang` and reads its `value`. It works for any language, so no query lists the languages.
+- `coalesce(..., name[language == "en"][0].value)` uses English if the text is missing in the selected language. For `name` and `description` that can't happen in an enabled language, but `tagline` and `image.alt` are optional.
 
-The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`, `ALT`, `SLUG`) in `src/data/queries.ts`, so they are written once and used by every query. Lists are sorted by the name in the selected language too. React receives plain text, e.g. `name: "Italien"`, and never handles the language object itself.
+The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`, `ALT`, `SLUG`) in `src/data/queries.ts`, so they are written once and used by every query. Lists are sorted by the name in the selected language too. React receives plain text, e.g. `name: "Italien"`, and never handles the language array itself.
 
 ### 4. React
 
@@ -161,7 +172,7 @@ Every page has its own URL in each language. The section names are translated, a
 - **No language prefix.** No section name is used by two languages, so the first part of the URL already says which language it is. `languageOfPath` in `src/router/routes.ts` looks it up in `SEGMENTS`, the table of section names. The front page is `/` in every language.
 - **Links** are built with `usePaths()`, which returns every path in the current language, e.g. `paths.country(slug)`. Components never write a path by hand.
 - **Slugs** are made in the Studio from the name in each language, transliterated to ASCII (`Akershus Fæstning` → `akershus-faestning`) so URLs never need percent-encoding. A slug must be unique across all languages within its type, so a URL always leads to one document.
-- **Detail pages accept the slug in any language.** If a Danish reader opens a shared `/attractions/tivoli-gardens`, the page loads and redirects to `/seevaerdigheder/tivoli`. The query returns all three slugs (`slugs`), and `useLocalizedSlug` uses them both for that redirect and to tell `LanguageToggle` the exact URL in the other languages.
+- **Detail pages accept the slug in any language.** If a Danish reader opens a shared `/attractions/tivoli-gardens`, the page loads and redirects to `/seevaerdigheder/tivoli`. The query matches the slug in any language with `$slug in slug[].value.current` and returns every language's slug (`slugs`), and `useLocalizedSlug` uses them both for that redirect and to tell `LanguageToggle` the exact URL in the other languages.
 
 Countries, cities and attractions all change together, with no code specific to the language switch in any page.
 
@@ -172,7 +183,14 @@ There are three ways to structure translations in Sanity. The difference is wher
 **Field-level localization (TravelMate).** Each text field holds one value per language. Language is organised per field: "here is the name in every language".
 
 ```json
-{ "_type": "country", "code": "IT", "name": { "da": "Italien", "en": "Italy" } }
+{
+  "_type": "country",
+  "code": "IT",
+  "name": [
+    { "language": "da", "value": "Italien" },
+    { "language": "en", "value": "Italy" }
+  ]
+}
 ```
 
 **Embedded language objects (the assignment's model).** The document holds an `info` array with one object per language, and each object has all the text for that language. Language is organised per bundle: "here is everything in Danish". In the assignment's Studio, `language` is a document type, and `countryInfo` and `cityInfo` are object types inside `country.info` and `city.info`. Each object points to its language with a reference.
@@ -198,11 +216,11 @@ country  { name, code, image, info: [countryInfo, …] }
 |                                                              | Field-level localization (TravelMate)                         | Embedded language objects (assignment)             | Document-level localization            |
 | ------------------------------------------------------------ | ------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------- |
 | Where the text lives                                         | In each field                                                 | In a list inside the document                      | In separate documents                  |
-| Documents per country (2 languages)                          | 1                                                             | 1 (+ Language documents)                           | 2 or more                              |
-| What "Language" is                                           | A list in code                                                | A document type, referenced from each entry        | A field or a document type             |
-| Can a translation go missing unnoticed?                      | No, validation catches it on `name`, `description` and `slug` | Yes, nobody has to add the entry                   | Yes, nobody has to create the document |
+| Documents per country (2 languages)                          | 1 (+ Language documents)                                      | 1 (+ Language documents)                           | 2 or more                              |
+| What "Language" is                                           | A document type, generated into a typed list for the frontend | A document type, referenced from each entry        | A field or a document type             |
+| Can a translation go missing unnoticed?                      | No, validation catches it in every enabled language           | Yes, nobody has to add the entry                   | Yes, nobody has to create the document |
 | Editor experience                                            | All languages side by side                                    | One block per language                             | Jump between documents                 |
-| Query                                                        | Simplest                                                      | Filter the array and follow the language reference | Filter on language across documents    |
+| Query                                                        | Simplest: one filter on the field                             | Filter the array and follow the language reference | Filter on language across documents    |
 | Can each language have its own fields or publish on its own? | No                                                            | No                                                 | Yes                                    |
 
 #### Why field-level localization
@@ -210,20 +228,20 @@ country  { name, code, image, info: [countryInfo, …] }
 Document-level localization is the strongest model when each language needs its own fields, its own publishing schedule or its own editors, or when a site has many languages. TravelMate has none of those needs:
 
 - **Every language has the same structure.** A country has the same fields in every language, and only the text differs.
-- **Translations can't go missing unnoticed.** The editor sees all languages side by side, and the validation flags a missing `name`, `description` or `slug`. With `info` entries, the editor adds one entry per language by hand, and nothing warns if a language is forgotten or added twice.
-- **Simpler queries.** GROQ reads the right language straight from the field, without filtering an array or following a reference to the language.
+- **Translations can't go missing unnoticed.** The editor sees all languages side by side, and the validation names every enabled language that's missing a `name`, `description` or `slug`. With `info` entries, nothing warns if a language is forgotten or added twice.
+- **Simpler queries.** GROQ picks the language inside the field with one filter, without following a reference to a language document.
+- **Adding a language needs no schema or query changes.** The arrays are filtered on `language`, so a new language is just new items. An object with one field per language (`name.da`, `name.en`, …) needs a new field in the schema and a new branch in every query, and every language adds to Sanity's attribute limit. The arrays use the same attributes however many languages there are.
 - **It matches Sanity's own guidance.** Sanity's localization docs describe field-level localization as best for documents with a mix of language-specific and shared fields. TravelMate's documents are exactly that: `name`, `tagline`, `description` and `slug` are translated, while `image`, `location` and the rest are shared.
 
-The parts of the assignment's model are still there, in a different form: the `language` documents are the `LANGUAGES` list, and the `info` objects are the `localeString`/`localeText`/`localeSlug` objects on each field.
+The parts of the assignment's model are still there, in a different form: its `language` documents are the `locale` documents, and its `info` objects are the items in each field's array, which also point to their language.
 
 ### Adding a language
 
-Adding a fourth language takes:
+1. **Studio (an administrator):** create a `locale` document with the name and code, and leave **Enabled** off. Every localized field now offers the new language.
+2. **Content (editors):** translate `name`, `tagline`, `description` and `image.alt`, and generate the slugs. Warnings show every document that's still missing the language. When none are left, switch **Enabled** on.
+3. **Frontend (the developer):** run `npm run typegen` in the Studio. The new code appears in the `Language` type, and TypeScript flags every place that needs a translation: the UI text in `src/i18n/translations.ts`, the privacy and terms text in `src/i18n/legal.ts` and the section names in `SEGMENTS` in `src/router/routes.ts`. No query or component needs to change.
 
-1. **Sanity:** one line in `LANGUAGES` in `schemaTypes/languages.ts`. The new field appears on every localized field in the Studio automatically.
-2. **Content:** translating `name`, `tagline`, `description` and `image.alt`, and generating the new slug, in the Studio. Validation flags every document that is still missing the new language.
-3. **GROQ:** one more branch in the `select()` for `NAME`, `TAGLINE`, `DESCRIPTION`, `ALT` and `SLUG`, and the new language in `SLUGS` and `MATCHES_SLUG`, then `npm run typegen`.
-4. **React:** one entry in `LANGUAGES` and a translation object for the UI text in `src/i18n/translations.ts`, the privacy and terms text in `src/i18n/legal.ts`, the language code in the `Language` type in `src/types/sanity.ts`, and the section names in `SEGMENTS` in `src/router/routes.ts`. TypeScript flags any translation that is missing. No component needs to change.
+Steps 1 and 2 need no code. Step 3 stays with a developer on purpose: the menus, buttons and legal text live in code so TypeScript can check that none is missing, and the language only appears on the website once they are translated.
 
 ## API calls and Custom Hooks
 
@@ -265,6 +283,8 @@ npm run typegen
 ```
 
 Query fragments in `queries.ts` are plain string constants, not helper functions, because TypeGen can only read constants.
+
+`npm run typegen` also writes `src/i18n/languages.generated.ts` from the enabled `locale` documents (see [Language](#1-language)).
 
 ## Showing that content comes from the CMS
 

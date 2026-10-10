@@ -2,12 +2,10 @@ import type { BadgeCategory, Language } from "../types";
 import type { ContactErrorKey, ContactSubject } from "../schemas/contactSchema";
 import type { LoginErrorKey } from "../schemas/loginSchema";
 import { privacy, terms } from "./legal";
+import { LANGUAGES } from "./languages.generated";
 
-export const LANGUAGES: { id: Language; title: string }[] = [
-  { id: "da", title: "Dansk" },
-  { id: "en", title: "English" },
-  { id: "es", title: "Español" },
-];
+// The enabled languages from the Studio. A newly enabled one makes TypeScript flag every missing translation
+export { LANGUAGES };
 
 export const isLanguage = (value: string | null | undefined): value is Language =>
   LANGUAGES.some(({ id }) => id === value);
