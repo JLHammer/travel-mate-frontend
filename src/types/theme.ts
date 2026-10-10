@@ -92,7 +92,6 @@ export interface ThemeColors {
   primaryHover: string;
   primarySoft: string;
   contrast: string;
-  contrastHover: string;
   accent: string;
 
   background: string;
@@ -106,7 +105,6 @@ export interface ThemeColors {
   mutedText: string;
   placeholder: string;
   onPrimary: string;
-  onContrast: string;
 
   overlay: string;
   overlaySoft: string;
@@ -173,7 +171,6 @@ export interface ThemeBase {
     carouselControl: number;
     cardAction: number;
     header: number;
-    modal: number;
     skipLink: number;
   };
 

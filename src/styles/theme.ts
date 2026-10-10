@@ -93,9 +93,6 @@ const mobile = {
 
 const tablet = {
   ...mobile,
-  fontSizes: {
-    ...mobile.fontSizes,
-  },
   sizes: {
     ...mobile.sizes,
     heroHeight: "16.875rem",
@@ -107,9 +104,6 @@ const tablet = {
 
 const desktop = {
   ...tablet,
-  fontSizes: {
-    ...tablet.fontSizes,
-  },
   sizes: {
     ...tablet.sizes,
     searchBarWidth: "min(100%, 32rem)",
@@ -122,7 +116,6 @@ const lightColors = {
   primaryHover: "#0f57c5",
   primarySoft: "#e6f0fd",
   contrast: "#152f4c",
-  contrastHover: "#0e2238",
   accent: "#fbbf24",
 
   background: "#f8fafc",
@@ -136,7 +129,6 @@ const lightColors = {
   mutedText: "#64748b",
   placeholder: "#94a3b8",
   onPrimary: "#ffffff",
-  onContrast: "#ffffff",
 
   overlay: "rgba(15, 23, 42, 0.35)",
   overlaySoft: "rgba(255, 255, 255, 0.75)",
@@ -162,7 +154,6 @@ const darkColors = {
   primaryHover: "#60a5fa",
   primarySoft: "#172b4d",
   contrast: "#e2e8f0",
-  contrastHover: "#f8fafc",
   accent: "#f59e0b",
 
   background: "#0b1220",
@@ -176,7 +167,6 @@ const darkColors = {
   mutedText: "#94a3b8",
   placeholder: "#64748b",
   onPrimary: "#ffffff",
-  onContrast: "#0f2440",
 
   overlay: "rgba(0, 0, 0, 0.4)",
   overlaySoft: "rgba(15, 23, 42, 0.72)",
@@ -257,7 +247,6 @@ export const tokens = {
     carouselControl: 1,
     cardAction: 2,
     header: 5,
-    modal: 10,
     skipLink: 20,
   },
 
@@ -278,7 +267,7 @@ export const lightTheme = {
   shadows: lightShadows,
 } satisfies Theme;
 
-export const darkTheme = {
+const darkTheme = {
   ...tokens,
   mode: "dark" as ThemeMode,
   colors: darkColors,

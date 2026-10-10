@@ -4,7 +4,7 @@ import { sanityClient } from "./sanityClient";
 
 const builder = createImageUrlBuilder(sanityClient);
 
-export const urlFor = (source: SanityImageSource) => builder.image(source);
+const urlFor = (source: SanityImageSource) => builder.image(source);
 
 const WIDTHS = [320, 480, 640, 960, 1280, 1600];
 

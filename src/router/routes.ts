@@ -80,8 +80,6 @@ export const localizedPaths = (language: Language) => {
   };
 };
 
-export type Paths = ReturnType<typeof localizedPaths>;
-
 export const NAV_LINKS = ["home", "countries", "cities", "attractions", "about"] as const;
 
 export const FOOTER_LINKS = ["about", "contact", "privacy", "terms"] as const;
