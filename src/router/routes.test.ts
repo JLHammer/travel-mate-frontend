@@ -69,7 +69,7 @@ describe("translatePath", () => {
 
   it("keeps the query string, both after the section and after a slug", () => {
     expect(translatePath("/soeg?q=rom", "en")).toBe("/search?q=rom");
-    expect(translatePath("/attractions/x?q=y", "da")).toBe("/seevaerdigheder/x?q=y");
+    expect(translatePath("/attractions/x?q=y", "da")).toBe("/sevaerdigheder/x?q=y");
   });
 
   it("leaves the front page and unknown paths alone", () => {

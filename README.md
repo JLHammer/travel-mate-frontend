@@ -163,16 +163,16 @@ When the user picks a language in `LanguageToggle` in the header:
 
 Every page has its own URL in each language. The section names are translated, and so are the slugs:
 
-|               | Danish                    | English                       | Spanish                           |
-| ------------- | ------------------------- | ----------------------------- | --------------------------------- |
-| Country list  | `/lande`                  | `/countries`                  | `/paises`                         |
-| A country     | `/lande/italien`          | `/countries/italy`            | `/paises/italia`                  |
-| An attraction | `/seevaerdigheder/tivoli` | `/attractions/tivoli-gardens` | `/atracciones/jardines-de-tivoli` |
+|               | Danish                   | English                       | Spanish                           |
+| ------------- | ------------------------ | ----------------------------- | --------------------------------- |
+| Country list  | `/lande`                 | `/countries`                  | `/paises`                         |
+| A country     | `/lande/italien`         | `/countries/italy`            | `/paises/italia`                  |
+| An attraction | `/sevaerdigheder/tivoli` | `/attractions/tivoli-gardens` | `/atracciones/jardines-de-tivoli` |
 
 - **No language prefix.** No section name is used by two languages, so the first part of the URL already says which language it is. `languageOfPath` in `src/router/routes.ts` looks it up in `SEGMENTS`, the table of section names. The front page is `/` in every language.
 - **Links** are built with `usePaths()`, which returns every path in the current language, e.g. `paths.country(slug)`. Components never write a path by hand.
 - **Slugs** are made in the Studio from the name in each language, transliterated to ASCII (`Akershus Fæstning` → `akershus-faestning`) so URLs never need percent-encoding. A slug must be unique across all languages within its type, so a URL always leads to one document.
-- **Detail pages accept the slug in any language.** If a Danish reader opens a shared `/attractions/tivoli-gardens`, the page loads and redirects to `/seevaerdigheder/tivoli`. The query matches the slug in any language with `$slug in slug[].value.current` and returns every language's slug (`slugs`), and `useLocalizedSlug` uses them both for that redirect and to tell `LanguageToggle` the exact URL in the other languages.
+- **Detail pages accept the slug in any language.** If a Danish reader opens a shared `/attractions/tivoli-gardens`, the page loads and redirects to `/sevaerdigheder/tivoli`. The query matches the slug in any language with `$slug in slug[].value.current` and returns every language's slug (`slugs`), and `useLocalizedSlug` uses them both for that redirect and to tell `LanguageToggle` the exact URL in the other languages.
 
 Countries, cities and attractions all change together, with no code specific to the language switch in any page.
 

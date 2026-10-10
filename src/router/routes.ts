@@ -19,7 +19,7 @@ export const SEGMENTS: Record<Language, Record<Section, string>> = {
   da: {
     countries: "lande",
     cities: "byer",
-    attractions: "seevaerdigheder",
+    attractions: "sevaerdigheder",
     about: "om-os",
     contact: "kontakt",
     privacy: "privatliv",
@@ -99,7 +99,7 @@ const findSegment = (segment: string | undefined) => {
 export const languageOfPath = (pathname: string) =>
   findSegment(pathname.split("/")[1])?.language ?? null;
 
-// The same page in another language, e.g. /attractions/x?q=y → /seevaerdigheder/x?q=y.
+// The same page in another language, e.g. /attractions/x?q=y → /sevaerdigheder/x?q=y.
 // A slug is kept as it is, and the detail page then swaps it for the slug in the new language
 export const translatePath = (url: string, language: Language) => {
   const [, segment, ...rest] = url.split("/");
