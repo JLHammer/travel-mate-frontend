@@ -221,6 +221,7 @@ type CardCarouselProps = {
 };
 
 const CardCarousel = ({ mobileOnly, children }: CardCarouselProps) => {
+  const { t } = useTranslation();
   const trackRef = useRef<HTMLUListElement>(null);
   const [state, setState] = useState<CarouselState>({
     visibleCards: [],
@@ -273,21 +274,32 @@ const CardCarousel = ({ mobileOnly, children }: CardCarouselProps) => {
     <>
       <CarouselWrapper $mobileOnly={mobileOnly}>
         {state.canScrollPrev && (
-          <CarouselControl type="button" $side="left" onClick={() => scrollByPage(-1)}>
-            <ChevronLeft />
+          <CarouselControl
+            type="button"
+            $side="left"
+            aria-label={t.sections.previous}
+            onClick={() => scrollByPage(-1)}
+          >
+            <ChevronLeft aria-hidden />
           </CarouselControl>
         )}
         <CardTrack ref={trackRef} $mobileOnly={mobileOnly} onScroll={updateState}>
           {children}
         </CardTrack>
         {state.canScrollNext && (
-          <CarouselControl type="button" $side="right" onClick={() => scrollByPage(1)}>
-            <ChevronRight />
+          <CarouselControl
+            type="button"
+            $side="right"
+            aria-label={t.sections.next}
+            onClick={() => scrollByPage(1)}
+          >
+            <ChevronRight aria-hidden />
           </CarouselControl>
         )}
       </CarouselWrapper>
+      {/* Only shows where you are, and the cards are already in the list */}
       {(state.canScrollPrev || state.canScrollNext) && (
-        <CarouselDots>
+        <CarouselDots aria-hidden>
           {state.visibleCards.map((visible, card) => (
             <CarouselDot key={card} $active={visible} />
           ))}

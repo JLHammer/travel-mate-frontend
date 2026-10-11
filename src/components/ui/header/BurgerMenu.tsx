@@ -1,11 +1,13 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { MenuIcon } from "../icons/MenuIcon";
+import { useTranslation } from "../../../hooks/useTranslation";
 import type { AnimatedIconHandle } from "../../../types";
 import { tokens } from "../../../styles/theme";
 
 type BurgerMenuProps = {
   open: boolean;
+  controls: string;
   onToggle: () => void;
 };
 
@@ -36,7 +38,8 @@ const BurgerButton = styled.button`
   }
 `;
 
-export const BurgerMenu = ({ open, onToggle }: BurgerMenuProps) => {
+export const BurgerMenu = ({ open, controls, onToggle }: BurgerMenuProps) => {
+  const { t } = useTranslation();
   const iconRef = useRef<AnimatedIconHandle>(null);
 
   useEffect(() => {
@@ -45,7 +48,14 @@ export const BurgerMenu = ({ open, onToggle }: BurgerMenuProps) => {
   }, [open]);
 
   return (
-    <BurgerButton type="button" onClick={onToggle}>
+    // The label stays "Menu" and aria-expanded tells whether it's open, as with any menu button
+    <BurgerButton
+      type="button"
+      aria-label={t.nav.menu}
+      aria-expanded={open}
+      aria-controls={controls}
+      onClick={onToggle}
+    >
       <MenuIcon ref={iconRef} />
     </BurgerButton>
   );

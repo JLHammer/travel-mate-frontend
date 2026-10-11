@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { useSiteSettings } from "../../../hooks/useSiteSettings";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { tokens } from "../../../styles/theme";
 import type { SocialLink as SocialLinkData } from "../../../types";
 
@@ -48,6 +49,7 @@ const SocialIcon = styled.svg`
 `;
 
 export const SocialsList = () => {
+  const { t } = useTranslation();
   const { socials } = useSiteSettings();
 
   if (socials.length === 0) return null;
@@ -56,8 +58,13 @@ export const SocialsList = () => {
     <SocialsListStyled>
       {socials.map(({ _key, platform, url }) => (
         <li key={_key}>
-          <SocialLink href={url} target="_blank" rel="noopener noreferrer">
-            <SocialIcon as={PLATFORMS[platform].Icon} />
+          <SocialLink
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t.nav.socialLink(PLATFORMS[platform].name)}
+          >
+            <SocialIcon as={PLATFORMS[platform].Icon} aria-hidden />
           </SocialLink>
         </li>
       ))}

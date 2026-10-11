@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import styled from "styled-components";
 import { ExternalLink as ExternalLinkIcon } from "lucide-react";
 import { tokens } from "../../styles/theme";
+import { useTranslation } from "../../hooks/useTranslation";
+import { VisuallyHidden } from "./VisuallyHidden";
 
 const ExternalLinkStyled = styled.a<{ $primary: boolean }>`
   display: inline-flex;
@@ -31,10 +33,13 @@ type ExternalLinkProps = {
 };
 
 export const ExternalLink = ({ href, primary = false, children }: ExternalLinkProps) => {
+  const { t } = useTranslation();
+
   return (
     <ExternalLinkStyled href={href} target="_blank" rel="noreferrer" $primary={primary}>
       {children}
-      <ExternalLinkIcon />
+      <ExternalLinkIcon aria-hidden />
+      <VisuallyHidden> ({t.nav.newTab})</VisuallyHidden>
     </ExternalLinkStyled>
   );
 };

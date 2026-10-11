@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, ChevronDown, Globe } from "lucide-react";
 import { useLanguage } from "../../../hooks/useLanguage";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { LANGUAGES } from "../../../i18n/translations";
 import type { Language } from "../../../types";
 import { tokens } from "../../../styles/theme";
@@ -100,6 +101,7 @@ const OptionLabel = styled.span`
 
 export const LanguageToggle = () => {
   const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -108,8 +110,16 @@ export const LanguageToggle = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!wrapperRef.current?.contains(event.target as Node)) setOpen(false);
     };
+    // Escape closes it too, so keyboard users aren't stuck with it open
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, [open]);
 
   const select = (id: Language) => {
@@ -119,12 +129,19 @@ export const LanguageToggle = () => {
 
   return (
     <LanguageWrapper ref={wrapperRef}>
-      <LanguagePill type="button" $open={open} onClick={() => setOpen((prev) => !prev)}>
+      {/* The label keeps the visible code in it, so voice control users can say what they see */}
+      <LanguagePill
+        type="button"
+        $open={open}
+        aria-label={`${t.nav.language}, ${language.toUpperCase()}`}
+        aria-expanded={open}
+        onClick={() => setOpen((prev) => !prev)}
+      >
         <LanguageLabel>
-          <Globe />
+          <Globe aria-hidden />
           {language}
         </LanguageLabel>
-        <Chevron $open={open} />
+        <Chevron $open={open} aria-hidden />
       </LanguagePill>
 
       <AnimatePresence>
@@ -140,11 +157,13 @@ export const LanguageToggle = () => {
                 <LanguageOption
                   type="button"
                   $selected={id === language}
+                  aria-current={id === language}
+                  lang={id}
                   onClick={() => select(id)}
                 >
                   <OptionCode>{id}</OptionCode>
                   <OptionLabel>{title}</OptionLabel>
-                  {id === language && <Check size={16} />}
+                  {id === language && <Check size={16} aria-hidden />}
                 </LanguageOption>
               </li>
             ))}

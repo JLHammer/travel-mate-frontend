@@ -148,7 +148,12 @@ const ThemeIconButton = () => {
   const next = mode === "light" ? "dark" : "light";
 
   return (
-    <ThemeButton type="button" title={t.theme.switchTo[next]} onClick={() => setMode(next)}>
+    <ThemeButton
+      type="button"
+      title={t.theme.switchTo[next]}
+      aria-label={t.theme.switchTo[next]}
+      onClick={() => setMode(next)}
+    >
       <AnimatePresence mode="wait" initial={false}>
         <ThemeIcon
           key={next}

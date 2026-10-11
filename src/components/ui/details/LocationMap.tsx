@@ -27,12 +27,13 @@ const MapCaption = styled.p`
 `;
 
 type LocationMapProps = {
+  name: string;
   latitude: number;
   longitude: number;
   zoom: number;
 };
 
-export const LocationMap = ({ latitude, longitude, zoom }: LocationMapProps) => {
+export const LocationMap = ({ name, latitude, longitude, zoom }: LocationMapProps) => {
   const { t } = useTranslation();
   const lngSpan = (360 / 2 ** zoom) * 2;
   const latSpan = lngSpan / 2;
@@ -45,7 +46,7 @@ export const LocationMap = ({ latitude, longitude, zoom }: LocationMapProps) => 
 
   return (
     <div>
-      <MapFrame src={embedUrl} loading="lazy" />
+      <MapFrame src={embedUrl} title={t.details.map(name)} loading="lazy" />
       <MapCaption>
         {t.details.openLargerMap} <ExternalLink href={fullMapUrl}>OpenStreetMap</ExternalLink>
       </MapCaption>

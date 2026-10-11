@@ -204,7 +204,7 @@ export const DetailsSection = ({
       {latitude != null && longitude != null && (
         <MapBlock>
           <h2>{t.details.findOnMap}</h2>
-          <LocationMap latitude={latitude} longitude={longitude} zoom={mapZoom} />
+          <LocationMap name={name ?? ""} latitude={latitude} longitude={longitude} zoom={mapZoom} />
         </MapBlock>
       )}
     </DetailsSectionStyled>

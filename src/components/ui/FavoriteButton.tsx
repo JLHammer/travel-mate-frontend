@@ -63,10 +63,12 @@ export const FavoriteButton = ({ attractionId, variant = "card" }: FavoriteButto
       type="button"
       $variant={variant}
       title={label}
+      aria-label={label}
+      aria-pressed={liked}
       onClick={handleClick}
       disabled={isPending}
     >
-      <Heart strokeWidth={2.5} fill={liked ? "currentColor" : "none"} />
+      <Heart strokeWidth={2.5} fill={liked ? "currentColor" : "none"} aria-hidden />
     </FavoriteButtonStyled>
   );
 };

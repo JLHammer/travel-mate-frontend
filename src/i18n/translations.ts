@@ -23,6 +23,10 @@ const en = {
     profile: "Profile",
     favorites: "Favourites",
     skipToContent: "Skip to content",
+    menu: "Menu",
+    language: "Language",
+    newTab: "opens in a new tab",
+    socialLink: (platform: string) => `TravelMate on ${platform} (opens in a new tab)`,
   },
   theme: {
     switchTo: { light: "Switch to light mode", dark: "Switch to dark mode" },
@@ -44,6 +48,8 @@ const en = {
   },
   sections: {
     viewAll: "View all",
+    previous: "Previous",
+    next: "Next",
     viewAllCountries: "View all countries",
     viewAllCities: "View all cities",
     viewAllAttractions: "View all attractions",
@@ -78,6 +84,7 @@ const en = {
     coordinates: "Coordinates",
     website: "Website",
     openLargerMap: "Open a larger map in",
+    map: (name: string) => `Map showing ${name}`,
   },
   categories: {
     historical: "Historical",
@@ -177,6 +184,10 @@ const da: Dictionary = {
     profile: "Profil",
     favorites: "Favoritter",
     skipToContent: "Gå til indhold",
+    menu: "Menu",
+    language: "Sprog",
+    newTab: "åbner i en ny fane",
+    socialLink: (platform) => `TravelMate på ${platform} (åbner i en ny fane)`,
   },
   theme: {
     switchTo: { light: "Skift til lyst tema", dark: "Skift til mørkt tema" },
@@ -198,6 +209,8 @@ const da: Dictionary = {
   },
   sections: {
     viewAll: "Se alle",
+    previous: "Forrige",
+    next: "Næste",
     viewAllCountries: "Se alle lande",
     viewAllCities: "Se alle byer",
     viewAllAttractions: "Se alle seværdigheder",
@@ -232,6 +245,7 @@ const da: Dictionary = {
     coordinates: "Koordinater",
     website: "Hjemmeside",
     openLargerMap: "Åbn et større kort i",
+    map: (name) => `Kort over ${name}`,
   },
   categories: {
     historical: "Historisk",
@@ -330,6 +344,10 @@ const es: Dictionary = {
     profile: "Perfil",
     favorites: "Favoritos",
     skipToContent: "Saltar al contenido",
+    menu: "Menú",
+    language: "Idioma",
+    newTab: "se abre en una pestaña nueva",
+    socialLink: (platform) => `TravelMate en ${platform} (se abre en una pestaña nueva)`,
   },
   theme: {
     switchTo: { light: "Cambiar a modo claro", dark: "Cambiar a modo oscuro" },
@@ -351,6 +369,8 @@ const es: Dictionary = {
   },
   sections: {
     viewAll: "Ver todo",
+    previous: "Anterior",
+    next: "Siguiente",
     viewAllCountries: "Ver todos los países",
     viewAllCities: "Ver todas las ciudades",
     viewAllAttractions: "Ver todas las atracciones",
@@ -385,6 +405,7 @@ const es: Dictionary = {
     coordinates: "Coordenadas",
     website: "Sitio web",
     openLargerMap: "Abrir un mapa más grande en",
+    map: (name) => `Mapa de ${name}`,
   },
   categories: {
     historical: "Histórico",

@@ -87,6 +87,9 @@ const BurgerSlot = styled.div`
   }
 `;
 
+// Ties the burger button to the menu it opens
+const MOBILE_MENU_ID = "mobile-menu";
+
 export const Header = () => {
   const { pathname } = useLocation();
   const [openedAt, setOpenedAt] = useState<string | null>(null);
@@ -111,11 +114,11 @@ export const Header = () => {
             <AuthLink />
           </HeaderAuth>
           <BurgerSlot>
-            <BurgerMenu open={open} onToggle={toggle} />
+            <BurgerMenu open={open} controls={MOBILE_MENU_ID} onToggle={toggle} />
           </BurgerSlot>
         </HeaderActions>
       </HeaderBar>
-      <NavBar open={open} onNavigate={close} />
+      <NavBar id={MOBILE_MENU_ID} open={open} onNavigate={close} />
     </HeaderStyled>
   );
 };

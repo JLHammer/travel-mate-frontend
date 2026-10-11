@@ -3,9 +3,11 @@ import { AnimatePresence, motion } from "motion/react";
 import { NavLinks } from "./NavLinks";
 import { PreferenceToggles } from "./PreferenceToggles";
 import { AuthLink } from "../ui/header/AuthLink";
+import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
 type NavBarProps = {
+  id: string;
   open: boolean;
   onNavigate: () => void;
 };
@@ -45,9 +47,11 @@ const MenuAuth = styled.div`
   }
 `;
 
-export const NavBar = ({ open, onNavigate }: NavBarProps) => {
+export const NavBar = ({ id, open, onNavigate }: NavBarProps) => {
+  const { t } = useTranslation();
+
   return (
-    <NavBarStyled>
+    <NavBarStyled id={id} aria-label={t.nav.menu}>
       <AnimatePresence initial={false}>
         {open && (
           <NavPanel
