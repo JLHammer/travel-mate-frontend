@@ -21,7 +21,7 @@ const getPreferredLanguage = (): Language => {
   return browser ?? DEFAULT_LANGUAGE;
 };
 
-// The language follows the URL's section name, e.g. /lande is Danish, so links and reloads keep it
+// Language comes from the section name in the URL (/lande is Danish), so links and reloads keep it
 export const LanguageContextProvider = ({ children }: ProviderProps) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const LanguageContextProvider = ({ children }: ProviderProps) => {
 
   const fromUrl = languageOfPath(location.pathname);
   const language = fromUrl ?? preferred;
-  // Remember the URL's language, so "/" stays in it afterwards
+  // Remember the language so "/" stays in it afterwards
   if (fromUrl && fromUrl !== preferred) setPreferred(fromUrl);
 
   useEffect(() => {
@@ -40,8 +40,8 @@ export const LanguageContextProvider = ({ children }: ProviderProps) => {
     } catch {}
   }, [language]);
 
-  // Go to the same page in the other language. Detail pages know their exact path there;
-  // other pages only need their section translated, and "/" stays where it is
+  // Go to the same page in the other language
+  // Detail pages know their exact path, other pages only swap the section, and "/" stays the same
   const setLanguage = useCallback(
     (next: Language) => {
       setPreferred(next);
@@ -51,7 +51,7 @@ export const LanguageContextProvider = ({ children }: ProviderProps) => {
 
       const state = location.state as { from?: string } | null;
       navigate(target, {
-        // Keep the login redirect target, in the new language too
+        // Keep the login redirect, in the new language too
         state: state?.from ? { ...state, from: translatePath(state.from, next) } : state,
       });
     },

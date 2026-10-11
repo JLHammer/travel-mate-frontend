@@ -43,7 +43,7 @@ type SocialResult = NonNullable<
   NonNullable<NonNullable<SITE_SETTINGS_QUERY_RESULT["settings"]>["socials"]>[number]
 >;
 
-// A social media link from the Studio, once the ones missing a platform or URL are left out
+// Social link from the Studio, after the ones without a platform or URL are filtered out
 export type SocialLink = SocialResult & {
   platform: NonNullable<SocialResult["platform"]>;
   url: string;
@@ -56,7 +56,7 @@ type NavLinkResult = NonNullable<
 // The pages an editor can link to, from the list in the Studio
 export type SitePage = NonNullable<NavLinkResult["page"]>;
 
-// A menu link from the Studio. The label is null unless the editor wrote one in this language
+// Menu link from the Studio, label is null unless the editor wrote one in this language
 export type NavItem = Omit<NavLinkResult, "page"> & { page: SitePage };
 
 export type CountrySummary = NonNullable<City["country"]>;

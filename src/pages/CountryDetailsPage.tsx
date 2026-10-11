@@ -12,7 +12,7 @@ export const CountryDetailsPage = () => {
   const { countrySlug } = useParams();
   const { t } = useTranslation();
   const { data: country, isLoading, error, refetch } = useCountry(countrySlug);
-  // Not while loading, since country still holds the previous page then
+  // Not while loading, country is still the previous page then
   const redirect = useLocalizedSlug(isLoading ? null : country?.slugs, "country");
 
   if (isLoading) return <Loader />;

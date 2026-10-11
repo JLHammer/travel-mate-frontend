@@ -50,7 +50,7 @@ export const LoginForm = () => {
     setHasFailed(!user);
     if (!user) likeAfterLogin(null);
 
-    // Leaving the login page hides the profile view, so confirm the login with a toast instead
+    // We leave the login page right away, so show a toast to confirm the login
     if (user && from) {
       toast.success(t.login.welcomeBack(user.firstName));
       navigate(from, { replace: true });

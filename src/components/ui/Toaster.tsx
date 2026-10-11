@@ -6,7 +6,7 @@ import { useThemeMode } from "../../hooks/useThemeMode";
 import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
-// Sonner sets --width inline, so it points at a variable we can change per breakpoint
+// Sonner sets --width inline, so point it at a variable we can change per breakpoint
 const ToasterGlobalStyle = createGlobalStyle`
   [data-sonner-toaster] {
     --toast-width: ${tokens.mobile.sizes.toastWidth};
@@ -21,12 +21,12 @@ const ToasterGlobalStyle = createGlobalStyle`
     text-wrap: balance;
   }
 
-  /* Selectors are one step more specific than Sonner's, so they win whichever stylesheet loads last */
+  /* One step more specific than Sonner's selectors, so these win no matter which stylesheet loads last */
   [data-sonner-toaster] [data-sonner-toast][data-styled="true"] {
     padding-right: calc(${tokens.mobile.spacing.xs} * 2 + ${tokens.mobile.sizes.toastCloseButton});
   }
 
-  /* A plain X in the toast's own text color that turns the theme's error color on hover */
+  /* Plain X in the text color, error color on hover */
   [data-sonner-toaster] [data-sonner-toast][data-styled="true"] button[data-close-button] {
     left: auto;
     right: ${tokens.mobile.spacing.xs};

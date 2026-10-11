@@ -3,7 +3,7 @@ import type { ContactErrorKey, ContactSubject } from "../schemas/contactSchema";
 import type { LoginErrorKey } from "../schemas/loginSchema";
 import { LANGUAGES } from "./languages.generated";
 
-// The enabled languages from the Studio. A newly enabled one makes TypeScript flag every missing translation
+// Enabled languages from the Studio, a new one makes TypeScript flag every missing translation
 export { LANGUAGES };
 
 export const isLanguage = (value: string | null | undefined): value is Language =>

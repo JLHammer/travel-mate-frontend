@@ -110,7 +110,7 @@ export const LanguageToggle = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!wrapperRef.current?.contains(event.target as Node)) setOpen(false);
     };
-    // Escape closes it too, so keyboard users aren't stuck with it open
+    // Close on Escape too, for keyboard users
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
@@ -129,7 +129,7 @@ export const LanguageToggle = () => {
 
   return (
     <LanguageWrapper ref={wrapperRef}>
-      {/* The label keeps the visible code in it, so voice control users can say what they see */}
+      {/* Keep the visible code in the label so voice control works */}
       <LanguagePill
         type="button"
         $open={open}

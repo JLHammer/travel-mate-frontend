@@ -14,7 +14,7 @@ import { useTranslation } from "../../../hooks/useTranslation";
 import { tokens } from "../../../styles/theme";
 import type { SocialLink as SocialLinkData } from "../../../types";
 
-// One entry per platform an editor can pick in the Studio
+// One for each platform the editor can pick in the Studio
 const PLATFORMS: Record<SocialLinkData["platform"], { name: string; Icon: IconType }> = {
   instagram: { name: "Instagram", Icon: FaInstagram },
   facebook: { name: "Facebook", Icon: FaFacebook },

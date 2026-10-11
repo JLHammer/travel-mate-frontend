@@ -133,7 +133,7 @@ const LegalContent = ({ title, page }: LegalContentProps) => {
   const { t, language } = useTranslation();
   const paths = usePaths();
 
-  // Each heading becomes the id its overview link jumps to, in the reader's language
+  // The heading becomes the id the overview links jump to
   const sections = (page.sections ?? []).map((section) => ({
     ...section,
     id: toAnchor(section.title ?? "") || section._key,
@@ -213,7 +213,7 @@ export const LegalSection = ({ id, title }: LegalSectionProps) => {
 
   if (isLoading) return <Loader />;
 
-  // A missing document is shown as an error too, since the page should always exist
+  // Missing document is an error too, the page should always be there
   if (error || !page) return <ErrorState message={t.errors.page} onRetry={refetch} />;
 
   return <LegalContent title={title} page={page} />;

@@ -4,7 +4,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 import { SubmitButton } from "./form/formStyles";
 
-/* Centered both on its own in <main> and inside a CardSection */
+/* Centered both alone in <main> and inside a CardSection */
 const ErrorStateStyled = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@ type ErrorStateProps = {
   onRetry?: () => void;
 };
 
-// Shown instead of content that couldn't be loaded, with a button that fetches it again
+// Shown when content couldn't load, with a button to try again
 export const ErrorState = ({ message, onRetry }: ErrorStateProps) => {
   const { t } = useTranslation();
 

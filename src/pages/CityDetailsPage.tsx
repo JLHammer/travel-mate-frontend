@@ -12,7 +12,7 @@ export const CityDetailsPage = () => {
   const { citySlug } = useParams();
   const { t } = useTranslation();
   const { data: city, isLoading, error, refetch } = useCity(citySlug);
-  // Not while loading, since city still holds the previous page then
+  // Not while loading, city is still the previous page then
   const redirect = useLocalizedSlug(isLoading ? null : city?.slugs, "city");
 
   if (isLoading) return <Loader />;

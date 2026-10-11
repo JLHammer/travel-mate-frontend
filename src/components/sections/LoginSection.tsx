@@ -44,18 +44,18 @@ export const LoginSection = () => {
   const paths = usePaths();
   const { user, isLoading, logout } = useAuth();
   const location = useLocation();
-  // ProtectedRoute sends logged-out users here with the page they tried to open
+  // ProtectedRoute sends logged out users here with the page they tried to open
   const fromFavorites = (location.state as { from?: string } | null)?.from === paths.favorites;
 
   useEffect(() => {
     if (!fromFavorites || user || isLoading) return;
-    // A fixed id stops StrictMode's double effect from showing the toast twice
+    // Fixed id so StrictMode doesn't show the toast twice
     toast.info(t.login.favoritesRequired, { id: "favorites-login-required" });
   }, [fromFavorites, user, isLoading, t]);
 
   const handleLogout = async () => {
     await logout();
-    // An open undo toast would otherwise still act for the user who just logged out
+    // Close the undo toast, otherwise it still works for the user who just logged out
     toast.dismiss();
     toast.success(t.login.loggedOut);
   };

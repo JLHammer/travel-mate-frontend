@@ -48,7 +48,7 @@ export const BurgerMenu = ({ open, controls, onToggle }: BurgerMenuProps) => {
   }, [open]);
 
   return (
-    // The label stays "Menu" and aria-expanded tells whether it's open, as with any menu button
+    // Label stays "Menu", aria-expanded tells if it's open
     <BurgerButton
       type="button"
       aria-label={t.nav.menu}

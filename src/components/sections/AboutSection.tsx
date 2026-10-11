@@ -105,7 +105,7 @@ const AboutLink = styled(Link)`
   }
 `;
 
-// The icons an editor can pick for a card in the Studio
+// Icons the editor can pick for a card in the Studio
 const ICONS: Record<NonNullable<AboutCardData["icon"]>, ReactNode> = {
   globe: <Globe />,
   building: <Building2 />,
@@ -189,7 +189,7 @@ export const AboutSection = () => {
 
   if (isLoading) return <Loader />;
 
-  // A missing document is shown as an error too, since the page should always exist
+  // Missing document is an error too, the page should always be there
   if (error || !about) return <ErrorState message={t.errors.page} onRetry={refetch} />;
 
   return <AboutContent about={about} />;

@@ -20,7 +20,7 @@ const SearchBarStyled = styled.form`
   background-color: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadows.search};
 
-  /* The input hides its own outline, so ring the whole bar instead */
+  /* The input has no outline, so the focus ring goes on the whole bar */
   &:has(input:focus-visible) {
     outline: ${tokens.borders.focus} solid ${({ theme }) => theme.colors.primary};
     outline-offset: ${tokens.borders.focus};
@@ -70,7 +70,7 @@ const SearchBarInput = styled.input`
     cursor: pointer;
   }
 
-  /* Override the browser's autofill colors so saved suggestions match normal typing */
+  /* Override autofill colors so it looks the same as normal typing */
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus {

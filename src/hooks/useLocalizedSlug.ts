@@ -8,11 +8,11 @@ import type { Language } from "../types";
 
 type DetailPage = "country" | "city" | "attraction";
 
-// Every language's slug, e.g. [{ language: "da", slug: "italien" }, { language: "en", slug: "italy" }]
+// Slug in every language, like [{ language: "da", slug: "italien" }, { language: "en", slug: "italy" }]
 type Slugs = { language: string | null; slug: string | null }[] | null | undefined;
 
-// Tells the language toggle where this detail page lives in the other languages.
-// Returns the path to redirect to when the page was opened with another language's slug, else null
+// Tells the language toggle where this page is in the other languages
+// Returns a path to redirect to if the page was opened with another language's slug, otherwise null
 export const useLocalizedSlug = (slugs: Slugs, page: DetailPage) => {
   const { language, setAlternatePaths } = useLanguage();
   const { pathname } = useLocation();
@@ -22,7 +22,7 @@ export const useLocalizedSlug = (slugs: Slugs, page: DetailPage) => {
     const slugIn = (id: Language) => slugs.find((item) => item.language === id)?.slug;
     const paths: AlternatePaths = {};
     for (const { id } of LANGUAGES) {
-      // Like the queries, use the English slug if the language has none
+      // Use the English slug if there's none in this language, same as the queries
       const slug = slugIn(id) ?? slugIn("en");
       if (slug) paths[id] = localizedPaths(id)[page](slug);
     }

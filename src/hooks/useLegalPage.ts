@@ -3,7 +3,7 @@ import type { LegalPageData } from "../types";
 import { useLanguage } from "./useLanguage";
 import { useSanityQuery } from "./useSanityQuery";
 
-// The privacy policy and the terms are separate documents of the same type in the Studio
+// Privacy policy and terms are two documents of the same type in the Studio
 export type LegalPageId = "privacyPage" | "termsPage";
 
 export const useLegalPage = (id: LegalPageId) => {

@@ -92,7 +92,7 @@ const HeroSentence = styled.span`
   }
 `;
 
-// The editor writes each line on its own line in the Studio
+// Each line in the Studio becomes its own line here
 const toLines = (text: string | null) =>
   (text ?? "")
     .split("\n")
@@ -108,8 +108,8 @@ export const HeroSection = ({ hero, loading }: HeroSectionProps) => {
   const lines = toLines(hero?.text ?? null);
   const taglineLines = toLines(hero?.tagline ?? null);
 
-  // No image while loading, so the built-in photo doesn't flash before the editor's.
-  // Without a home page in Sanity it falls back to that photo and the search bar alone
+  // No image while loading so the default photo doesn't flash first
+  // Falls back to the default photo and the search bar if there's no home page in Sanity
   const image = hero?.image?.asset ? (
     <HeroImage {...sanityImageProps(hero.image, "100vw")} alt="" fetchPriority="high" />
   ) : (

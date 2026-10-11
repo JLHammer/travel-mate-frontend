@@ -35,7 +35,7 @@ const AuthLinkStyled = styled(Link)<{ $loggedIn: boolean }>`
     padding: 0 ${tokens.tablet.spacing.m};
   }
 
-  /* Logged out it's a call to action; logged in it's a quieter account link */
+  /* Call to action when logged out, quieter account link when logged in */
   ${({ theme, $loggedIn }) =>
     $loggedIn
       ? css`

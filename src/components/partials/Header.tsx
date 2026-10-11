@@ -87,7 +87,7 @@ const BurgerSlot = styled.div`
   }
 `;
 
-// Ties the burger button to the menu it opens
+// So the burger button knows which menu it opens
 const MOBILE_MENU_ID = "mobile-menu";
 
 export const Header = () => {

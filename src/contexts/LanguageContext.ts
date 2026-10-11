@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import type { Language } from "../types";
 
-// Where the current page lives in each language, e.g. { da: "/lande/italien", en: "/countries/italy" }
+// The current page's path in each language, like { da: "/lande/italien", en: "/countries/italy" }
 export type AlternatePaths = Partial<Record<Language, string>>;
 
 export type LanguageContextValue = {

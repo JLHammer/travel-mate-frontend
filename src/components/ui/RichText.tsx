@@ -42,13 +42,13 @@ const MailLink = styled.a`
   ${inlineLinkStyles}
 `;
 
-// Its own component, since the hook can't be called inside the components object
+// Own component since hooks can't be called inside the components object
 const PageLink = ({ page, children }: { page?: SitePage; children: ReactNode }) => {
   const paths = usePaths();
   return page ? <InlineLink to={paths[page]}>{children}</InlineLink> : <>{children}</>;
 };
 
-// Only what the rich text in the Studio allows: paragraphs, bullet lists and two kinds of links
+// Only what the rich text in the Studio allows (paragraphs, bullet lists and links)
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => <PageText>{children}</PageText>,
@@ -60,7 +60,7 @@ const components: PortableTextComponents = {
     pageLink: ({ value, children }) => <PageLink page={value?.page}>{children}</PageLink>,
     link: ({ value, children }) => {
       const href: string = value?.href ?? "";
-      // An email address opens the mail app, so it shouldn't open a new tab too
+      // Mail links open the mail app, so no new tab
       return href.startsWith("mailto:") ? (
         <MailLink href={href}>{children}</MailLink>
       ) : (

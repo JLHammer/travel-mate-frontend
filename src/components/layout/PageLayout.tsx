@@ -41,12 +41,12 @@ export const PageText = styled.p`
 `;
 
 type PageLayoutProps = {
-  /** Browser tab title, also used as the h1 unless `heading` is set */
+  /** Tab title, and the h1 too if no heading is passed */
   title: string;
   heading?: string;
   intro?: ReactNode;
   children?: ReactNode;
-  /** Centers the header and content between the tablet and desktop breakpoints */
+  /** Centers header and content between tablet and desktop */
   centerOnTablet?: boolean;
 };
 

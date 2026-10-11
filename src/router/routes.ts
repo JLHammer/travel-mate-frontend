@@ -14,7 +14,7 @@ type Section =
   | "favorites"
   | "search";
 
-// URL segment for each page in each language. ASCII only, so URLs never need percent-encoding
+// URL segment for each page in each language, ASCII only so URLs never need percent-encoding
 export const SEGMENTS: Record<Language, Record<Section, string>> = {
   da: {
     countries: "lande",
@@ -54,8 +54,8 @@ export const SEGMENTS: Record<Language, Record<Section, string>> = {
   },
 };
 
-// Every path in one language, e.g. localizedPaths("da").country("italien") → "/lande/italien".
-// The section names differ between languages, so the URL shows the language without a /da prefix
+// All paths in one language, like localizedPaths("da").country("italien") → "/lande/italien"
+// Section names differ per language, so the URL shows the language without a /da prefix
 export const localizedPaths = (language: Language) => {
   const segment = SEGMENTS[language];
   const section = (key: Section) => `/${segment[key]}`;
@@ -79,7 +79,7 @@ export const localizedPaths = (language: Language) => {
   };
 };
 
-// The menus are edited under Navigation in the Studio. These are only used if Sanity can't be reached
+// Menus are edited under Navigation in the Studio, these are only used if Sanity can't be reached
 export const DEFAULT_HEADER_LINKS: SitePage[] = [
   "home",
   "countries",
@@ -93,7 +93,7 @@ export const DEFAULT_FOOTER_LINKS: SitePage[] = ["about", "contact", "privacy", 
 
 const SECTIONS = Object.keys(SEGMENTS.en) as Section[];
 
-// Which language and section a URL segment belongs to, e.g. "lande" → da/countries
+// Which language and section a URL segment belongs to, like "lande" → da/countries
 const findSegment = (segment: string | undefined) => {
   for (const language of LANGUAGES.map(({ id }) => id)) {
     const section = SECTIONS.find((key) => SEGMENTS[language][key] === segment);
@@ -106,8 +106,8 @@ const findSegment = (segment: string | undefined) => {
 export const languageOfPath = (pathname: string) =>
   findSegment(pathname.split("/")[1])?.language ?? null;
 
-// The same page in another language, e.g. /attractions/x?q=y → /sevaerdigheder/x?q=y.
-// A slug is kept as it is, and the detail page then swaps it for the slug in the new language
+// Same page in another language, like /attractions/x?q=y → /sevaerdigheder/x?q=y
+// The slug stays as it is, the detail page swaps it for the new language's slug afterwards
 export const translatePath = (url: string, language: Language) => {
   const [, segment, ...rest] = url.split("/");
   const match = findSegment(segment?.split(/[?#]/)[0]);

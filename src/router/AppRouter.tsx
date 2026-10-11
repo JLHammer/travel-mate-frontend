@@ -20,7 +20,7 @@ import { FavoritesPage } from "../pages/FavoritesPage";
 import { SearchPage } from "../pages/SearchPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
-// Every language has its own section names, e.g. /lande, /countries and /paises all show CountriesPage
+// Each language has its own section names, so /lande, /countries and /paises all show CountriesPage
 export const AppRouter = () => {
   return (
     <Routes>

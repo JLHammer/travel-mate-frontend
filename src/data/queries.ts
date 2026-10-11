@@ -1,7 +1,7 @@
 import { defineQuery } from "groq";
 
-// Each localized field holds one item per language, e.g. name: [{ language: "da", value: "Italien" }, …].
-// These pick the selected language, or English if the text is missing there, so no query names a language
+// Localized fields have one item per language, like name: [{ language: "da", value: "Italien" }, …]
+// These pick the current language, or English if it's missing, so no query has to name a language
 const NAME = `coalesce(name[language == $lang][0].value, name[language == "en"][0].value)`;
 const TAGLINE = `coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value)`;
 const DESCRIPTION = `coalesce(description[language == $lang][0].value, description[language == "en"][0].value)`;
@@ -12,7 +12,7 @@ const BY_NAME = `order(${NAME} asc)`;
 const SLUG = `coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current)`;
 // Every language's slug, so a detail page knows its URL in the other languages
 const SLUGS = `"slugs": slug[]{ language, "slug": value.current }`;
-// Detail pages accept the slug in any language, so a shared link still opens in the reader's language
+// Detail pages accept the slug in any language, so shared links still work
 const MATCHES_SLUG = `$slug in slug[].value.current`;
 
 const COUNTRY_SUMMARY = `_id, "name": ${NAME}, code, "slug": ${SLUG}`;
@@ -45,13 +45,12 @@ const ATTRACTION = `
 
 const ATTRACTION_LIST_ITEM = `_id, "name": ${NAME}, "slug": ${SLUG}, ${CARD}, category`;
 
-// No English fallback here: a label left empty in this language is null, and the menu shows
-// the page's standard name in the same language instead
+// No English fallback here, an empty label is null and the menu shows the page's normal name instead
 const NAV_LINK = `_key, page, "label": label[language == $lang][0].value`;
 
 const FOOTER_TAGLINE = `coalesce(footerTagline[language == $lang][0].value, footerTagline[language == "en"][0].value)`;
 
-// Site-wide content shown on every page, fetched once per language
+// Content shown on every page, fetched once per language
 export const SITE_SETTINGS_QUERY = defineQuery(`{
   "navigation": *[_type == "navigation" && _id == "navigation"][0] {
     "header": headerLinks[]{ ${NAV_LINK} },
@@ -63,7 +62,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`{
   }
 }`);
 
-// The page texts, with the same English fallback as names and descriptions
+// Page texts, with the same English fallback
 const TITLE = `coalesce(title[language == $lang][0].value, title[language == "en"][0].value)`;
 const TEXT = `coalesce(text[language == $lang][0].value, text[language == "en"][0].value)`;
 const INTRO = `coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value)`;
@@ -104,7 +103,7 @@ export const ATTRACTIONS_QUERY = defineQuery(`
   *[_type == "attraction"] | ${BY_NAME} { ${ATTRACTION} }
 `);
 
-// The carousels keep the order the editor dragged the places into
+// Keep the order the editor dragged the places into
 export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "homePage" && _id == "homePage"][0] {
     "hero": hero {

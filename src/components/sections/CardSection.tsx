@@ -297,7 +297,7 @@ const CardCarousel = ({ mobileOnly, children }: CardCarouselProps) => {
           </CarouselControl>
         )}
       </CarouselWrapper>
-      {/* Only shows where you are, and the cards are already in the list */}
+      {/* Hidden from screen readers, the dots only show where you are */}
       {(state.canScrollPrev || state.canScrollNext) && (
         <CarouselDots aria-hidden>
           {state.visibleCards.map((visible, card) => (
@@ -330,7 +330,7 @@ type CardSectionProps = {
   loading?: boolean;
   toolbar?: ReactNode;
   emptyMessage?: string;
-  /** Shown with a retry button instead of the cards when they couldn't be loaded */
+  /** Shown with a retry button if the cards couldn't load */
   errorMessage?: string;
   onRetry?: () => void;
   children?: ReactNode;
@@ -350,7 +350,7 @@ export const CardSection = ({
   children,
 }: CardSectionProps) => {
   const { t } = useTranslation();
-  // The loader wins, so a retry shows it while the old error is still set
+  // Loader first, so retrying shows it even though the old error is still set
   const hasError = !loading && errorMessage !== undefined;
   const isEmpty = !loading && emptyMessage !== undefined && Children.count(children) === 0;
 

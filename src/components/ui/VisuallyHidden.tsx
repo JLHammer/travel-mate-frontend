@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-// Read by screen readers but not shown, e.g. a warning that a link opens a new tab
+// Only for screen readers, like telling that a link opens in a new tab
 export const VisuallyHidden = styled.span`
   position: absolute;
   width: 1px;

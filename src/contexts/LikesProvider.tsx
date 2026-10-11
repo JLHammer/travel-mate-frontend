@@ -82,7 +82,7 @@ export const LikesProvider = ({ children }: ProviderProps) => {
 
   const toggleLike = (attractionId: string) => setLike(attractionId, !isLiked(attractionId));
 
-  // Explicit, so an undo from an older render can't flip the like back the wrong way
+  // Pass the value directly, so an undo from an older render can't flip it the wrong way
   const addLike = (attractionId: string) => setLike(attractionId, true);
 
   return (

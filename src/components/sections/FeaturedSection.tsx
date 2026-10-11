@@ -17,7 +17,7 @@ export const FeaturedSection = ({ data, loading, error, onRetry }: FeaturedSecti
   const { t } = useTranslation();
   const paths = usePaths();
 
-  // One section holds the loader or the error until all three can be shown
+  // Only one loader or error for all three carousels
   if (loading || error) {
     return (
       <CardSection
@@ -31,12 +31,12 @@ export const FeaturedSection = ({ data, loading, error, onRetry }: FeaturedSecti
     );
   }
 
-  // A deleted place leaves an empty reference behind until the editor removes it from the list
+  // Skip places that have been deleted but are still in the list
   const countries = (data?.countries?.items ?? []).filter((item) => item !== null);
   const cities = (data?.cities?.items ?? []).filter((item) => item !== null);
   const attractions = (data?.attractions?.items ?? []).filter((item) => item !== null);
 
-  // A carousel is hidden when the editor leaves its list empty in the Studio
+  // Hide a carousel if its list is empty in the Studio
   return (
     <>
       {countries.length > 0 && (

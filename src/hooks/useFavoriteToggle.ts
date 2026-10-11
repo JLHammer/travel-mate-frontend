@@ -18,8 +18,8 @@ export const useFavoriteToggle = (attractionId: string) => {
   const location = useLocation();
   const [isPending, setIsPending] = useState(false);
   const liked = isLiked(attractionId);
-  // One toast per attraction, so quick repeat clicks replace it instead of stacking.
-  // Sonner merges options into the toast it replaces, so clear the undo button and its duration
+  // One toast per attraction, so clicking again replaces it instead of stacking
+  // Sonner merges the options with the old toast, so clear the undo button and duration
   const toastOptions = { id: `favorite-${attractionId}`, action: undefined, duration: undefined };
 
   const handleClick = async () => {
