@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { LikesContext } from "./LikesContext";
 import { useAuth } from "../hooks/useAuth";
@@ -22,6 +22,12 @@ export const LikesProvider = ({ children }: ProviderProps) => {
     pendingLikeRef.current = attractionId;
   };
 
+  // Reads the latest texts without being a dependency, so switching language doesn't refetch the likes
+  const showLikeResult = useEffectEvent((added: boolean) => {
+    if (added) toast.success(t.favorites.added);
+    else toast.error(t.favorites.updateFailed);
+  });
+
   useEffect(() => {
     if (userId === null) return;
     let cancelled = false;
@@ -32,9 +38,9 @@ export const LikesProvider = ({ children }: ProviderProps) => {
         pendingLikeRef.current = null;
         try {
           await addLikeRequest(userId, pendingId);
-          toast.success(t.favorites.added);
+          showLikeResult(true);
         } catch {
-          toast.error(t.favorites.updateFailed);
+          showLikeResult(false);
         }
       }
 

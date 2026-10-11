@@ -1,24 +1,49 @@
-import { Fragment } from "react";
+import { Fragment, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { SEGMENTS } from "./routes";
 import { LANGUAGES } from "../i18n/translations";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { MainLayout } from "../components/layout/MainLayout";
 import { HomePage } from "../pages/HomePage";
-import { CountriesPage } from "../pages/CountriesPage";
-import { CountryDetailsPage } from "../pages/CountryDetailsPage";
-import { CitiesPage } from "../pages/CitiesPage";
-import { CityDetailsPage } from "../pages/CityDetailsPage";
-import { AttractionsPage } from "../pages/AttractionsPage";
-import { AttractionDetailsPage } from "../pages/AttractionDetailsPage";
-import { AboutPage } from "../pages/AboutPage";
-import { ContactPage } from "../pages/ContactPage";
-import { PrivacyPage } from "../pages/PrivacyPage";
-import { TermsPage } from "../pages/TermsPage";
-import { LoginPage } from "../pages/LoginPage";
-import { FavoritesPage } from "../pages/FavoritesPage";
-import { SearchPage } from "../pages/SearchPage";
-import { NotFoundPage } from "../pages/NotFoundPage";
+
+// The home page is where most visits start, so it's in the main bundle
+// The rest load when they're opened, so the first visit downloads less
+const CountriesPage = lazy(() =>
+  import("../pages/CountriesPage").then((m) => ({ default: m.CountriesPage })),
+);
+const CountryDetailsPage = lazy(() =>
+  import("../pages/CountryDetailsPage").then((m) => ({ default: m.CountryDetailsPage })),
+);
+const CitiesPage = lazy(() =>
+  import("../pages/CitiesPage").then((m) => ({ default: m.CitiesPage })),
+);
+const CityDetailsPage = lazy(() =>
+  import("../pages/CityDetailsPage").then((m) => ({ default: m.CityDetailsPage })),
+);
+const AttractionsPage = lazy(() =>
+  import("../pages/AttractionsPage").then((m) => ({ default: m.AttractionsPage })),
+);
+const AttractionDetailsPage = lazy(() =>
+  import("../pages/AttractionDetailsPage").then((m) => ({ default: m.AttractionDetailsPage })),
+);
+const AboutPage = lazy(() => import("../pages/AboutPage").then((m) => ({ default: m.AboutPage })));
+const ContactPage = lazy(() =>
+  import("../pages/ContactPage").then((m) => ({ default: m.ContactPage })),
+);
+const PrivacyPage = lazy(() =>
+  import("../pages/PrivacyPage").then((m) => ({ default: m.PrivacyPage })),
+);
+const TermsPage = lazy(() => import("../pages/TermsPage").then((m) => ({ default: m.TermsPage })));
+const LoginPage = lazy(() => import("../pages/LoginPage").then((m) => ({ default: m.LoginPage })));
+const FavoritesPage = lazy(() =>
+  import("../pages/FavoritesPage").then((m) => ({ default: m.FavoritesPage })),
+);
+const SearchPage = lazy(() =>
+  import("../pages/SearchPage").then((m) => ({ default: m.SearchPage })),
+);
+const NotFoundPage = lazy(() =>
+  import("../pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage })),
+);
 
 // Each language has its own section names, so /lande, /countries and /paises all show CountriesPage
 export const AppRouter = () => {
