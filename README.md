@@ -1,6 +1,6 @@
 # TravelMate
 
-TravelMate is a responsive travel guide site built with [React](https://react.dev/), [styled-components](https://styled-components.com/), [TypeScript](https://www.typescriptlang.org/) and [Vite](https://vite.dev/). Countries, cities and attractions live in a [Sanity](https://www.sanity.io/) CMS (project [`cc196r01`](https://www.sanity.io/manage/project/cc196r01), dataset `production`).
+TravelMate is a responsive travel guide site built with [React](https://react.dev/), [styled-components](https://styled-components.com/), [TypeScript](https://www.typescriptlang.org/) and [Vite](https://vite.dev/). Countries, cities, attractions and the site's own pages live in a [Sanity](https://www.sanity.io/) CMS (project [`cc196r01`](https://www.sanity.io/manage/project/cc196r01), dataset `production`).
 
 ## Getting started
 
@@ -50,9 +50,23 @@ The Studio has three document types: `country`, `city` and `attraction`. Their f
 | `address`     | `string`                       |         |      |     ✓      | Required unless the attraction has a `location`                                        |
 | `location`    | `geopoint`                     |         |  ✓   |     ✓      | Latitude and longitude                                                                 |
 | `website`     | `url`                          |         |  ✓   |     ✓      | Only `http` and `https` links                                                          |
-| `featured`    | `boolean`                      |    ✓    |  ✓   |     ✓      | Shows the item in the featured sections on the home page                               |
 
 The `internationalizedArray…` types come from `sanity-plugin-internationalized-array` and hold one item per language. They are described under [Info models](#2-info-models) below. A fourth document type, `locale`, holds the languages themselves (see [Language](#1-language)).
+
+### Pages and settings
+
+The rest of the website is edited in the Studio too, through singletons: documents there's only one of, which can't be deleted or unpublished.
+
+| Singleton      | What it controls on the website                                                 | Hook              |
+| -------------- | ------------------------------------------------------------------------------- | ----------------- |
+| Home page      | The hero and the three carousels, with the places in the order the editor chose | `useHomePage`     |
+| About page     | The about page's title, intro, cards and closing text                           | `useAboutPage`    |
+| Privacy policy | The privacy policy                                                              | `useLegalPage`    |
+| Terms of use   | The terms of use                                                                | `useLegalPage`    |
+| Navigation     | The header and footer menus                                                     | `useSiteSettings` |
+| Site settings  | The footer tagline and the social media links                                   | `useSiteSettings` |
+
+Navigation and site settings are shown on every page, so `SiteSettingsProvider` fetches them once per language with `SITE_SETTINGS_QUERY`. A menu link stores a page key like `countries`, not a URL, and `usePaths()` turns it into the path in the current language. If a singleton hasn't been created yet, the site falls back to defaults: the menus show the default links, a link without its own label shows the page's normal name, and the hero shows the default photo.
 
 ## Languages
 
@@ -96,12 +110,12 @@ The frontend reads its languages only from this file, through `LANGUAGES` in `sr
 
 Text that changes with the language is stored with `sanity-plugin-internationalized-array`, Sanity's recommended plugin for field-level localization. It adds `internationalizedArrayString` for short text, `internationalizedArrayText` for longer text and `internationalizedArraySlug` for the URL part. Each holds one item per language. Data that is the same in every language stays directly on the document.
 
-| Field                                                                         | Example                                           | Depends on language?                             | Type                                     |
-| ----------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------ | ---------------------------------------- |
-| `name`, `tagline`, `description`, `image.alt`                                 | `Danmark` / `Denmark` / `Dinamarca`               | Yes                                              | `internationalizedArrayString` / `…Text` |
-| `slug`                                                                        | `danmark` / `denmark` / `dinamarca`               | Yes                                              | `internationalizedArraySlug`             |
-| `category`                                                                    | `historical` → Historisk / Historical / Histórico | Yes, translated in the frontend from a fixed key | `string` (option list)                   |
-| `code`, `image` (asset, credit), `location`, `address`, `website`, `featured` | `DK` in every language                            | No                                               | Plain fields on the document             |
+| Field                                                             | Example                                           | Depends on language?                             | Type                                     |
+| ----------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------ | ---------------------------------------- |
+| `name`, `tagline`, `description`, `image.alt`                     | `Danmark` / `Denmark` / `Dinamarca`               | Yes                                              | `internationalizedArrayString` / `…Text` |
+| `slug`                                                            | `danmark` / `denmark` / `dinamarca`               | Yes                                              | `internationalizedArraySlug`             |
+| `category`                                                        | `historical` → Historisk / Historical / Histórico | Yes, translated in the frontend from a fixed key | `string` (option list)                   |
+| `code`, `image` (asset, credit), `location`, `address`, `website` | `DK` in every language                            | No                                               | Plain fields on the document             |
 
 A country is still a single document, and its translations sit next to each other:
 
@@ -146,7 +160,7 @@ The expressions live as shared constants (`NAME`, `TAGLINE`, `DESCRIPTION`, `ALT
   return useSanityQuery(COUNTRY_DETAIL_QUERY, { slug: slug ?? "", lang: language });
   ```
 
-- **Fixed UI text** (navigation, buttons, forms, footer) doesn't come from Sanity. It lives in `src/i18n/translations.ts` and is read through `useTranslation`.
+- **Fixed UI text** (buttons, forms, labels, error messages and the screen reader texts) doesn't come from Sanity. It lives in `src/i18n/translations.ts` and is read through `useTranslation`. The menus, footer and page texts come from the singletons, see [Pages and settings](#pages-and-settings).
 
 ### 5. Language switch
 
@@ -238,10 +252,10 @@ The parts of the assignment's model are still there, in a different form: its `l
 ### Adding a language
 
 1. **Studio (an administrator):** create a `locale` document with the name and code, and leave **Enabled** off. Every localized field now offers the new language.
-2. **Content (editors):** translate `name`, `tagline`, `description` and `image.alt`, and generate the slugs. Warnings show every document that's still missing the language. When none are left, switch **Enabled** on.
-3. **Frontend (the developer):** run `npm run typegen` in the Studio. The new code appears in the `Language` type, and TypeScript flags every place that needs a translation: the UI text in `src/i18n/translations.ts`, the privacy and terms text in `src/i18n/legal.ts` and the section names in `SEGMENTS` in `src/router/routes.ts`. No query or component needs to change.
+2. **Content (editors):** translate `name`, `tagline`, `description` and `image.alt`, generate the slugs, and translate the singletons (home page, about page, privacy policy, terms, navigation labels and footer tagline). Warnings show every document that's still missing the language. When none are left, switch **Enabled** on.
+3. **Frontend (the developer):** run `npm run typegen` in the Studio. The new code appears in the `Language` type, and TypeScript flags every place that needs a translation: the UI text in `src/i18n/translations.ts` and the section names in `SEGMENTS` in `src/router/routes.ts`. No query or component needs to change.
 
-Steps 1 and 2 need no code. Step 3 stays with a developer on purpose: the menus, buttons and legal text live in code so TypeScript can check that none is missing, and the language only appears on the website once they are translated.
+Steps 1 and 2 need no code. Step 3 stays with a developer on purpose: the buttons, form texts and URL section names live in code so TypeScript can check that none is missing, and the language only appears on the website once they are translated.
 
 ## API calls and Custom Hooks
 
@@ -259,13 +273,15 @@ Each step is its own layer:
 - **Generic hook** (`src/hooks/useSanityQuery.ts`): one reusable hook that runs any query and returns `{ data, isLoading, error, refetch }`. It cancels outdated requests with an `AbortController` when the parameters change, for example when the user switches language or opens another city.
 - **Data hooks** (`src/hooks/`): small hooks that pair a query with its parameters and result type. `useFavoriteAttractions` also combines the query with the liked attraction IDs:
 
-  | Hook                                          | Used for                                                                  |
-  | --------------------------------------------- | ------------------------------------------------------------------------- |
-  | `useFeatured`                                 | Featured countries, cities and attractions on the home page (one request) |
-  | `useCountries`, `useCities`, `useAttractions` | List pages                                                                |
-  | `useCountry`, `useCity`, `useAttraction`      | Detail pages, looked up by slug                                           |
-  | `useSearch`                                   | Search results                                                            |
-  | `useFavoriteAttractions`                      | The favourites page, by liked attraction IDs                              |
+  | Hook                                          | Used for                                                                |
+  | --------------------------------------------- | ----------------------------------------------------------------------- |
+  | `useHomePage`                                 | The hero and the carousels on the home page (one request)               |
+  | `useAboutPage`, `useLegalPage`                | The about page, the privacy policy and the terms                        |
+  | `useSiteSettings`                             | The menus, footer tagline and social links, fetched once for every page |
+  | `useCountries`, `useCities`, `useAttractions` | List pages                                                              |
+  | `useCountry`, `useCity`, `useAttraction`      | Detail pages, looked up by slug                                         |
+  | `useSearch`                                   | Search results                                                          |
+  | `useFavoriteAttractions`                      | The favourites page, by liked attraction IDs                            |
 
 - **Components:** detail pages and list sections call a data hook, show the `Loader` while loading and an `ErrorState` box with a retry button (which calls `refetch`) if the CMS can't be reached, then pass the data on to the card and detail components.
 
@@ -286,8 +302,17 @@ Query fragments in `queries.ts` are plain string constants, not helper functions
 
 `npm run typegen` also writes `src/i18n/languages.generated.ts` from the enabled `locale` documents (see [Language](#1-language)).
 
+## Accessibility
+
+- Icon-only buttons (the burger menu, language switch, carousel arrows, favourite heart, theme switch and social links) have a translated `aria-label`.
+- The burger menu and the language list say whether they're open with `aria-expanded`, and Escape closes the language list.
+- The favourite button says whether it's pressed with `aria-pressed`.
+- Links that open in a new tab say so to screen readers through `VisuallyHidden`.
+- The map has a `title` with the place's name, and decorative icons and carousel dots are hidden from screen readers.
+- `<html lang>` follows the selected language, and each option in the language list has its own `lang`.
+
 ## Showing that content comes from the CMS
 
-Change the name or description of a city in Sanity Studio, then reload TravelMate. The change appears without any change to the React code.
+Change the name or description of a city in Sanity Studio, reorder a carousel on the home page or rename a menu link, then reload TravelMate. The change appears without any change to the React code.
 
 The client queries Sanity's live API rather than the CDN (`useCdn: false`), so changes show up right away.
