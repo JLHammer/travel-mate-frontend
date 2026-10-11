@@ -26,6 +26,41 @@ export type Locale = {
   enabled?: boolean;
 };
 
+export type RichText = Array<{
+  children?: Array<{
+    marks?: Array<string>;
+    text?: string;
+    _type: "span";
+    _key: string;
+  }>;
+  style?: "normal";
+  listItem?: "bullet";
+  markDefs?: Array<
+    | {
+        page?:
+          | "home"
+          | "countries"
+          | "cities"
+          | "attractions"
+          | "about"
+          | "contact"
+          | "privacy"
+          | "terms"
+          | "favorites";
+        _type: "pageLink";
+        _key: string;
+      }
+    | {
+        href?: string;
+        _type: "link";
+        _key: string;
+      }
+  >;
+  level?: number;
+  _type: "block";
+  _key: string;
+}>;
+
 export type Navigation = {
   _id: string;
   _type: "navigation";
@@ -69,6 +104,104 @@ export type InternationalizedArrayString = Array<
     _key: string;
   } & InternationalizedArrayStringValue
 >;
+
+export type LegalPage = {
+  _id: string;
+  _type: "legalPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: InternationalizedArrayString;
+  intro?: InternationalizedArrayText;
+  lastUpdated?: string;
+  sections?: Array<{
+    title?: InternationalizedArrayString;
+    body?: InternationalizedArrayRichText;
+    _type: "legalSection";
+    _key: string;
+  }>;
+};
+
+export type InternationalizedArrayRichText = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayRichTextValue
+>;
+
+export type InternationalizedArrayText = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayTextValue
+>;
+
+export type AboutPage = {
+  _id: string;
+  _type: "aboutPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: InternationalizedArrayString;
+  intro?: InternationalizedArrayRichText;
+  explore?: {
+    title?: InternationalizedArrayString;
+    cards?: Array<{
+      icon?:
+        "globe" | "building" | "landmark" | "mapPin" | "heart" | "moon" | "languages" | "search";
+      title?: InternationalizedArrayString;
+      text?: InternationalizedArrayText;
+      linkPage?:
+        | "home"
+        | "countries"
+        | "cities"
+        | "attractions"
+        | "about"
+        | "contact"
+        | "privacy"
+        | "terms"
+        | "favorites";
+      linkLabel?: InternationalizedArrayString;
+      _type: "aboutCard";
+      _key: string;
+    }>;
+  };
+  features?: {
+    title?: InternationalizedArrayString;
+    cards?: Array<{
+      icon?:
+        "globe" | "building" | "landmark" | "mapPin" | "heart" | "moon" | "languages" | "search";
+      title?: InternationalizedArrayString;
+      text?: InternationalizedArrayText;
+      linkPage?:
+        | "home"
+        | "countries"
+        | "cities"
+        | "attractions"
+        | "about"
+        | "contact"
+        | "privacy"
+        | "terms"
+        | "favorites";
+      linkLabel?: InternationalizedArrayString;
+      _type: "aboutCard";
+      _key: string;
+    }>;
+  };
+  outro?: {
+    title?: InternationalizedArrayString;
+    text?: InternationalizedArrayText;
+    linkPage?:
+      | "home"
+      | "countries"
+      | "cities"
+      | "attractions"
+      | "about"
+      | "contact"
+      | "privacy"
+      | "terms"
+      | "favorites";
+    linkLabel?: InternationalizedArrayString;
+  };
+};
 
 export type CityReference = {
   _ref: string;
@@ -134,12 +267,6 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
-export type InternationalizedArrayText = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayTextValue
->;
-
 export type InternationalizedArraySlug = Array<
   {
     _key: string;
@@ -204,6 +331,12 @@ export type Country = {
 export type InternationalizedArraySlugValue = {
   _type: "internationalizedArraySlugValue";
   value?: Slug;
+  language?: string;
+};
+
+export type InternationalizedArrayRichTextValue = {
+  _type: "internationalizedArrayRichTextValue";
+  value?: RichText;
   language?: string;
 };
 
@@ -317,20 +450,25 @@ export type SanityImageAsset = {
 
 export type AllSanitySchemaTypes =
   | Locale
+  | RichText
   | Navigation
   | InternationalizedArrayString
+  | LegalPage
+  | InternationalizedArrayRichText
+  | InternationalizedArrayText
+  | AboutPage
   | CityReference
   | SanityImageAssetReference
   | Attraction
   | Geopoint
   | SanityImageCrop
   | SanityImageHotspot
-  | InternationalizedArrayText
   | InternationalizedArraySlug
   | CountryReference
   | City
   | Country
   | InternationalizedArraySlugValue
+  | InternationalizedArrayRichTextValue
   | InternationalizedArrayTextValue
   | InternationalizedArrayStringValue
   | Slug
@@ -344,47 +482,139 @@ export type AllSanitySchemaTypes =
 
 // Source: ../../travel-mate-frontend/src/data/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: {  "navigation": *[_id == "navigation"][0] {    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }  }}
+// Query: {  "navigation": *[_type == "navigation" && _id == "navigation"][0] {    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }  }}
 export type SITE_SETTINGS_QUERY_RESULT = {
-  navigation:
-    | {
-        header: null;
-        footer: null;
-      }
-    | {
-        header: Array<{
-          _key: string;
-          page:
-            | "about"
-            | "attractions"
-            | "cities"
-            | "contact"
-            | "countries"
-            | "favorites"
-            | "home"
-            | "privacy"
-            | "terms"
-            | null;
-          label: string | null;
-        }> | null;
-        footer: Array<{
-          _key: string;
-          page:
-            | "about"
-            | "attractions"
-            | "cities"
-            | "contact"
-            | "countries"
-            | "favorites"
-            | "home"
-            | "privacy"
-            | "terms"
-            | null;
-          label: string | null;
-        }> | null;
-      }
-    | null;
+  navigation: {
+    header: Array<{
+      _key: string;
+      page:
+        | "about"
+        | "attractions"
+        | "cities"
+        | "contact"
+        | "countries"
+        | "favorites"
+        | "home"
+        | "privacy"
+        | "terms"
+        | null;
+      label: string | null;
+    }> | null;
+    footer: Array<{
+      _key: string;
+      page:
+        | "about"
+        | "attractions"
+        | "cities"
+        | "contact"
+        | "countries"
+        | "favorites"
+        | "home"
+        | "privacy"
+        | "terms"
+        | null;
+      label: string | null;
+    }> | null;
+  } | null;
 };
+
+// Source: ../../travel-mate-frontend/src/data/queries.ts
+// Variable: ABOUT_PAGE_QUERY
+// Query: *[_type == "aboutPage" && _id == "aboutPage"][0] {    "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),    "intro": coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value),    "explore": explore { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "cards": cards[]{ _key, icon, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) } },    "features": features { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "cards": cards[]{ _key, icon, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) } },    "outro": outro { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) }  }
+export type ABOUT_PAGE_QUERY_RESULT = {
+  title: string | null;
+  intro: RichText | null;
+  explore: {
+    title: string | null;
+    cards: Array<{
+      _key: string;
+      icon:
+        | "building"
+        | "globe"
+        | "heart"
+        | "landmark"
+        | "languages"
+        | "mapPin"
+        | "moon"
+        | "search"
+        | null;
+      title: string | null;
+      text: string | null;
+      linkPage:
+        | "about"
+        | "attractions"
+        | "cities"
+        | "contact"
+        | "countries"
+        | "favorites"
+        | "home"
+        | "privacy"
+        | "terms"
+        | null;
+      linkLabel: string | null;
+    }> | null;
+  } | null;
+  features: {
+    title: string | null;
+    cards: Array<{
+      _key: string;
+      icon:
+        | "building"
+        | "globe"
+        | "heart"
+        | "landmark"
+        | "languages"
+        | "mapPin"
+        | "moon"
+        | "search"
+        | null;
+      title: string | null;
+      text: string | null;
+      linkPage:
+        | "about"
+        | "attractions"
+        | "cities"
+        | "contact"
+        | "countries"
+        | "favorites"
+        | "home"
+        | "privacy"
+        | "terms"
+        | null;
+      linkLabel: string | null;
+    }> | null;
+  } | null;
+  outro: {
+    title: string | null;
+    text: string | null;
+    linkPage:
+      | "about"
+      | "attractions"
+      | "cities"
+      | "contact"
+      | "countries"
+      | "favorites"
+      | "home"
+      | "privacy"
+      | "terms"
+      | null;
+    linkLabel: string | null;
+  } | null;
+} | null;
+
+// Source: ../../travel-mate-frontend/src/data/queries.ts
+// Variable: LEGAL_PAGE_QUERY
+// Query: *[_type == "legalPage" && _id == $id][0] {    "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),    "intro": coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value),    lastUpdated,    "sections": sections[]{ _key, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "body": coalesce(body[language == $lang][0].value, body[language == "en"][0].value) }  }
+export type LEGAL_PAGE_QUERY_RESULT = {
+  title: string | null;
+  intro: string | null;
+  lastUpdated: string | null;
+  sections: Array<{
+    _key: string;
+    title: string | null;
+    body: RichText | null;
+  }> | null;
+} | null;
 
 // Source: ../../travel-mate-frontend/src/data/queries.ts
 // Variable: COUNTRIES_QUERY
@@ -756,7 +986,9 @@ export type ATTRACTION_DETAIL_QUERY_RESULT = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '{\n  "navigation": *[_id == "navigation"][0] {\n    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },\n    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
+    '{\n  "navigation": *[_type == "navigation" && _id == "navigation"][0] {\n    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },\n    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),\n    "intro": coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value),\n    "explore": explore { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "cards": cards[]{ _key, icon, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) } },\n    "features": features { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "cards": cards[]{ _key, icon, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) } },\n    "outro": outro { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
+    '\n  *[_type == "legalPage" && _id == $id][0] {\n    "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),\n    "intro": coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value),\n    lastUpdated,\n    "sections": sections[]{ _key, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "body": coalesce(body[language == $lang][0].value, body[language == "en"][0].value) }\n  }\n': LEGAL_PAGE_QUERY_RESULT;
     '\n  *[_type == "country"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } }\n': COUNTRIES_QUERY_RESULT;
     '\n  *[_type == "city"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) }\n }\n': CITIES_QUERY_RESULT;
     '\n  *[_type == "attraction"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id,\n  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),\n  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  category,\n  address,\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } }\n }\n': ATTRACTIONS_QUERY_RESULT;

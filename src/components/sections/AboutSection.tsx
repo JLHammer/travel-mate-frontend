@@ -1,13 +1,28 @@
 import type { ReactNode } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { ArrowRight, Building2, Globe, Heart, Landmark, MapPin, Moon } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  Globe,
+  Heart,
+  Landmark,
+  Languages,
+  MapPin,
+  Moon,
+  Search,
+} from "lucide-react";
+import { useAboutPage } from "../../hooks/useAboutPage";
 import { usePaths } from "../../hooks/usePaths";
 import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
+import type { AboutCardData, AboutPageData } from "../../types";
 import { PageLayout, PageText } from "../layout/PageLayout";
+import { ErrorState } from "../ui/ErrorState";
+import { Loader } from "../ui/Loader";
+import { RichText } from "../ui/RichText";
 
-const AboutContent = styled.div`
+const AboutSections = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${tokens.mobile.spacing.xl};
@@ -90,85 +105,92 @@ const AboutLink = styled(Link)`
   }
 `;
 
-type AboutItem = {
-  icon: ReactNode;
-  title: string;
-  text: string;
-  link?: { path: string; label: string };
+// The icons an editor can pick for a card in the Studio
+const ICONS: Record<NonNullable<AboutCardData["icon"]>, ReactNode> = {
+  globe: <Globe />,
+  building: <Building2 />,
+  landmark: <Landmark />,
+  mapPin: <MapPin />,
+  heart: <Heart />,
+  moon: <Moon />,
+  languages: <Languages />,
+  search: <Search />,
 };
 
-const exploreItems = [
-  { key: "countries", icon: <Globe /> },
-  { key: "cities", icon: <Building2 /> },
-  { key: "attractions", icon: <Landmark /> },
-] as const;
-
-const featureItems = [
-  { key: "map", icon: <MapPin /> },
-  { key: "favourites", icon: <Heart /> },
-  { key: "screens", icon: <Moon /> },
-] as const;
-
-const AboutCards = ({ items }: { items: AboutItem[] }) => (
-  <AboutGrid>
-    {items.map(({ icon, title, text, link }) => (
-      <AboutCard key={title}>
-        <AboutIcon>{icon}</AboutIcon>
-        <h3>{title}</h3>
-        <AboutCardText>{text}</AboutCardText>
-        {link && (
-          <AboutLink to={link.path}>
-            {link.label} <ArrowRight />
-          </AboutLink>
-        )}
-      </AboutCard>
-    ))}
-  </AboutGrid>
-);
-
-export const AboutSection = () => {
-  const { t } = useTranslation();
+const AboutCards = ({ cards }: { cards: AboutCardData[] | null }) => {
   const paths = usePaths();
 
-  const explore: AboutItem[] = exploreItems.map(({ key, icon }) => {
-    const { title, text, link } = t.about.explore[key];
-    return { icon, title, text, link: { path: paths[key], label: link } };
-  });
+  return (
+    <AboutGrid>
+      {cards?.map(({ _key, icon, title, text, linkPage, linkLabel }) => (
+        <AboutCard key={_key}>
+          {icon && <AboutIcon>{ICONS[icon]}</AboutIcon>}
+          <h3>{title}</h3>
+          <AboutCardText>{text}</AboutCardText>
+          {linkPage && linkLabel && (
+            <AboutLink to={paths[linkPage]}>
+              {linkLabel} <ArrowRight />
+            </AboutLink>
+          )}
+        </AboutCard>
+      ))}
+    </AboutGrid>
+  );
+};
 
-  const features: AboutItem[] = featureItems.map(({ key, icon }) => ({
-    icon,
-    ...t.about.features[key],
-  }));
+const AboutContent = ({ about }: { about: AboutPageData }) => {
+  const { t } = useTranslation();
+  const paths = usePaths();
+  const { title, intro, explore, features, outro } = about;
 
   return (
     <PageLayout
       title={t.nav.about}
-      heading={t.about.title}
-      intro={
-        <>
-          <PageText>{t.about.intro1}</PageText>
-          <PageText>{t.about.intro2}</PageText>
-        </>
-      }
+      heading={title ?? t.nav.about}
+      intro={<RichText value={intro} />}
     >
-      <AboutContent>
-        <AboutBlock>
-          <h2>{t.about.exploreTitle}</h2>
-          <AboutCards items={explore} />
-        </AboutBlock>
+      <AboutSections>
+        {explore && (
+          <AboutBlock>
+            <h2>{explore.title}</h2>
+            <AboutCards cards={explore.cards} />
+          </AboutBlock>
+        )}
 
-        <AboutBlock>
-          <h2>{t.about.featuresTitle}</h2>
-          <AboutCards items={features} />
-        </AboutBlock>
+        {features && (
+          <AboutBlock>
+            <h2>{features.title}</h2>
+            <AboutCards cards={features.cards} />
+          </AboutBlock>
+        )}
 
-        <AboutOutro>
-          <h2>{t.about.upToDateTitle}</h2>
-          <PageText>
-            {t.about.upToDateText} <AboutLink to={paths.contact}>{t.about.getInTouch}</AboutLink>.
-          </PageText>
-        </AboutOutro>
-      </AboutContent>
+        {outro && (
+          <AboutOutro>
+            <h2>{outro.title}</h2>
+            <PageText>
+              {outro.text}
+              {outro.linkPage && outro.linkLabel && (
+                <>
+                  {" "}
+                  <AboutLink to={paths[outro.linkPage]}>{outro.linkLabel}</AboutLink>.
+                </>
+              )}
+            </PageText>
+          </AboutOutro>
+        )}
+      </AboutSections>
     </PageLayout>
   );
+};
+
+export const AboutSection = () => {
+  const { t } = useTranslation();
+  const { data: about, isLoading, error, refetch } = useAboutPage();
+
+  if (isLoading) return <Loader />;
+
+  // A missing document is shown as an error too, since the page should always exist
+  if (error || !about) return <ErrorState message={t.errors.page} onRetry={refetch} />;
+
+  return <AboutContent about={about} />;
 };

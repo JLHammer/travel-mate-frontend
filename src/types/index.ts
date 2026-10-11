@@ -3,6 +3,8 @@ export type { AuthResponse, User } from "./auth";
 export type { AnimatedIconHandle, AnimatedIconProps } from "./icons";
 
 export type {
+  AboutCardData,
+  AboutPageData,
   Attraction,
   AttractionCardData,
   AttractionDetail,
@@ -17,7 +19,9 @@ export type {
   FavoriteAttraction,
   Featured,
   Language,
+  LegalPageData,
   NavItem,
+  RichText,
   SanityImage,
   SearchData,
   SiteSettingsResult,

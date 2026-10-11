@@ -1,7 +1,6 @@
 import type { BadgeCategory, Language } from "../types";
 import type { ContactErrorKey, ContactSubject } from "../schemas/contactSchema";
 import type { LoginErrorKey } from "../schemas/loginSchema";
-import { privacy, terms } from "./legal";
 import { LANGUAGES } from "./languages.generated";
 
 // The enabled languages from the Studio. A newly enabled one makes TypeScript flag every missing translation
@@ -70,6 +69,7 @@ const en = {
     cities: "Could not load the cities. Please try again later.",
     attractions: "Could not load the attractions. Please try again later.",
     featured: "Could not load the featured destinations. Please try again later.",
+    page: "Could not load this page. Please try again later.",
     country: "Could not load this country. Please try again later.",
     city: "Could not load this city. Please try again later.",
     attraction: "Could not load this attraction. Please try again later.",
@@ -102,50 +102,6 @@ const en = {
     title: "Page not found",
     text: "We couldn’t find the page you’re looking for.",
     backHome: "Back to home",
-  },
-  about: {
-    title: "About TravelMate",
-    intro1:
-      "TravelMate is your travel guide for discovering the world, one destination at a time. Whether you are dreaming about your next holiday or planning the details of a trip, we help you find inspiring countries, vibrant cities and the attractions you should not miss.",
-    intro2:
-      "We keep things simple. Instead of endless lists and reviews, TravelMate gives you clear descriptions, useful facts and a map for every place, so you can quickly get a feel for where you are going and what is waiting for you there.",
-    exploreTitle: "From country to attraction",
-    explore: {
-      countries: {
-        title: "Countries",
-        text: "Start with the big picture. Every country comes with a short introduction, key facts and its location on the map.",
-        link: "Browse countries",
-      },
-      cities: {
-        title: "Cities",
-        text: "Zoom in on the cities worth visiting. See where they are, what makes them special and what you can do there.",
-        link: "Browse cities",
-      },
-      attractions: {
-        title: "Attractions",
-        text: "Find the museums, parks, landmarks and historical sites that turn a trip into an experience you remember.",
-        link: "Browse attractions",
-      },
-    },
-    featuresTitle: "Why travel with TravelMate",
-    features: {
-      map: {
-        title: "Everything on the map",
-        text: "Each destination has its own map, so you always know exactly where you are heading.",
-      },
-      favourites: {
-        title: "Save your favourites",
-        text: "Tap the heart on any card to keep track of the places you want to see next.",
-      },
-      screens: {
-        title: "Made for every screen",
-        text: "Plan on your phone, tablet or desktop, in light or dark mode, in the language you prefer.",
-      },
-    },
-    upToDateTitle: "Always up to date",
-    upToDateText:
-      "All destinations on TravelMate are managed in our content system, so new countries, cities and attractions appear as soon as they are added. Have a suggestion or spotted something we should add?",
-    getInTouch: "Get in touch",
   },
   contact: {
     title: "Contact us",
@@ -215,8 +171,6 @@ const en = {
     undo: "Undo",
     updateFailed: "Could not update your favourites. Please try again.",
   },
-  privacy: privacy.en,
-  terms: terms.en,
 };
 
 export type Dictionary = typeof en;
@@ -281,6 +235,7 @@ const da: Dictionary = {
     cities: "Byerne kunne ikke indlæses. Prøv igen senere.",
     attractions: "Seværdighederne kunne ikke indlæses. Prøv igen senere.",
     featured: "De udvalgte destinationer kunne ikke indlæses. Prøv igen senere.",
+    page: "Siden kunne ikke indlæses. Prøv igen senere.",
     country: "Landet kunne ikke indlæses. Prøv igen senere.",
     city: "Byen kunne ikke indlæses. Prøv igen senere.",
     attraction: "Seværdigheden kunne ikke indlæses. Prøv igen senere.",
@@ -313,50 +268,6 @@ const da: Dictionary = {
     title: "Siden blev ikke fundet",
     text: "Vi kunne ikke finde den side, du leder efter.",
     backHome: "Tilbage til forsiden",
-  },
-  about: {
-    title: "Om TravelMate",
-    intro1:
-      "TravelMate er din rejseguide til at opdage verden, én destination ad gangen. Uanset om du drømmer om din næste ferie eller planlægger detaljerne i en rejse, hjælper vi dig med at finde inspirerende lande, levende byer og de seværdigheder, du ikke må gå glip af.",
-    intro2:
-      "Vi holder det enkelt. I stedet for endeløse lister og anmeldelser giver TravelMate dig klare beskrivelser, nyttige fakta og et kort over hvert sted, så du hurtigt kan få en fornemmelse af, hvor du skal hen, og hvad der venter dig.",
-    exploreTitle: "Fra land til seværdighed",
-    explore: {
-      countries: {
-        title: "Lande",
-        text: "Start med det store overblik. Hvert land har en kort introduktion, vigtige fakta og sin placering på kortet.",
-        link: "Se alle lande",
-      },
-      cities: {
-        title: "Byer",
-        text: "Zoom ind på de byer, der er værd at besøge. Se, hvor de ligger, hvad der gør dem særlige, og hvad du kan opleve der.",
-        link: "Se alle byer",
-      },
-      attractions: {
-        title: "Seværdigheder",
-        text: "Find de museer, parker, vartegn og historiske steder, der gør en rejse til en oplevelse, du husker.",
-        link: "Se alle seværdigheder",
-      },
-    },
-    featuresTitle: "Derfor skal du rejse med TravelMate",
-    features: {
-      map: {
-        title: "Alt på kortet",
-        text: "Hver destination har sit eget kort, så du altid ved præcis, hvor du skal hen.",
-      },
-      favourites: {
-        title: "Gem dine favoritter",
-        text: "Tryk på hjertet på et kort for at holde styr på de steder, du vil se næste gang.",
-      },
-      screens: {
-        title: "Lavet til alle skærme",
-        text: "Planlæg på din telefon, tablet eller computer, i lyst eller mørkt tema, på det sprog, du foretrækker.",
-      },
-    },
-    upToDateTitle: "Altid opdateret",
-    upToDateText:
-      "Alle destinationer på TravelMate styres i vores indholdssystem, så nye lande, byer og seværdigheder dukker op, så snart de bliver tilføjet. Har du et forslag, eller har du opdaget noget, vi bør tilføje?",
-    getInTouch: "Kontakt os",
   },
   contact: {
     title: "Kontakt os",
@@ -427,8 +338,6 @@ const da: Dictionary = {
     undo: "Fortryd",
     updateFailed: "Kunne ikke opdatere dine favoritter. Prøv igen.",
   },
-  privacy: privacy.da,
-  terms: terms.da,
 };
 
 const es: Dictionary = {
@@ -491,6 +400,7 @@ const es: Dictionary = {
     cities: "No se pudieron cargar las ciudades. Inténtalo de nuevo más tarde.",
     attractions: "No se pudieron cargar las atracciones. Inténtalo de nuevo más tarde.",
     featured: "No se pudieron cargar los destinos destacados. Inténtalo de nuevo más tarde.",
+    page: "No se pudo cargar esta página. Inténtalo de nuevo más tarde.",
     country: "No se pudo cargar este país. Inténtalo de nuevo más tarde.",
     city: "No se pudo cargar esta ciudad. Inténtalo de nuevo más tarde.",
     attraction: "No se pudo cargar esta atracción. Inténtalo de nuevo más tarde.",
@@ -523,50 +433,6 @@ const es: Dictionary = {
     title: "Página no encontrada",
     text: "No pudimos encontrar la página que buscas.",
     backHome: "Volver al inicio",
-  },
-  about: {
-    title: "Sobre TravelMate",
-    intro1:
-      "TravelMate es tu guía de viajes para descubrir el mundo, un destino a la vez. Tanto si sueñas con tus próximas vacaciones como si estás planificando los detalles de un viaje, te ayudamos a encontrar países inspiradores, ciudades llenas de vida y las atracciones que no te puedes perder.",
-    intro2:
-      "Lo mantenemos sencillo. En lugar de listas y reseñas interminables, TravelMate te ofrece descripciones claras, datos útiles y un mapa de cada lugar, para que puedas hacerte una idea rápidamente de adónde vas y de lo que te espera allí.",
-    exploreTitle: "Del país a la atracción",
-    explore: {
-      countries: {
-        title: "Países",
-        text: "Empieza por la visión general. Cada país incluye una breve introducción, datos clave y su ubicación en el mapa.",
-        link: "Ver países",
-      },
-      cities: {
-        title: "Ciudades",
-        text: "Acércate a las ciudades que vale la pena visitar. Descubre dónde están, qué las hace especiales y qué puedes hacer allí.",
-        link: "Ver ciudades",
-      },
-      attractions: {
-        title: "Atracciones",
-        text: "Encuentra los museos, parques, monumentos y lugares históricos que convierten un viaje en una experiencia inolvidable.",
-        link: "Ver atracciones",
-      },
-    },
-    featuresTitle: "Por qué viajar con TravelMate",
-    features: {
-      map: {
-        title: "Todo en el mapa",
-        text: "Cada destino tiene su propio mapa, para que siempre sepas exactamente adónde vas.",
-      },
-      favourites: {
-        title: "Guarda tus favoritos",
-        text: "Toca el corazón de cualquier tarjeta para no perder de vista los lugares que quieres visitar.",
-      },
-      screens: {
-        title: "Hecho para cualquier pantalla",
-        text: "Planifica desde tu móvil, tableta u ordenador, en modo claro u oscuro, en el idioma que prefieras.",
-      },
-    },
-    upToDateTitle: "Siempre actualizado",
-    upToDateText:
-      "Todos los destinos de TravelMate se gestionan en nuestro sistema de contenidos, así que los nuevos países, ciudades y atracciones aparecen en cuanto se añaden. ¿Tienes una sugerencia o has visto algo que deberíamos añadir?",
-    getInTouch: "Ponte en contacto",
   },
   contact: {
     title: "Contáctanos",
@@ -608,7 +474,8 @@ const es: Dictionary = {
   login: {
     title: "Iniciar sesión",
     favoritesRequired: "Debes iniciar sesión para ver tus favoritos.",
-    demoHint: "Este es un inicio de sesión de demostración. Usa los siguientes datos para iniciar sesión:",
+    demoHint:
+      "Este es un inicio de sesión de demostración. Usa los siguientes datos para iniciar sesión:",
     labels: { email: "Correo electrónico", password: "Contraseña" },
     placeholders: { email: "tu@ejemplo.com", password: "Tu contraseña" },
     submitting: "Iniciando sesión...",
@@ -637,8 +504,6 @@ const es: Dictionary = {
     undo: "Deshacer",
     updateFailed: "No se pudieron actualizar tus favoritos. Inténtalo de nuevo.",
   },
-  privacy: privacy.es,
-  terms: terms.es,
 };
 
 export const translations: Record<Language, Dictionary> = { da, en, es };

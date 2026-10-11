@@ -51,11 +51,40 @@ const NAV_LINK = `_key, page, "label": label[language == $lang][0].value`;
 
 // Site-wide content shown on every page, fetched once per language
 export const SITE_SETTINGS_QUERY = defineQuery(`{
-  "navigation": *[_id == "navigation"][0] {
+  "navigation": *[_type == "navigation" && _id == "navigation"][0] {
     "header": headerLinks[]{ ${NAV_LINK} },
     "footer": footerLinks[]{ ${NAV_LINK} }
   }
 }`);
+
+// The page texts, with the same English fallback as names and descriptions
+const TITLE = `coalesce(title[language == $lang][0].value, title[language == "en"][0].value)`;
+const TEXT = `coalesce(text[language == $lang][0].value, text[language == "en"][0].value)`;
+const INTRO = `coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value)`;
+const BODY = `coalesce(body[language == $lang][0].value, body[language == "en"][0].value)`;
+const LINK_LABEL = `coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value)`;
+
+const ABOUT_CARDS = `"title": ${TITLE}, "cards": cards[]{ _key, icon, "title": ${TITLE}, "text": ${TEXT}, linkPage, "linkLabel": ${LINK_LABEL} }`;
+
+export const ABOUT_PAGE_QUERY = defineQuery(`
+  *[_type == "aboutPage" && _id == "aboutPage"][0] {
+    "title": ${TITLE},
+    "intro": ${INTRO},
+    "explore": explore { ${ABOUT_CARDS} },
+    "features": features { ${ABOUT_CARDS} },
+    "outro": outro { "title": ${TITLE}, "text": ${TEXT}, linkPage, "linkLabel": ${LINK_LABEL} }
+  }
+`);
+
+// $id is privacyPage or termsPage, which share the same fields
+export const LEGAL_PAGE_QUERY = defineQuery(`
+  *[_type == "legalPage" && _id == $id][0] {
+    "title": ${TITLE},
+    "intro": ${INTRO},
+    lastUpdated,
+    "sections": sections[]{ _key, "title": ${TITLE}, "body": ${BODY} }
+  }
+`);
 
 export const COUNTRIES_QUERY = defineQuery(`
   *[_type == "country"] | ${BY_NAME} { ${COUNTRY} }

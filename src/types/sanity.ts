@@ -1,4 +1,5 @@
 import type {
+  ABOUT_PAGE_QUERY_RESULT,
   ATTRACTION_DETAIL_QUERY_RESULT,
   ATTRACTIONS_QUERY_RESULT,
   CITIES_QUERY_RESULT,
@@ -7,10 +8,14 @@ import type {
   COUNTRY_DETAIL_QUERY_RESULT,
   FAVORITE_ATTRACTIONS_QUERY_RESULT,
   FEATURED_QUERY_RESULT,
+  LEGAL_PAGE_QUERY_RESULT,
   SEARCH_QUERY_RESULT,
   SITE_SETTINGS_QUERY_RESULT,
 } from "./sanity.types";
 import type { BadgeCategory } from "./theme";
+
+// Portable Text, as written in the Studio
+export type { RichText } from "./sanity.types";
 
 // Generated from the enabled languages in the Studio by npm run typegen
 export type { Language } from "../i18n/languages.generated";
@@ -28,6 +33,10 @@ export type CityDetail = NonNullable<CITY_DETAIL_QUERY_RESULT>;
 export type AttractionDetail = NonNullable<ATTRACTION_DETAIL_QUERY_RESULT>;
 
 export type SanityImage = NonNullable<Country["image"]>;
+
+export type AboutPageData = NonNullable<ABOUT_PAGE_QUERY_RESULT>;
+export type AboutCardData = NonNullable<NonNullable<AboutPageData["explore"]>["cards"]>[number];
+export type LegalPageData = NonNullable<LEGAL_PAGE_QUERY_RESULT>;
 
 type NavLinkResult = NonNullable<
   NonNullable<SITE_SETTINGS_QUERY_RESULT["navigation"]>["header"]

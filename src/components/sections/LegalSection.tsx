@@ -3,10 +3,15 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { usePaths } from "../../hooks/usePaths";
+import { type LegalPageId, useLegalPage } from "../../hooks/useLegalPage";
 import { useTranslation } from "../../hooks/useTranslation";
-import { LEGAL_LAST_UPDATED, type LegalDocument } from "../../i18n/legal";
 import { tokens } from "../../styles/theme";
+import type { LegalPageData } from "../../types";
+import { toAnchor } from "../../utils/toAnchor";
 import { PageLayout, PageText } from "../layout/PageLayout";
+import { ErrorState } from "../ui/ErrorState";
+import { Loader } from "../ui/Loader";
+import { RichText } from "../ui/RichText";
 
 const LegalUpdated = styled.p`
   color: ${({ theme }) => theme.colors.mutedText};
@@ -97,20 +102,6 @@ const LegalBlock = styled.div`
   }
 `;
 
-const LegalList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: ${tokens.mobile.spacing.xxs};
-  padding-left: ${tokens.mobile.spacing.l};
-  list-style: disc;
-  font-size: ${tokens.mobile.fontSizes.detailsText};
-  line-height: ${tokens.mobile.lineHeights.detailsText};
-
-  & > li::marker {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
 const ContactLink = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -133,19 +124,26 @@ const ContactLink = styled(Link)`
   }
 `;
 
-type LegalSectionProps = {
+type LegalContentProps = {
   title: string;
-  content: LegalDocument;
+  page: LegalPageData;
 };
 
-export const LegalSection = ({ title, content }: LegalSectionProps) => {
+const LegalContent = ({ title, page }: LegalContentProps) => {
   const { t, language } = useTranslation();
   const paths = usePaths();
 
-  const lastUpdated = new Intl.DateTimeFormat(language, {
-    dateStyle: "long",
-    timeZone: "UTC",
-  }).format(new Date(LEGAL_LAST_UPDATED));
+  // Each heading becomes the id its overview link jumps to, in the reader's language
+  const sections = (page.sections ?? []).map((section) => ({
+    ...section,
+    id: toAnchor(section.title ?? "") || section._key,
+  }));
+
+  const lastUpdated =
+    page.lastUpdated &&
+    new Intl.DateTimeFormat(language, { dateStyle: "long", timeZone: "UTC" }).format(
+      new Date(page.lastUpdated),
+    );
 
   const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     const target = document.getElementById(id);
@@ -159,13 +157,15 @@ export const LegalSection = ({ title, content }: LegalSectionProps) => {
   return (
     <PageLayout
       title={title}
-      heading={content.title}
+      heading={page.title ?? title}
       intro={
         <>
-          <LegalUpdated>
-            {t.legal.lastUpdated}: <time dateTime={LEGAL_LAST_UPDATED}>{lastUpdated}</time>
-          </LegalUpdated>
-          <PageText>{content.intro}</PageText>
+          {lastUpdated && (
+            <LegalUpdated>
+              {t.legal.lastUpdated}: <time dateTime={page.lastUpdated ?? ""}>{lastUpdated}</time>
+            </LegalUpdated>
+          )}
+          <PageText>{page.intro}</PageText>
         </>
       }
     >
@@ -173,8 +173,8 @@ export const LegalSection = ({ title, content }: LegalSectionProps) => {
         <LegalNav>
           <LegalNavTitle>{t.legal.overview}</LegalNavTitle>
           <LegalNavList>
-            {content.sections.map(({ id, title }) => (
-              <li key={id}>
+            {sections.map(({ _key, id, title }) => (
+              <li key={_key}>
                 <LegalNavLink href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>
                   {title}
                 </LegalNavLink>
@@ -184,21 +184,12 @@ export const LegalSection = ({ title, content }: LegalSectionProps) => {
         </LegalNav>
 
         <LegalArticle>
-          {content.sections.map(({ id, title, paragraphs, list }, index) => (
-            <LegalBlock key={id} id={id} tabIndex={-1}>
+          {sections.map(({ _key, id, title, body }, index) => (
+            <LegalBlock key={_key} id={id} tabIndex={-1}>
               <h2>
                 {index + 1}. {title}
               </h2>
-              {paragraphs.map((paragraph) => (
-                <PageText key={paragraph}>{paragraph}</PageText>
-              ))}
-              {list && (
-                <LegalList>
-                  {list.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </LegalList>
-              )}
+              <RichText value={body} />
             </LegalBlock>
           ))}
 
@@ -209,4 +200,21 @@ export const LegalSection = ({ title, content }: LegalSectionProps) => {
       </LegalBody>
     </PageLayout>
   );
+};
+
+type LegalSectionProps = {
+  id: LegalPageId;
+  title: string;
+};
+
+export const LegalSection = ({ id, title }: LegalSectionProps) => {
+  const { t } = useTranslation();
+  const { data: page, isLoading, error, refetch } = useLegalPage(id);
+
+  if (isLoading) return <Loader />;
+
+  // A missing document is shown as an error too, since the page should always exist
+  if (error || !page) return <ErrorState message={t.errors.page} onRetry={refetch} />;
+
+  return <LegalContent title={title} page={page} />;
 };
