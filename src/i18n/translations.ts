@@ -24,21 +24,12 @@ const en = {
     favorites: "Favourites",
     skipToContent: "Skip to content",
   },
-  footer: {
-    tagline: "Explore. Discover. Belong.",
-  },
   theme: {
     switchTo: { light: "Switch to light mode", dark: "Switch to dark mode" },
     label: { light: "Light", dark: "Dark" },
   },
   toast: {
     close: "Close notification",
-  },
-  hero: {
-    title: "Explore the World with TravelMate",
-    line1: "Discover amazing attractions, cities and countries.",
-    line2: "Your next adventure is just a click away.",
-    tagline: { line1: "Good places", line2: "Brighter days" },
   },
   search: {
     placeholder: "Search destinations or categories...",
@@ -52,9 +43,6 @@ const en = {
     prompt: "Type a country, city, attraction or category to start searching.",
   },
   sections: {
-    popularCountries: "Popular Countries",
-    popularCities: "Popular Cities",
-    featuredAttractions: "Featured Attractions",
     viewAll: "View all",
     viewAllCountries: "View all countries",
     viewAllCities: "View all cities",
@@ -190,21 +178,12 @@ const da: Dictionary = {
     favorites: "Favoritter",
     skipToContent: "Gå til indhold",
   },
-  footer: {
-    tagline: "Udforsk. Opdag. Hør til.",
-  },
   theme: {
     switchTo: { light: "Skift til lyst tema", dark: "Skift til mørkt tema" },
     label: { light: "Lyst", dark: "Mørkt" },
   },
   toast: {
     close: "Luk notifikation",
-  },
-  hero: {
-    title: "Udforsk verden med TravelMate",
-    line1: "Opdag fantastiske seværdigheder, byer og lande.",
-    line2: "Dit næste eventyr er kun et klik væk.",
-    tagline: { line1: "Gode steder", line2: "Lysere dage" },
   },
   search: {
     placeholder: "Søg efter destinationer eller kategorier...",
@@ -218,9 +197,6 @@ const da: Dictionary = {
     prompt: "Skriv et land, en by, en seværdighed eller en kategori for at søge.",
   },
   sections: {
-    popularCountries: "Populære lande",
-    popularCities: "Populære byer",
-    featuredAttractions: "Udvalgte seværdigheder",
     viewAll: "Se alle",
     viewAllCountries: "Se alle lande",
     viewAllCities: "Se alle byer",
@@ -355,21 +331,12 @@ const es: Dictionary = {
     favorites: "Favoritos",
     skipToContent: "Saltar al contenido",
   },
-  footer: {
-    tagline: "Explora. Descubre. Pertenece.",
-  },
   theme: {
     switchTo: { light: "Cambiar a modo claro", dark: "Cambiar a modo oscuro" },
     label: { light: "Claro", dark: "Oscuro" },
   },
   toast: {
     close: "Cerrar notificación",
-  },
-  hero: {
-    title: "Explora el mundo con TravelMate",
-    line1: "Descubre atracciones, ciudades y países increíbles.",
-    line2: "Tu próxima aventura está a solo un clic.",
-    tagline: { line1: "Buenos lugares", line2: "Días más brillantes" },
   },
   search: {
     placeholder: "Buscar destinos o categorías...",
@@ -383,9 +350,6 @@ const es: Dictionary = {
     prompt: "Escribe un país, una ciudad, una atracción o una categoría para empezar a buscar.",
   },
   sections: {
-    popularCountries: "Países populares",
-    popularCities: "Ciudades populares",
-    featuredAttractions: "Atracciones destacadas",
     viewAll: "Ver todo",
     viewAllCountries: "Ver todos los países",
     viewAllCities: "Ver todas las ciudades",

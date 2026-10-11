@@ -61,6 +61,27 @@ export type RichText = Array<{
   _key: string;
 }>;
 
+export type SiteSettings = {
+  _id: string;
+  _type: "siteSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  footerTagline?: InternationalizedArrayString;
+  socials?: Array<{
+    platform?: "instagram" | "facebook" | "youtube" | "tiktok" | "x" | "linkedin" | "pinterest";
+    url?: string;
+    _type: "socialLink";
+    _key: string;
+  }>;
+};
+
+export type InternationalizedArrayString = Array<
+  {
+    _key: string;
+  } & InternationalizedArrayStringValue
+>;
+
 export type Navigation = {
   _id: string;
   _type: "navigation";
@@ -98,12 +119,6 @@ export type Navigation = {
     _key: string;
   }>;
 };
-
-export type InternationalizedArrayString = Array<
-  {
-    _key: string;
-  } & InternationalizedArrayStringValue
->;
 
 export type LegalPage = {
   _id: string;
@@ -203,6 +218,20 @@ export type AboutPage = {
   };
 };
 
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type CountryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "country";
+};
+
 export type CityReference = {
   _ref: string;
   _type: "reference";
@@ -210,11 +239,71 @@ export type CityReference = {
   [internalGroqTypeReferenceTo]?: "city";
 };
 
-export type SanityImageAssetReference = {
+export type AttractionReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+  [internalGroqTypeReferenceTo]?: "attraction";
+};
+
+export type HomePage = {
+  _id: string;
+  _type: "homePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  hero?: {
+    title?: InternationalizedArrayString;
+    text?: InternationalizedArrayText;
+    tagline?: InternationalizedArrayText;
+    image?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+  };
+  countries?: {
+    title?: InternationalizedArrayString;
+    items?: Array<
+      {
+        _key: string;
+      } & CountryReference
+    >;
+  };
+  cities?: {
+    title?: InternationalizedArrayString;
+    items?: Array<
+      {
+        _key: string;
+      } & CityReference
+    >;
+  };
+  attractions?: {
+    title?: InternationalizedArrayString;
+    items?: Array<
+      {
+        _key: string;
+      } & AttractionReference
+    >;
+  };
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type Attraction = {
@@ -241,7 +330,6 @@ export type Attraction = {
   address?: string;
   location?: Geopoint;
   website?: string;
-  featured?: boolean;
 };
 
 export type Geopoint = {
@@ -251,34 +339,11 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
 export type InternationalizedArraySlug = Array<
   {
     _key: string;
   } & InternationalizedArraySlugValue
 >;
-
-export type CountryReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "country";
-};
 
 export type City = {
   _id: string;
@@ -302,7 +367,6 @@ export type City = {
   };
   location?: Geopoint;
   website?: string;
-  featured?: boolean;
 };
 
 export type Country = {
@@ -325,7 +389,6 @@ export type Country = {
     credit?: string;
     _type: "image";
   };
-  featured?: boolean;
 };
 
 export type InternationalizedArraySlugValue = {
@@ -451,20 +514,23 @@ export type SanityImageAsset = {
 export type AllSanitySchemaTypes =
   | Locale
   | RichText
-  | Navigation
+  | SiteSettings
   | InternationalizedArrayString
+  | Navigation
   | LegalPage
   | InternationalizedArrayRichText
   | InternationalizedArrayText
   | AboutPage
-  | CityReference
   | SanityImageAssetReference
-  | Attraction
-  | Geopoint
+  | CountryReference
+  | CityReference
+  | AttractionReference
+  | HomePage
   | SanityImageCrop
   | SanityImageHotspot
+  | Attraction
+  | Geopoint
   | InternationalizedArraySlug
-  | CountryReference
   | City
   | Country
   | InternationalizedArraySlugValue
@@ -482,7 +548,7 @@ export type AllSanitySchemaTypes =
 
 // Source: ../../travel-mate-frontend/src/data/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: {  "navigation": *[_type == "navigation" && _id == "navigation"][0] {    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }  }}
+// Query: {  "navigation": *[_type == "navigation" && _id == "navigation"][0] {    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }  },  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {    "footerTagline": coalesce(footerTagline[language == $lang][0].value, footerTagline[language == "en"][0].value),    socials[]{ _key, platform, url }  }}
 export type SITE_SETTINGS_QUERY_RESULT = {
   navigation: {
     header: Array<{
@@ -514,6 +580,15 @@ export type SITE_SETTINGS_QUERY_RESULT = {
         | "terms"
         | null;
       label: string | null;
+    }> | null;
+  } | null;
+  settings: {
+    footerTagline: string | null;
+    socials: Array<{
+      _key: string;
+      platform:
+        "facebook" | "instagram" | "linkedin" | "pinterest" | "tiktok" | "x" | "youtube" | null;
+      url: string | null;
     }> | null;
   } | null;
 };
@@ -694,75 +769,95 @@ export type ATTRACTIONS_QUERY_RESULT = Array<{
 }>;
 
 // Source: ../../travel-mate-frontend/src/data/queries.ts
-// Variable: FEATURED_QUERY
-// Query: {  "countries": *[_type == "country" && featured == true] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } },  "cities": *[_type == "city" && featured == true] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) {   _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },  "latitude": location.lat, "longitude": location.lng,  website,  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } },  "attractions": *[_type == "attraction" && featured == true] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) {   _id,  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },  category,  address,  "latitude": location.lat, "longitude": location.lng,  website,  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } } }}
-export type FEATURED_QUERY_RESULT = {
-  countries: Array<{
-    _id: string;
-    name: string | null;
-    code: string | null;
-    slug: string | null;
+// Variable: HOME_PAGE_QUERY
+// Query: *[_type == "homePage" && _id == "homePage"][0] {    "hero": hero {      "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),      "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value),      "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value),      "image": image{ asset, crop, hotspot, "alt": null }    },    "countries": countries { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "items": items[]->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } } },    "cities": cities { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "items": items[]->{   _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },  "latitude": location.lat, "longitude": location.lng,  website,  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } } },    "attractions": attractions { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "items": items[]->{   _id,  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },  category,  address,  "latitude": location.lat, "longitude": location.lng,  website,  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } } } }  }
+export type HOME_PAGE_QUERY_RESULT = {
+  hero: {
+    title: string | null;
+    text: string | null;
     tagline: string | null;
-    description: string | null;
     image: {
       asset: SanityImageAssetReference | null;
       crop: SanityImageCrop | null;
       hotspot: SanityImageHotspot | null;
-      alt: string | null;
+      alt: null;
     } | null;
-  }>;
-  cities: Array<{
-    _id: string;
-    name: string | null;
-    slug: string | null;
-    tagline: string | null;
-    description: string | null;
-    image: {
-      asset: SanityImageAssetReference | null;
-      crop: SanityImageCrop | null;
-      hotspot: SanityImageHotspot | null;
-      alt: string | null;
-    } | null;
-    latitude: number | null;
-    longitude: number | null;
-    website: string | null;
-    country: {
+  } | null;
+  countries: {
+    title: string | null;
+    items: Array<{
       _id: string;
       name: string | null;
       code: string | null;
       slug: string | null;
-    } | null;
-  }>;
-  attractions: Array<{
-    _id: string;
-    name: string | null;
-    slug: string | null;
-    tagline: string | null;
-    description: string | null;
-    image: {
-      asset: SanityImageAssetReference | null;
-      crop: SanityImageCrop | null;
-      hotspot: SanityImageHotspot | null;
-      alt: string | null;
-    } | null;
-    category: "attraction" | "historical" | "landmark" | "museum" | "park" | null;
-    address: string | null;
-    latitude: number | null;
-    longitude: number | null;
-    website: string | null;
-    city: {
+      tagline: string | null;
+      description: string | null;
+      image: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+    }> | null;
+  } | null;
+  cities: {
+    title: string | null;
+    items: Array<{
       _id: string;
       name: string | null;
       slug: string | null;
+      tagline: string | null;
+      description: string | null;
+      image: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      latitude: number | null;
+      longitude: number | null;
+      website: string | null;
       country: {
         _id: string;
         name: string | null;
         code: string | null;
         slug: string | null;
       } | null;
-    } | null;
-  }>;
-};
+    }> | null;
+  } | null;
+  attractions: {
+    title: string | null;
+    items: Array<{
+      _id: string;
+      name: string | null;
+      slug: string | null;
+      tagline: string | null;
+      description: string | null;
+      image: {
+        asset: SanityImageAssetReference | null;
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        alt: string | null;
+      } | null;
+      category: "attraction" | "historical" | "landmark" | "museum" | "park" | null;
+      address: string | null;
+      latitude: number | null;
+      longitude: number | null;
+      website: string | null;
+      city: {
+        _id: string;
+        name: string | null;
+        slug: string | null;
+        country: {
+          _id: string;
+          name: string | null;
+          code: string | null;
+          slug: string | null;
+        } | null;
+      } | null;
+    }> | null;
+  } | null;
+} | null;
 
 // Source: ../../travel-mate-frontend/src/data/queries.ts
 // Variable: SEARCH_QUERY
@@ -986,13 +1081,13 @@ export type ATTRACTION_DETAIL_QUERY_RESULT = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '{\n  "navigation": *[_type == "navigation" && _id == "navigation"][0] {\n    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },\n    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
+    '{\n  "navigation": *[_type == "navigation" && _id == "navigation"][0] {\n    "header": headerLinks[]{ _key, page, "label": label[language == $lang][0].value },\n    "footer": footerLinks[]{ _key, page, "label": label[language == $lang][0].value }\n  },\n  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    "footerTagline": coalesce(footerTagline[language == $lang][0].value, footerTagline[language == "en"][0].value),\n    socials[]{ _key, platform, url }\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),\n    "intro": coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value),\n    "explore": explore { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "cards": cards[]{ _key, icon, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) } },\n    "features": features { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "cards": cards[]{ _key, icon, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) } },\n    "outro": outro { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value), linkPage, "linkLabel": coalesce(linkLabel[language == $lang][0].value, linkLabel[language == "en"][0].value) }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "legalPage" && _id == $id][0] {\n    "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),\n    "intro": coalesce(intro[language == $lang][0].value, intro[language == "en"][0].value),\n    lastUpdated,\n    "sections": sections[]{ _key, "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "body": coalesce(body[language == $lang][0].value, body[language == "en"][0].value) }\n  }\n': LEGAL_PAGE_QUERY_RESULT;
     '\n  *[_type == "country"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } }\n': COUNTRIES_QUERY_RESULT;
     '\n  *[_type == "city"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) }\n }\n': CITIES_QUERY_RESULT;
     '\n  *[_type == "attraction"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id,\n  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),\n  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  category,\n  address,\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } }\n }\n': ATTRACTIONS_QUERY_RESULT;
-    '{\n  "countries": *[_type == "country" && featured == true] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } },\n  "cities": *[_type == "city" && featured == true] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) }\n },\n  "attractions": *[_type == "attraction" && featured == true] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id,\n  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),\n  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  category,\n  address,\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } }\n }\n}': FEATURED_QUERY_RESULT;
+    '\n  *[_type == "homePage" && _id == "homePage"][0] {\n    "hero": hero {\n      "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value),\n      "text": coalesce(text[language == $lang][0].value, text[language == "en"][0].value),\n      "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value),\n      "image": image{ asset, crop, hotspot, "alt": null }\n    },\n    "countries": countries { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "items": items[]->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } } },\n    "cities": cities { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "items": items[]->{ \n  _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) }\n } },\n    "attractions": attractions { "title": coalesce(title[language == $lang][0].value, title[language == "en"][0].value), "items": items[]->{ \n  _id,\n  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),\n  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  category,\n  address,\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } }\n } }\n  }\n': HOME_PAGE_QUERY_RESULT;
     '{\n  "countries": *[_type == "country"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) } },\n  "cities": *[_type == "city"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) {\n    _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n    "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n    "country": country->{ "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value) }\n  },\n  "attractions": *[_type == "attraction"] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) {\n    _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) }, category,\n    "city": city->{ "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "country": country->{ "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value) } }\n  }\n}': SEARCH_QUERY_RESULT;
     '\n  *[_type == "attraction" && _id in $ids] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) { \n  _id,\n  "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value),\n  "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n  "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n  category,\n  address,\n  "latitude": location.lat, "longitude": location.lng,\n  website,\n  "city": city->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "country": country->{ _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current) } }\n }\n': FAVORITE_ATTRACTIONS_QUERY_RESULT;
     '\n  *[_type == "country" && $slug in slug[].value.current][0] {\n    _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), code, "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current), "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) },\n    "slugs": slug[]{ language, "slug": value.current },\n    "cities": *[_type == "city" && references(^._id)] | order(coalesce(name[language == $lang][0].value, name[language == "en"][0].value) asc) {\n      _id, "name": coalesce(name[language == $lang][0].value, name[language == "en"][0].value), "slug": coalesce(slug[language == $lang][0].value.current, slug[language == "en"][0].value.current),\n      "tagline": coalesce(tagline[language == $lang][0].value, tagline[language == "en"][0].value), "description": coalesce(description[language == $lang][0].value, description[language == "en"][0].value), image{ asset, crop, hotspot, "alt": coalesce(alt[language == $lang][0].value, alt[language == "en"][0].value) }\n    }\n  }\n': COUNTRY_DETAIL_QUERY_RESULT;

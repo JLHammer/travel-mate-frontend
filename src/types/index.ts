@@ -17,7 +17,8 @@ export type {
   CountryDetail,
   CountrySummary,
   FavoriteAttraction,
-  Featured,
+  HeroData,
+  HomePageData,
   Language,
   LegalPageData,
   NavItem,
@@ -26,6 +27,7 @@ export type {
   SearchData,
   SiteSettingsResult,
   SitePage,
+  SocialLink,
 } from "./sanity";
 
 export type {

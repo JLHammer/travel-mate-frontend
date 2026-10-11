@@ -49,11 +49,17 @@ const ATTRACTION_LIST_ITEM = `_id, "name": ${NAME}, "slug": ${SLUG}, ${CARD}, ca
 // the page's standard name in the same language instead
 const NAV_LINK = `_key, page, "label": label[language == $lang][0].value`;
 
+const FOOTER_TAGLINE = `coalesce(footerTagline[language == $lang][0].value, footerTagline[language == "en"][0].value)`;
+
 // Site-wide content shown on every page, fetched once per language
 export const SITE_SETTINGS_QUERY = defineQuery(`{
   "navigation": *[_type == "navigation" && _id == "navigation"][0] {
     "header": headerLinks[]{ ${NAV_LINK} },
     "footer": footerLinks[]{ ${NAV_LINK} }
+  },
+  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0] {
+    "footerTagline": ${FOOTER_TAGLINE},
+    socials[]{ _key, platform, url }
   }
 }`);
 
@@ -98,11 +104,20 @@ export const ATTRACTIONS_QUERY = defineQuery(`
   *[_type == "attraction"] | ${BY_NAME} { ${ATTRACTION} }
 `);
 
-export const FEATURED_QUERY = defineQuery(`{
-  "countries": *[_type == "country" && featured == true] | ${BY_NAME} { ${COUNTRY} },
-  "cities": *[_type == "city" && featured == true] | ${BY_NAME} { ${CITY} },
-  "attractions": *[_type == "attraction" && featured == true] | ${BY_NAME} { ${ATTRACTION} }
-}`);
+// The carousels keep the order the editor dragged the places into
+export const HOME_PAGE_QUERY = defineQuery(`
+  *[_type == "homePage" && _id == "homePage"][0] {
+    "hero": hero {
+      "title": ${TITLE},
+      "text": ${TEXT},
+      "tagline": ${TAGLINE},
+      "image": image{ asset, crop, hotspot, "alt": null }
+    },
+    "countries": countries { "title": ${TITLE}, "items": items[]->{ ${COUNTRY} } },
+    "cities": cities { "title": ${TITLE}, "items": items[]->{ ${CITY} } },
+    "attractions": attractions { "title": ${TITLE}, "items": items[]->{ ${ATTRACTION} } }
+  }
+`);
 
 export const SEARCH_QUERY = defineQuery(`{
   "countries": *[_type == "country"] | ${BY_NAME} { ${COUNTRY} },

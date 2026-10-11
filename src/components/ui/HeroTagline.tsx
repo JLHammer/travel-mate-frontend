@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
 
 const CAVEAT_URL = "https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap";
@@ -48,15 +47,14 @@ const TaglineSwoosh = styled.svg`
   margin: 0.5rem 0 0 1.5rem;
 `;
 
-export const HeroTagline = () => {
-  const { t } = useTranslation();
-
+export const HeroTagline = ({ lines }: { lines: string[] }) => {
   return (
     <>
       <link rel="stylesheet" href={CAVEAT_URL} precedence="default" />
       <HeroTaglineStyled>
-        <span>{t.hero.tagline.line1}</span>
-        <span>{t.hero.tagline.line2}</span>
+        {lines.map((line) => (
+          <span key={line}>{line}</span>
+        ))}
         <TaglineSwoosh viewBox="0 0 140 20">
           <path d="M2 18 Q60 0 138 6 Q62 4 4 20 Z" fill="currentColor" />
         </TaglineSwoosh>

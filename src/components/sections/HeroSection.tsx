@@ -2,8 +2,9 @@ import styled from "styled-components";
 import heroImage from "../../assets/hero.webp";
 import { SearchBar } from "../ui/SearchBar";
 import { HeroTagline } from "../ui/HeroTagline";
-import { useTranslation } from "../../hooks/useTranslation";
 import { tokens } from "../../styles/theme";
+import type { HeroData } from "../../types";
+import { sanityImageProps } from "../../utils/imageUrl";
 
 const HeroSectionStyled = styled.section`
   position: relative;
@@ -91,21 +92,47 @@ const HeroSentence = styled.span`
   }
 `;
 
-export const HeroSection = () => {
-  const { t } = useTranslation();
+// The editor writes each line on its own line in the Studio
+const toLines = (text: string | null) =>
+  (text ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+type HeroSectionProps = {
+  hero: HeroData | null;
+  loading: boolean;
+};
+
+export const HeroSection = ({ hero, loading }: HeroSectionProps) => {
+  const lines = toLines(hero?.text ?? null);
+  const taglineLines = toLines(hero?.tagline ?? null);
+
+  // No image while loading, so the built-in photo doesn't flash before the editor's.
+  // Without a home page in Sanity it falls back to that photo and the search bar alone
+  const image = hero?.image?.asset ? (
+    <HeroImage {...sanityImageProps(hero.image, "100vw")} alt="" fetchPriority="high" />
+  ) : (
+    !loading && <HeroImage src={heroImage} alt="" />
+  );
 
   return (
     <HeroSectionStyled>
-      <HeroImage src={heroImage} alt="" />
+      {image}
       <HeroContentWrapper>
-        <HeroTextBox>
-          <HeroTitle>{t.hero.title}</HeroTitle>
-          <HeroText>
-            <HeroSentence>{t.hero.line1}</HeroSentence>
-            <HeroSentence>{t.hero.line2}</HeroSentence>
-          </HeroText>
-        </HeroTextBox>
-        <HeroTagline />
+        {hero?.title && (
+          <HeroTextBox>
+            <HeroTitle>{hero.title}</HeroTitle>
+            {lines.length > 0 && (
+              <HeroText>
+                {lines.map((line) => (
+                  <HeroSentence key={line}>{line}</HeroSentence>
+                ))}
+              </HeroText>
+            )}
+          </HeroTextBox>
+        )}
+        {taglineLines.length > 0 && <HeroTagline lines={taglineLines} />}
         <SearchBar />
       </HeroContentWrapper>
     </HeroSectionStyled>

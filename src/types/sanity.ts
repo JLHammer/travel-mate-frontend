@@ -7,7 +7,7 @@ import type {
   COUNTRIES_QUERY_RESULT,
   COUNTRY_DETAIL_QUERY_RESULT,
   FAVORITE_ATTRACTIONS_QUERY_RESULT,
-  FEATURED_QUERY_RESULT,
+  HOME_PAGE_QUERY_RESULT,
   LEGAL_PAGE_QUERY_RESULT,
   SEARCH_QUERY_RESULT,
   SITE_SETTINGS_QUERY_RESULT,
@@ -24,7 +24,6 @@ export type Country = COUNTRIES_QUERY_RESULT[number];
 export type City = CITIES_QUERY_RESULT[number];
 export type Attraction = ATTRACTIONS_QUERY_RESULT[number];
 export type FavoriteAttraction = FAVORITE_ATTRACTIONS_QUERY_RESULT[number];
-export type Featured = FEATURED_QUERY_RESULT;
 export type SearchData = SEARCH_QUERY_RESULT;
 export type SiteSettingsResult = SITE_SETTINGS_QUERY_RESULT;
 
@@ -37,6 +36,18 @@ export type SanityImage = NonNullable<Country["image"]>;
 export type AboutPageData = NonNullable<ABOUT_PAGE_QUERY_RESULT>;
 export type AboutCardData = NonNullable<NonNullable<AboutPageData["explore"]>["cards"]>[number];
 export type LegalPageData = NonNullable<LEGAL_PAGE_QUERY_RESULT>;
+export type HomePageData = NonNullable<HOME_PAGE_QUERY_RESULT>;
+export type HeroData = NonNullable<HomePageData["hero"]>;
+
+type SocialResult = NonNullable<
+  NonNullable<NonNullable<SITE_SETTINGS_QUERY_RESULT["settings"]>["socials"]>[number]
+>;
+
+// A social media link from the Studio, once the ones missing a platform or URL are left out
+export type SocialLink = SocialResult & {
+  platform: NonNullable<SocialResult["platform"]>;
+  url: string;
+};
 
 type NavLinkResult = NonNullable<
   NonNullable<SITE_SETTINGS_QUERY_RESULT["navigation"]>["header"]

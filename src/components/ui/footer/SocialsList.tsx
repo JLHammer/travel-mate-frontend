@@ -1,6 +1,28 @@
 import styled from "styled-components";
-import { socials } from "../../../data/socials";
+import type { IconType } from "react-icons";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaPinterest,
+  FaTiktok,
+  FaYoutube,
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { useSiteSettings } from "../../../hooks/useSiteSettings";
 import { tokens } from "../../../styles/theme";
+import type { SocialLink as SocialLinkData } from "../../../types";
+
+// One entry per platform an editor can pick in the Studio
+const PLATFORMS: Record<SocialLinkData["platform"], { name: string; Icon: IconType }> = {
+  instagram: { name: "Instagram", Icon: FaInstagram },
+  facebook: { name: "Facebook", Icon: FaFacebook },
+  youtube: { name: "YouTube", Icon: FaYoutube },
+  tiktok: { name: "TikTok", Icon: FaTiktok },
+  x: { name: "X", Icon: FaXTwitter },
+  linkedin: { name: "LinkedIn", Icon: FaLinkedin },
+  pinterest: { name: "Pinterest", Icon: FaPinterest },
+};
 
 const SocialsListStyled = styled.ul`
   display: flex;
@@ -26,12 +48,16 @@ const SocialIcon = styled.svg`
 `;
 
 export const SocialsList = () => {
+  const { socials } = useSiteSettings();
+
+  if (socials.length === 0) return null;
+
   return (
     <SocialsListStyled>
-      {socials.map(({ name, href, Icon }) => (
-        <li key={name}>
-          <SocialLink href={href} target="_blank" rel="noopener noreferrer">
-            <SocialIcon as={Icon} />
+      {socials.map(({ _key, platform, url }) => (
+        <li key={_key}>
+          <SocialLink href={url} target="_blank" rel="noopener noreferrer">
+            <SocialIcon as={PLATFORMS[platform].Icon} />
           </SocialLink>
         </li>
       ))}
